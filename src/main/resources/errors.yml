@@ -1,0 +1,43 @@
+# Common
+internal_server_error:
+  code: ERR_SER0101
+  message: Internal server error!
+page_not_found:
+  code: ERR_SER0102
+  message: Page was not found!
+forbidden:
+  code: ERR_AUTH0101
+  message: Access Denied! You don’t have permission to access!
+unauthorized:
+  code: ERR_AUTH0102
+  message: You do not have permission to access this data!
+
+# Authentication
+invalid_token:
+  code: ERR_TOK0101
+  message: Invalid token!
+expired_token:
+  code: ERR_TOK0102
+  message: Expired token!
+revoked_token:
+  code: ERR_TOK0103
+  message: Revoked token!
+invalid_refresh_token:
+  code: ERR_TOK0201
+  message: Invalid refresh token!
+expired_refresh_token:
+  code: ERR_TOK0202
+  message: Expired refresh token!
+revoked_refresh_token:
+  code: ERR_TOK0203
+  message: Revoked refresh token!
+
+# Permission
+permission_not_found:
+  code: ERR_PER0102
+  message: Permission not found!
+permission_is_require:
+  code: ERR_PER0103
+  message: Permission is require!
+
+# User
