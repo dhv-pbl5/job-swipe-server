@@ -1,19 +1,18 @@
-version: "3"
+version: "3.9"
 
 services:
-  postgres_db:
-    image: postgres:15
-    environment:
-      - POSTGRES_HOST_AUTH_METHOD=trust
-      - POSTGRES_PASSWORD=job_swipe
-      - POSTGRES_USER=job_swipe
-      - POSTGRES_DB=job_swipe
-    restart: unless-stopped
-    ports:
-      - "5434:5432"
-    volumes:
-      - postgres_db:/var/lib/postgresql/data
+    postgres:
+        image: postgres
+        restart: always
+        environment:
+            - POSTGRES_DB=job_swipe
+            - POSTGRES_USER=qh47Qsmu19JJRuMq
+            - POSTGRES_PASSWORD=TwwlZL9j10wyziG3
+        ports:
+            - "6002:5432"
+        volumes:
+            - postgres:/var/lib/postgresql/data
 
 volumes:
-  postgres_db:
-    driver: local
+    postgres:
+        driver: local
