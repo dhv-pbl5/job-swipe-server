@@ -84,7 +84,7 @@ CREATE TABLE public.user_application_positions
     created_at timestamp with time zone NOT NULL,
     PRIMARY KEY (id),
     FOREIGN KEY (account_id)
-        REFERENCES public.accounts (account_id) MATCH FULL
+        REFERENCES public.users (account_id) MATCH FULL
         ON UPDATE NO ACTION
         ON DELETE CASCADE,
     FOREIGN KEY (apply_position)
@@ -109,9 +109,9 @@ CREATE TABLE public.user_educations
     created_at timestamp with time zone NOT NULL,
     PRIMARY KEY (id),
     FOREIGN KEY (account_id)
-        REFERENCES public.accounts (account_id) MATCH FULL
+        REFERENCES public.users (account_id) MATCH FULL
         ON UPDATE NO ACTION
-        ON DELETE NO ACTION
+        ON DELETE CASCADE
 );
 
 ALTER TABLE IF EXISTS public.user_educations
@@ -130,7 +130,7 @@ CREATE TABLE public.user_experiences
     created_at timestamp with time zone NOT NULL,
     PRIMARY KEY (id),
     FOREIGN KEY (account_id)
-        REFERENCES public.accounts (account_id) MATCH FULL
+        REFERENCES public.users (account_id) MATCH FULL
         ON UPDATE NO ACTION
         ON DELETE CASCADE,
     FOREIGN KEY (experience_type)
@@ -153,7 +153,7 @@ CREATE TABLE public.user_awards
     created_at timestamp with time zone NOT NULL,
     PRIMARY KEY (id),
     FOREIGN KEY (account_id)
-        REFERENCES public.accounts (account_id) MATCH FULL
+        REFERENCES public.users (account_id) MATCH FULL
         ON UPDATE NO ACTION
         ON DELETE CASCADE
 );
