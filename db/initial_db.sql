@@ -75,16 +75,17 @@ CREATE TABLE public.users
 ALTER TABLE IF EXISTS public.users
     OWNER to "qh47Qsmu19JJRuMq";
 
--- user_application_positions
-CREATE TABLE public.user_application_positions
+-- application_positions
+CREATE TABLE public.application_positions
 (
     id uuid NOT NULL,
     account_id uuid NOT NULL,
     apply_position uuid NOT NULL,
+    status boolean NOT NULL DEFAULT true,
     created_at timestamp with time zone NOT NULL,
     PRIMARY KEY (id),
     FOREIGN KEY (account_id)
-        REFERENCES public.users (account_id) MATCH FULL
+        REFERENCES public.accounts (account_id) MATCH FULL
         ON UPDATE NO ACTION
         ON DELETE CASCADE,
     FOREIGN KEY (apply_position)
