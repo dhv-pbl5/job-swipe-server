@@ -21,6 +21,7 @@ CREATE TABLE public.accounts
     email character varying(1000) NOT NULL,
     password character varying(1000) NOT NULL,
     phone_number character varying(1000) NOT NULL,
+    refresh_token character varying(1000),
     system_role uuid NOT NULL,
     created_at timestamp with time zone NOT NULL,
     PRIMARY KEY (account_id),
