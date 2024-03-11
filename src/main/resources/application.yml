@@ -1,39 +1,38 @@
 server:
-  port: 8080
-  servlet:
-    context-path: /api
+    port: 8080
+    servlet:
+        context-path: /api
 
 spring:
-  servlet:
-    multipart:
-      max-file-size: 10MB
-      max-request-size: 10MB
-  datasource:
-    url: jdbc:postgresql://localhost:5432/pbl5
-    username: postgres
-    password: 123456Aa
-    driver-class-name: org.postgresql.Driver
-  jpa:
-    hibernate:
-      # UPDATE
-      # The database must be created beforehand.
-      # The update option will refresh the database
-      #   if there are changes to the tables within that database
-      #   (only applied to existing fields).
-      #
-      # CREATE
-      # The previous database will be deleted, creating a new database
-      #   (Data in the old database will also be deleted).
-      # This option is used when:
-      #   1. Creating a new database
-      #   2. Adding (or deleting) a field in a table of that database.
-      ddl-auto: create
-    show-sql: true
-    properties:
-      hibernate:
-        format_sql: true
-    database: postgresql
-    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    servlet:
+        multipart:
+            max-file-size: 10MB
+            max-request-size: 10MB
+    datasource:
+        url: jdbc:postgresql://localhost:6002/job_swipe
+        username: qh47Qsmu19JJRuMq
+        password: TwwlZL9j10wyziG3
+        driver-class-name: org.postgresql.Driver
+    jpa:
+        hibernate:
+            naming:
+                physical-strategy: org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy
+                implicit-strategy: org.hibernate.boot.model.naming.ImplicitNamingStrategyLegacyJpaImpl
+        show-sql: true
+        properties:
+            hibernate:
+                format_sql: true
+        database: postgresql
+        open-in-view: false
+        database-platform: org.hibernate.dialect.PostgreSQLDialect
 
+logging:
+    level:
+        org.springframework.security: trace
 
-
+application:
+    jwt:
+        access-token-secret-key: YAOmGqqMFI2T2SJqIw7WV1h+V5miq9zS7uF8f/kBBqx55YqAwWhJTCLxLaxwKsRg
+        access-token-expiration-ms: 7200000
+        refresh-token-secret-key: DHVmGqqMFI2T2SJdIw7dV1h+V5miq9zSvuF6f/kBB1x55Y3AwWdTCLxLaxwKsRg
+        refresh-token-expiration-ms: 2592000000

@@ -1,43 +1,77 @@
 # Common
 internal_server_error:
-  code: ERR_SER0101
-  message: Internal server error!
+    code: ERR_SER0101
+    message: Internal server error!
 page_not_found:
-  code: ERR_SER0102
-  message: Page was not found!
+    code: ERR_SER0102
+    message: Page was not found!
 forbidden:
-  code: ERR_AUTH0101
-  message: Access Denied! You don’t have permission to access!
+    code: ERR_AUTH0101
+    message: Access Denied! You don’t have permission to access!
 unauthorized:
-  code: ERR_AUTH0102
-  message: You do not have permission to access this data!
+    code: ERR_AUTH0102
+    message: You do not have permission to access this data!
+required_body_in_request:
+    code: ERR_REQ0101
+    message: The request body is required!
 
 # Authentication
 invalid_token:
-  code: ERR_TOK0101
-  message: Invalid token!
+    code: ERR_TOK0101
+    message: Invalid token!
 expired_token:
-  code: ERR_TOK0102
-  message: Expired token!
+    code: ERR_TOK0102
+    message: Expired token!
 revoked_token:
-  code: ERR_TOK0103
-  message: Revoked token!
+    code: ERR_TOK0103
+    message: Revoked token!
 invalid_refresh_token:
-  code: ERR_TOK0201
-  message: Invalid refresh token!
+    code: ERR_TOK0201
+    message: Invalid refresh token!
 expired_refresh_token:
-  code: ERR_TOK0202
-  message: Expired refresh token!
+    code: ERR_TOK0202
+    message: Expired refresh token!
 revoked_refresh_token:
-  code: ERR_TOK0203
-  message: Revoked refresh token!
+    code: ERR_TOK0203
+    message: Revoked refresh token!
 
 # Permission
 permission_not_found:
-  code: ERR_PER0102
-  message: Permission not found!
+    code: ERR_PER0102
+    message: Permission not found!
 permission_is_require:
-  code: ERR_PER0103
-  message: Permission is require!
+    code: ERR_PER0103
+    message: Permission is require!
 
-# User
+# Account
+account_not_found:
+    code: ERR_ACC0101
+    message: Account is not found!
+incorrect_email_or_password:
+    code: ERR_ACC0103
+    message: Incorrect email or password!
+login_failed:
+    code: ERR_ACC0104
+    message: Login failed!
+account_is_disabled:
+    code: ERR_ACC0105
+    message: Account is disabled!
+
+# Constant
+constant_not_found:
+    code: ERR_CON0101
+    message: Constant is not found!
+system_role_not_found:
+    code: ERR_CON0102
+    message: System role is not found!
+constant_type_must_be_number:
+    code: ERR_CON0103
+    message: Constant type must be a number!
+
+# Register
+email_already_exists:
+    code: ERR_REG0101
+    message: Email already exists!
+role_not_valid:
+    code: ERR_REG0102
+    message: Role is not valid! [COMPANY or USER]
