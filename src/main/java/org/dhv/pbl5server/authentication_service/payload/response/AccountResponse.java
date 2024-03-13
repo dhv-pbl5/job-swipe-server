@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.dhv.pbl5server.constant_service.entity.Constant;
 
+import java.sql.Timestamp;
 import java.util.UUID;
 
 @Getter
@@ -21,6 +22,7 @@ public class AccountResponse {
     private String avatar;
     private String phoneNumber;
     private Constant systemRole;
-    private String createdAt;
-    private String deletedAt;
+    private Timestamp createdAt;
+    private Timestamp updatedAt;
+    private Timestamp deletedAt;
 }

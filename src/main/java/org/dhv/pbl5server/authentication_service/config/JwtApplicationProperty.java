@@ -15,4 +15,9 @@ public class JwtApplicationProperty {
     private String refreshTokenSecret;
     @Value("${application.jwt.refresh-token-expiration-ms}")
     private Long refreshTokenExpirationMs;
+    @Value("${application.jwt.reset-password-token-secret-key}")
+    private String forgotPasswordTokenSecret;
+    @Value("${application.jwt.reset-password-token-expiration-ms}")
+    private Long forgotPasswordExpirationMs;
+
 }

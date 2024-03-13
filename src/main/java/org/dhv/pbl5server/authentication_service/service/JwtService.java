@@ -1,5 +1,6 @@
 package org.dhv.pbl5server.authentication_service.service;
 
+import org.dhv.pbl5server.authentication_service.entity.Account;
 import org.dhv.pbl5server.authentication_service.payload.response.CredentialResponse;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -9,4 +10,8 @@ public interface JwtService {
     CredentialResponse generateToken(String accountId);
 
     CredentialResponse refreshToken(String refreshToken, boolean isAdmin);
+
+    String generateTokenForResetPassword(String accountId);
+
+    Account getAccountFromResetPasswordToken(String token);
 }

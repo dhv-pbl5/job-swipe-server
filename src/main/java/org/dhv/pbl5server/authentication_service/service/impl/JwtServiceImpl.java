@@ -13,6 +13,7 @@ import org.dhv.pbl5server.authentication_service.repository.AccountRepository;
 import org.dhv.pbl5server.authentication_service.service.JwtService;
 import org.dhv.pbl5server.common_service.constant.CommonConstant;
 import org.dhv.pbl5server.common_service.constant.ErrorMessageConstant;
+import org.dhv.pbl5server.common_service.exception.BadRequestException;
 import org.dhv.pbl5server.common_service.exception.ForbiddenException;
 import org.dhv.pbl5server.common_service.exception.UnauthorizedException;
 import org.dhv.pbl5server.constant_service.enums.SystemRole;
@@ -68,6 +69,22 @@ public class JwtServiceImpl implements JwtService {
         throw new ForbiddenException(ErrorMessageConstant.FORBIDDEN);
     }
 
+    public String generateTokenForResetPassword(String accountId) {
+        return Jwts.builder()
+            .subject(accountId)
+            .issuedAt(new Date())
+            .expiration(new Date(System.currentTimeMillis() + jwtAppProperty.getForgotPasswordExpirationMs()))
+            .signWith(getSignInKey(jwtAppProperty.getForgotPasswordTokenSecret()))
+            .compact();
+    }
+
+    public Account getAccountFromResetPasswordToken(String token) {
+        Claims jwt = getJwtClaims(token, TokenType.RESET_PASSWORD_TOKEN);
+        UUID accountId = UUID.fromString(jwt.getSubject());
+        return accountRepository.findById(accountId)
+            .orElseThrow(() -> new BadRequestException(ErrorMessageConstant.INVALID_RESET_PASSWORD_TOKEN));
+    }
+
     private String generateAccessToken(String accountId) {
         return Jwts.builder()
             .subject(accountId)
@@ -112,6 +129,18 @@ public class JwtServiceImpl implements JwtService {
                 } catch (Exception ex) {
                     throw new UnauthorizedException(ErrorMessageConstant.INVALID_REFRESH_TOKEN);
                 }
+            case RESET_PASSWORD_TOKEN:
+                try {
+                    return Jwts.parser()
+                        .verifyWith(getSignInKey(jwtAppProperty.getForgotPasswordTokenSecret()))
+                        .build()
+                        .parseSignedClaims(token)
+                        .getPayload();
+                } catch (ExpiredJwtException ex) {
+                    throw new UnauthorizedException(ErrorMessageConstant.EXPIRED_RESET_PASSWORD_TOKEN);
+                } catch (Exception ex) {
+                    throw new UnauthorizedException(ErrorMessageConstant.INVALID_RESET_PASSWORD_TOKEN);
+                }
             default:
                 throw new UnauthorizedException(ErrorMessageConstant.INVALID_TOKEN);
         }
@@ -123,4 +152,4 @@ public class JwtServiceImpl implements JwtService {
     }
 }
 
-enum TokenType {ACCESS_TOKEN, REFRESH_TOKEN}
+enum TokenType {ACCESS_TOKEN, REFRESH_TOKEN, RESET_PASSWORD_TOKEN}

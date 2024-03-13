@@ -77,3 +77,77 @@ register_request:
             code: VAL_REG0110
             message: System role cannot be null
 
+# ForgotPasswordRequest
+forgot_password_request:
+    email:
+        email:
+            code: VAL_FOR0101
+            message: Email must be a well-formed email address
+        not_blank:
+            code: VAL_FOR0102
+            message: Email cannot be blank
+
+# ResetPasswordRequest
+reset_password_request:
+    reset_password_token:
+        not_null:
+            code: VAL_RES0101
+            message: Reset password token cannot be null
+        not_blank:
+            code: VAL_RES0102
+            message: Reset password token cannot be blank
+    new_password:
+        not_blank:
+            code: VAL_RES0103
+            message: New password cannot be blank
+        length:
+            code: VAL_RES0104
+            message: New password must be between 8 and 20 characters
+        pattern:
+            code: VAL_RES0105
+            message: New password has at least 8 characters, containing at least 1 uppercase letter, 1 lowercase letter, 1 numeric character.
+    new_password_confirmation:
+        not_blank:
+            code: VAL_RES0106
+            message: New password confirmation cannot be blank
+        length:
+            code: VAL_RES0107
+            message: New password confirmation must be between 8 and 20 characters
+        pattern:
+            code: VAL_RES0108
+            message: New password confirmation has at least 8 characters, containing at least 1 uppercase letter, 1 lowercase letter, 1 numeric character.
+
+# ChangePasswordRequest
+change_password_request:
+    current_password:
+        length:
+            code: VAL_CHA0101
+            message: Current password must be between 8 and 20 characters
+        pattern:
+            code: VAL_CHA0102
+            message: Current password has at least 8 characters, containing at least 1 uppercase letter, 1 lowercase letter, 1 numeric character
+        not_blank:
+            code: VAL_CHA0103
+            message: Current password cannot be blank
+    new_password:
+        not_blank:
+            code: VAL_CHA0104
+            message: New password cannot be blank
+        length:
+            code: VAL_CHA0105
+            message: New password must be between 8 and 20 characters
+        pattern:
+            code: VAL_CHA0106
+            message: New password has at least 8 characters, containing at least 1 uppercase letter, 1 lowercase letter, 1 numeric character
+    new_password_confirmation:
+        not_blank:
+            code: VAL_CHA0107
+            message: New password confirmation cannot be blank
+        length:
+            code: VAL_CHA0108
+            message: New password confirmation must be between 8 and 20 characters
+        pattern:
+            code: VAL_CHA0109
+            message: New password confirmation has at least 8 characters, containing at least 1 uppercase letter, 1 lowercase letter, 1 numeric character
+
+

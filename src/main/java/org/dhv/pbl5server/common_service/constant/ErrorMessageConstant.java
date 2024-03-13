@@ -20,6 +20,10 @@ public final class ErrorMessageConstant {
     public static final String INVALID_REFRESH_TOKEN = "invalid_refresh_token";
     public static final String EXPIRED_REFRESH_TOKEN = "expired_refresh_token";
     public static final String REVOKED_REFRESH_TOKEN = "revoked_refresh_token";
+    public static final String INVALID_RESET_PASSWORD_TOKEN = "invalid_reset_password";
+    public static final String EXPIRED_RESET_PASSWORD_TOKEN = "expired_reset_password";
+    public static final String ACCOUNT_IS_ACTIVE = "account_is_active";
+    public static final String ACCOUNT_IS_NOT_ACTIVE = "account_is_not_active";
 
     /*
         Permission
@@ -46,6 +50,14 @@ public final class ErrorMessageConstant {
     */
     public static final String EMAIL_ALREADY_EXISTS = "email_already_exists";
     public static final String ROLE_NOT_VALID = "role_not_valid";
+
+    /*
+        Reset password
+    */
+
+    public static final String NEW_PASSWORD_SAME_OLD_PASSWORD = "new_password_same_old_password";
+    public static final String NEW_PASSWORD_CONFIRMATION_NOT_MATCH = "new_password_confirmation_not_match";
+    public static final String CURRENT_PASSWORD_IS_INCORRECT = "current_password_is_incorrect";
 
 
     private ErrorMessageConstant() {

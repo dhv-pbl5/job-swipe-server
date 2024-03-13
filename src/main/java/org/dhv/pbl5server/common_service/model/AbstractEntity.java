@@ -11,7 +11,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.io.Serial;
 import java.io.Serializable;
-import java.time.LocalDateTime;
+import java.sql.Timestamp;
 
 @Getter
 @MappedSuperclass
@@ -24,5 +24,5 @@ public abstract class AbstractEntity implements Serializable {
 
     @Column(updatable = false)
     @CreationTimestamp
-    private LocalDateTime createdAt;
+    private Timestamp createdAt;
 }

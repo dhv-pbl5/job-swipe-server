@@ -4,10 +4,12 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.dhv.pbl5server.common_service.model.AbstractEntity;
 import org.dhv.pbl5server.constant_service.entity.Constant;
+import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.sql.Timestamp;
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
@@ -27,7 +29,7 @@ public class Account extends AbstractEntity implements UserDetails {
     @Column(unique = true)
     private String email;
     @Column(columnDefinition = "boolean default true")
-    private boolean accountStatus;
+    private boolean accountStatus = true;
     private String address;
     private String avatar;
     private String password;
@@ -36,6 +38,9 @@ public class Account extends AbstractEntity implements UserDetails {
     @JoinColumn(name = "system_role")
     private Constant systemRole;
     private String refreshToken;
+    private Timestamp deletedAt;
+    @UpdateTimestamp
+    private Timestamp updatedAt;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -69,6 +74,6 @@ public class Account extends AbstractEntity implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return deletedAt == null;
     }
 }
