@@ -77,6 +77,7 @@ CREATE TABLE public.application_positions
 (
     account_id uuid NOT NULL,
     apply_position uuid NOT NULL,
+    status boolean NOT NULL DEFAULT true,
     created_at timestamp with time zone NOT NULL,
     id uuid NOT NULL,
     status boolean NOT NULL,
