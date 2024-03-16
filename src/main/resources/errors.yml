@@ -99,3 +99,14 @@ current_password_is_incorrect:
     code: ERR_RST0103
     message: Current password is incorrect!
 
+# File
+upload_file_failed:
+    code: ERR_FIL0101
+    message: Upload file failed!
+file_not_found:
+    code: ERR_FIL0102
+    message: File not found!
+delete_file_failed:
+    code: ERR_FIL0103
+    message: Delete file failed!
+

@@ -29,6 +29,12 @@
         </dependencies>
     </dependencyManagement>
     <dependencies>
+        <!--     FOR AMAZON AWS S3     -->
+        <dependency>
+            <groupId>software.amazon.awssdk</groupId>
+            <artifactId>s3</artifactId>
+            <version>2.25.11</version>
+        </dependency>
         <!--     FOR JSON WEB TOKEN     -->
         <dependency>
             <groupId>io.jsonwebtoken</groupId>
