@@ -54,10 +54,16 @@ public final class ErrorMessageConstant {
     /*
         Reset password
     */
-
     public static final String NEW_PASSWORD_SAME_OLD_PASSWORD = "new_password_same_old_password";
     public static final String NEW_PASSWORD_CONFIRMATION_NOT_MATCH = "new_password_confirmation_not_match";
     public static final String CURRENT_PASSWORD_IS_INCORRECT = "current_password_is_incorrect";
+
+    /*
+        Reset password
+    */
+    public static final String UPLOAD_FILE_FAILED = "upload_file_failed";
+    public static final String FILE_NOT_FOUND = "file_not_found";
+    public static final String DELETE_FILE_FAILED = "delete_file_failed";
 
 
     private ErrorMessageConstant() {
