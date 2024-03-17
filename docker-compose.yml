@@ -1,18 +1,18 @@
-version: "3.9"
+version: "3"
 
 services:
-    postgres:
-        image: postgres
-        restart: always
-        environment:
-            - POSTGRES_DB=job_swipe
-            - POSTGRES_USER=qh47Qsmu19JJRuMq
-            - POSTGRES_PASSWORD=TwwlZL9j10wyziG3
-        ports:
-            - "6002:5432"
-        volumes:
-            - postgres:/var/lib/postgresql/data
+  postgres:
+    image: postgres
+    restart: always
+    environment:
+      - POSTGRES_DB=job_swipe
+      - POSTGRES_USER=qh47Qsmu19JJRuMq
+      - POSTGRES_PASSWORD=TwwlZL9j10wyziG3
+    ports:
+      - "6002:5432"
+    volumes:
+      - postgres:/var/lib/postgresql/data
 
 volumes:
-    postgres:
-        driver: local
+  postgres:
+    driver: local
