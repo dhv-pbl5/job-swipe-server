@@ -7,5 +7,5 @@ import java.util.List;
 import java.util.UUID;
 
 public interface ConstantRepository extends JpaRepository<Constant, UUID> {
-    List<Constant> findByConstantType(int constantType);
+    List<Constant> findByConstantType(String constantType);
 }

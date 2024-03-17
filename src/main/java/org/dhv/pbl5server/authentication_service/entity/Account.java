@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.dhv.pbl5server.common_service.model.AbstractEntity;
 import org.dhv.pbl5server.constant_service.entity.Constant;
-import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -39,8 +38,6 @@ public class Account extends AbstractEntity implements UserDetails {
     private Constant systemRole;
     private String refreshToken;
     private Timestamp deletedAt;
-    @UpdateTimestamp
-    private Timestamp updatedAt;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

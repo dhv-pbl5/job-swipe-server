@@ -29,7 +29,7 @@ public class ConstantController {
     @GetMapping("/constant")
     public ResponseEntity<ApiDataResponse> getConstantsByType(@NotNull @RequestParam(name = "constant_type") String type) {
         try {
-            return ResponseEntity.ok(ApiDataResponse.successWithoutMeta(service.getConstantsByType(Integer.parseInt(type))));
+            return ResponseEntity.ok(ApiDataResponse.successWithoutMeta(service.getConstantsByType(type)));
         } catch (NumberFormatException e) {
             throw new BadRequestException(ErrorMessageConstant.CONSTANT_TYPE_MUST_BE_NUMBER);
         }

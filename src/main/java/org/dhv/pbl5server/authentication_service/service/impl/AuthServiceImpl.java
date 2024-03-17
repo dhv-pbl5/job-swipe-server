@@ -97,7 +97,7 @@ public class AuthServiceImpl implements AuthService {
             throw new BadRequestException(ErrorMessageConstant.SYSTEM_ROLE_NOT_FOUND);
         Constant role = constantService.getConstantById(request.getSystemRole().getConstantId());
         // Check constant is system role
-        if (role.getConstantType() != ConstantType.SYSTEM_ROLE.getIndex())
+        if (!role.getConstantType().equalsIgnoreCase(ConstantType.SYSTEM_ROLE.name()))
             throw new BadRequestException(ErrorMessageConstant.SYSTEM_ROLE_NOT_FOUND);
         // Check if the role is admin
         if (role.getConstantName().equalsIgnoreCase(SystemRole.ADMIN.name()))
