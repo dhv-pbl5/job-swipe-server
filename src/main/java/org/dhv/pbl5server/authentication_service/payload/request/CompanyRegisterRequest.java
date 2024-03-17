@@ -13,11 +13,13 @@ import org.dhv.pbl5server.common_service.constant.CommonConstant;
 import org.dhv.pbl5server.constant_service.entity.Constant;
 import org.hibernate.validator.constraints.Length;
 
+import java.sql.Timestamp;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-public class RegisterRequest {
+public class CompanyRegisterRequest {
     @Email
     @NotBlank
     private String email;
@@ -33,4 +35,12 @@ public class RegisterRequest {
     private String phoneNumber;
     @NotNull
     private Constant systemRole;
+    @NotNull
+    @NotBlank
+    private String companyName;
+    @NotNull
+    @NotBlank
+    private String companyUrl;
+    @NotNull
+    private Timestamp establishedDate;
 }

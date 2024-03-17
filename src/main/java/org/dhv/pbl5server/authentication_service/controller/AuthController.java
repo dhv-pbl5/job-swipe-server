@@ -52,8 +52,13 @@ public class AuthController {
         return ResponseEntity.ok(ApiDataResponse.successWithoutMeta(authService.getAccount(currentAccount)));
     }
 
-    @PostMapping("/auth/register")
-    public ResponseEntity<ApiDataResponse> register(@Valid @RequestBody RegisterRequest request) {
+    @PostMapping("/auth/user-register")
+    public ResponseEntity<ApiDataResponse> userRegister(@Valid @RequestBody UserRegisterRequest request) {
+        return ResponseEntity.ok(ApiDataResponse.successWithoutMeta(authService.register(request)));
+    }
+
+    @PostMapping("/auth/company-register")
+    public ResponseEntity<ApiDataResponse> companyRegister(@Valid @RequestBody CompanyRegisterRequest request) {
         return ResponseEntity.ok(ApiDataResponse.successWithoutMeta(authService.register(request)));
     }
 

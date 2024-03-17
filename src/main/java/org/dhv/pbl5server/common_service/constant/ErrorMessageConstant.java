@@ -64,6 +64,11 @@ public final class ErrorMessageConstant {
     public static final String UPLOAD_FILE_FAILED = "upload_file_failed";
     public static final String FILE_NOT_FOUND = "file_not_found";
     public static final String DELETE_FILE_FAILED = "delete_file_failed";
+    
+    /*
+        User
+    */
+    public static final String USER_NOT_FOUND = "user_not_found";
 
 
     private ErrorMessageConstant() {

@@ -1,11 +1,12 @@
 package org.dhv.pbl5server.profile_service.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.*;
+import org.dhv.pbl5server.profile_service.config.JsonConverter;
+import org.dhv.pbl5server.profile_service.config.OtherDescription;
 
+import java.sql.Timestamp;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -17,6 +18,11 @@ import java.util.UUID;
 @Table(name = "companies")
 public class Company {
     @Id
-    @GeneratedValue
     private UUID accountId;
+    private String companyName;
+    private String companyUrl;
+    private Timestamp establishedDate;
+    @ElementCollection
+    @Convert(converter = JsonConverter.class)
+    private List<OtherDescription> other;
 }

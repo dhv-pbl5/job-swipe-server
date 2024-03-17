@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.dhv.pbl5server.common_service.model.AbstractEntity;
 import org.dhv.pbl5server.constant_service.entity.Constant;
+import org.dhv.pbl5server.profile_service.entity.ApplicationPosition;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -38,6 +39,9 @@ public class Account extends AbstractEntity implements UserDetails {
     private Constant systemRole;
     private String refreshToken;
     private Timestamp deletedAt;
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "account")
+    private List<ApplicationPosition> applicationPositions;
+
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

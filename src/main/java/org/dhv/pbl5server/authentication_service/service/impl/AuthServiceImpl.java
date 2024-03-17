@@ -19,6 +19,10 @@ import org.dhv.pbl5server.constant_service.entity.Constant;
 import org.dhv.pbl5server.constant_service.enums.ConstantType;
 import org.dhv.pbl5server.constant_service.enums.SystemRole;
 import org.dhv.pbl5server.constant_service.service.ConstantService;
+import org.dhv.pbl5server.profile_service.entity.Company;
+import org.dhv.pbl5server.profile_service.entity.User;
+import org.dhv.pbl5server.profile_service.repository.CompanyRepository;
+import org.dhv.pbl5server.profile_service.repository.UserRepository;
 import org.springframework.security.authentication.*;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -32,6 +36,8 @@ import java.util.UUID;
 @Slf4j
 public class AuthServiceImpl implements AuthService {
     private final AccountRepository repository;
+    private final UserRepository userRepository;
+    private final CompanyRepository companyRepository;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
     private final AccountMapper mapper;
@@ -88,25 +94,41 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public AccountResponse register(RegisterRequest request) {
-        // Check if the email is already used
-        if (repository.existsByEmail(request.getEmail()))
-            throw new BadRequestException(ErrorMessageConstant.EMAIL_ALREADY_EXISTS);
-        // Check constant's id is not null
-        if (request.getSystemRole().getConstantId() == null)
-            throw new BadRequestException(ErrorMessageConstant.SYSTEM_ROLE_NOT_FOUND);
-        Constant role = constantService.getConstantById(request.getSystemRole().getConstantId());
-        // Check constant is system role
-        if (!role.getConstantType().equalsIgnoreCase(ConstantType.SYSTEM_ROLE.name()))
-            throw new BadRequestException(ErrorMessageConstant.SYSTEM_ROLE_NOT_FOUND);
-        // Check if the role is admin
-        if (role.getConstantName().equalsIgnoreCase(SystemRole.ADMIN.name()))
-            throw new BadRequestException(ErrorMessageConstant.ROLE_NOT_VALID);
+    public AccountResponse register(UserRegisterRequest request) {
+        var role = checkValidSystemRole(request.getEmail(), request.getSystemRole().getConstantId());
         Account account = mapper.toAccount(request);
         account.setPassword(passwordEncoder.encode(request.getPassword()));
         account.setAccountStatus(true);
         account = repository.save(account);
         account.setSystemRole(role);
+        // Creating user
+        User user = User.builder()
+            .accountId(account.getAccountId())
+            .dateOfBirth(request.getDateOfBirth())
+            .firstName(request.getFirstName())
+            .lastName(request.getLastName())
+            .gender(request.getGender())
+            .build();
+        userRepository.save(user);
+        return mapper.toAccountResponse(account);
+    }
+
+    @Override
+    public AccountResponse register(CompanyRegisterRequest request) {
+        var role = checkValidSystemRole(request.getEmail(), request.getSystemRole().getConstantId());
+        Account account = mapper.toAccount(request);
+        account.setPassword(passwordEncoder.encode(request.getPassword()));
+        account.setAccountStatus(true);
+        account = repository.save(account);
+        account.setSystemRole(role);
+        // Creating company
+        Company company = Company.builder()
+            .accountId(account.getAccountId())
+            .companyName(request.getCompanyName())
+            .companyUrl(request.getCompanyUrl())
+            .establishedDate(request.getEstablishedDate())
+            .build();
+        companyRepository.save(company);
         return mapper.toAccountResponse(account);
     }
 
@@ -160,5 +182,22 @@ public class AuthServiceImpl implements AuthService {
         account.setDeletedAt(DateTimeUtils.getCurrentDateTime());
         account.setUpdatedAt(DateTimeUtils.getCurrentDateTime());
         return mapper.toAccountResponse(repository.save(account));
+    }
+
+    private Constant checkValidSystemRole(String email, UUID roleId) {
+        // Check if the email is already used
+        if (repository.existsByEmail(email))
+            throw new BadRequestException(ErrorMessageConstant.EMAIL_ALREADY_EXISTS);
+        // Check constant's id is not null
+        if (roleId == null)
+            throw new BadRequestException(ErrorMessageConstant.SYSTEM_ROLE_NOT_FOUND);
+        Constant role = constantService.getConstantById(roleId);
+        // Check constant is system role
+        if (!role.getConstantType().equalsIgnoreCase(ConstantType.SYSTEM_ROLE.name()))
+            throw new BadRequestException(ErrorMessageConstant.SYSTEM_ROLE_NOT_FOUND);
+        // Check if the role is admin
+        if (role.getConstantName().equalsIgnoreCase(SystemRole.ADMIN.name()))
+            throw new BadRequestException(ErrorMessageConstant.ROLE_NOT_VALID);
+        return role;
     }
 }
