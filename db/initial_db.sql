@@ -2,8 +2,9 @@ CREATE TABLE public.constants
 (
     constant_id uuid NOT NULL,
     constant_name character varying(1000) NOT NULL,
-    constant_type integer NOT NULL,
+    constant_type character varying(1000) NOT NULL,
     created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone,
     PRIMARY KEY (constant_id)
 );
 
@@ -16,14 +17,14 @@ CREATE TABLE public.accounts
     account_status boolean NOT NULL DEFAULT TRUE,
     address character varying(1000) NOT NULL,
     avatar character varying(1000),
-    created_at timestamp with time zone NOT NULL,
-    deleted_at timestamp with time zone,
     email character varying(1000) NOT NULL,
     password character varying(1000) NOT NULL,
     phone_number character varying(1000) NOT NULL,
     refresh_token character varying(1000),
     system_role uuid NOT NULL,
+    created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone,
+    deleted_at timestamp with time zone,
     PRIMARY KEY (account_id),
     FOREIGN KEY (system_role)
         REFERENCES public.constants (constant_id) MATCH FULL
@@ -39,8 +40,10 @@ CREATE TABLE public.companies
     account_id uuid NOT NULL,
     company_name character varying(1000) NOT NULL,
     company_url character varying(1000) NOT NULL,
-    created_at timestamp with time zone NOT NULL,
     established_date timestamp with time zone NOT NULL,
+    other json[],
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone,
     PRIMARY KEY (account_id),
     FOREIGN KEY (account_id)
         REFERENCES public.accounts (account_id) MATCH FULL
@@ -54,15 +57,15 @@ ALTER TABLE IF EXISTS public.companies
 CREATE TABLE public.users
 (
     account_id uuid NOT NULL,
-    created_at timestamp with time zone NOT NULL,
     date_of_birth timestamp with time zone NOT NULL,
     first_name character varying(1000) NOT NULL,
     gender boolean NOT NULL,
     last_name character varying(1000) NOT NULL,
     other json[],
-    skills character varying(1000)[],
     social_media_link character varying(1000)[],
     summary_introduction text,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone,
     PRIMARY KEY (account_id),
     FOREIGN KEY (account_id)
         REFERENCES public.accounts (account_id) MATCH FULL
@@ -75,12 +78,12 @@ ALTER TABLE IF EXISTS public.users
 
 CREATE TABLE public.application_positions
 (
+    id uuid NOT NULL,
     account_id uuid NOT NULL,
     apply_position uuid NOT NULL,
     status boolean NOT NULL DEFAULT true,
     created_at timestamp with time zone NOT NULL,
-    id uuid NOT NULL,
-    status boolean NOT NULL,
+    updated_at timestamp with time zone,
     PRIMARY KEY (id),
     FOREIGN KEY (account_id)
         REFERENCES public.accounts (account_id) MATCH FULL
@@ -95,16 +98,40 @@ CREATE TABLE public.application_positions
 ALTER TABLE IF EXISTS public.application_positions
     OWNER to "qh47Qsmu19JJRuMq";
 
+CREATE TABLE public.application_skills
+(
+    id uuid NOT NULL,
+    application_position_id uuid NOT NULL,
+    skill_id uuid NOT NULL,
+    note character varying(10000),
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone,
+    PRIMARY KEY (id),
+    FOREIGN KEY (application_position_id)
+        REFERENCES public.application_positions (id) MATCH FULL
+        ON UPDATE NO ACTION
+        ON DELETE CASCADE,
+    FOREIGN KEY (skill_id)
+        REFERENCES public.constants (constant_id) MATCH FULL
+        ON UPDATE NO ACTION
+        ON DELETE CASCADE
+);
+
+ALTER TABLE IF EXISTS public.application_skills
+    OWNER to "qh47Qsmu19JJRuMq";
+
 CREATE TABLE public.user_educations
 (
+    id uuid NOT NULL,
     account_id uuid NOT NULL,
     cpa numeric(100, 10) NOT NULL,
-    created_at timestamp with time zone NOT NULL,
-    id uuid NOT NULL,
     majority character varying(1000),
     note character varying(1000),
-    study_duration character varying(1000) NOT NULL,
+    study_end_time timestamp with time zone,
     study_place character varying(1000) NOT NULL,
+    study_start_time timestamp with time zone NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone,
     PRIMARY KEY (id),
     FOREIGN KEY (account_id)
         REFERENCES public.users (account_id) MATCH FULL
@@ -117,14 +144,16 @@ ALTER TABLE IF EXISTS public.user_educations
 
 CREATE TABLE public.user_experiences
 (
-    account_id uuid NOT NULL,
-    created_at timestamp with time zone NOT NULL,
-    experience_type uuid NOT NULL,
     id uuid NOT NULL,
+    account_id uuid NOT NULL,
+    experience_end_time timestamp with time zone,
+    experience_start_time timestamp with time zone NOT NULL,
+    experience_type uuid NOT NULL,
     note character varying(1000),
     "position" character varying(1000) NOT NULL,
-    work_duration character varying(1000) NOT NULL,
     work_place character varying(1000) NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone,
     PRIMARY KEY (id),
     FOREIGN KEY (account_id)
         REFERENCES public.users (account_id) MATCH FULL
@@ -141,12 +170,13 @@ ALTER TABLE IF EXISTS public.user_experiences
 
 CREATE TABLE public.user_awards
 (
+    id uuid NOT NULL,
     account_id uuid NOT NULL,
     certificate_name character varying(1000) NOT NULL,
     certificate_time timestamp with time zone NOT NULL,
-    created_at timestamp with time zone NOT NULL,
-    id uuid NOT NULL,
     note character varying(1000),
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone,
     PRIMARY KEY (id),
     FOREIGN KEY (account_id)
         REFERENCES public.users (account_id) MATCH FULL
@@ -159,13 +189,14 @@ ALTER TABLE IF EXISTS public.user_awards
 
 CREATE TABLE public.matches
 (
+    id uuid NOT NULL,
     company_id uuid NOT NULL,
     company_matched boolean NOT NULL DEFAULT FALSE,
-    created_at timestamp with time zone NOT NULL,
-    id uuid NOT NULL,
     matched_time timestamp with time zone NOT NULL,
     user_id uuid NOT NULL,
     user_matched boolean NOT NULL DEFAULT FALSE,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone,
     PRIMARY KEY (id),
     FOREIGN KEY (company_id)
         REFERENCES public.companies (account_id) MATCH FULL
@@ -182,10 +213,11 @@ ALTER TABLE IF EXISTS public.matches
 
 CREATE TABLE public.conversations
 (
-    company_id uuid NOT NULL,
-    created_at timestamp with time zone NOT NULL,
     id uuid NOT NULL,
+    company_id uuid NOT NULL,
     user_id uuid NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone,
     PRIMARY KEY (id),
     FOREIGN KEY (company_id)
         REFERENCES public.companies (account_id) MATCH FULL
@@ -202,13 +234,14 @@ ALTER TABLE IF EXISTS public.conversations
 
 CREATE TABLE public.messages
 (
-    account_id uuid NOT NULL,
-    content character varying(1000),
-    conversation_id uuid NOT NULL,
-    created_at timestamp with time zone NOT NULL,
     id uuid NOT NULL,
+    account_id uuid NOT NULL,
+    content character varying(10000),
+    conversation_id uuid NOT NULL,
     read_status boolean NOT NULL DEFAULT FALSE,
     url_file character varying(1000),
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone,
     PRIMARY KEY (id),
     FOREIGN KEY (account_id)
         REFERENCES public.accounts (account_id) MATCH FULL
@@ -225,13 +258,14 @@ ALTER TABLE IF EXISTS public.messages
 
 CREATE TABLE public.notifications
 (
-    content character varying(1000) NOT NULL,
-    created_at timestamp with time zone NOT NULL,
     id uuid NOT NULL,
+    content character varying(1000) NOT NULL,
     notification_type uuid NOT NULL,
     read_status boolean NOT NULL DEFAULT FALSE,
     receiver_id uuid NOT NULL,
     sender_id uuid NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone,
     PRIMARY KEY (id),
     FOREIGN KEY (notification_type)
         REFERENCES public.constants (constant_id) MATCH FULL
