@@ -1,9 +1,6 @@
 package org.dhv.pbl5server.constant_service.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -20,8 +17,9 @@ import java.util.UUID;
 @Table(name = "constants")
 public class Constant extends AbstractEntity {
     @Id
+    @GeneratedValue
     private UUID constantId;
     @Column(nullable = false)
-    private Integer constantType;
+    private String constantType;
     private String constantName;
 }

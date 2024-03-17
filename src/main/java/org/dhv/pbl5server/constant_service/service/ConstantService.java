@@ -11,7 +11,7 @@ public interface ConstantService {
 
     Object getSystemRoles(String constantId);
 
-    List<Constant> getConstantsByType(Integer type);
+    List<Constant> getConstantsByType(String type);
 
     Constant create(ConstantRequest request);
 }

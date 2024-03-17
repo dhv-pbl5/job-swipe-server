@@ -26,23 +26,23 @@ public class ConstantServiceImpl implements ConstantService {
     @Override
     public Object getSystemRoles(String constantId) {
         if (constantId == null || constantId.isBlank()) {
-            return repository.findByConstantType(ConstantType.SYSTEM_ROLE.getIndex());
+            return repository.findByConstantType(ConstantType.SYSTEM_ROLE.name());
         }
         Constant constant = getConstantById(UUID.fromString(constantId));
-        if (constant == null || constant.getConstantType() != ConstantType.SYSTEM_ROLE.getIndex())
+        if (constant == null || !constant.getConstantType().equalsIgnoreCase(ConstantType.SYSTEM_ROLE.name()))
             throw new NotFoundObjectException(ErrorMessageConstant.SYSTEM_ROLE_NOT_FOUND);
         return constant;
     }
 
     @Override
-    public List<Constant> getConstantsByType(Integer type) {
+    public List<Constant> getConstantsByType(String type) {
         return repository.findByConstantType(type);
     }
 
     @Override
     public Constant create(ConstantRequest request) {
         return repository.save(Constant.builder()
-            .constantType(request.getType())
+            .constantType(request.getType().name())
             .constantName(request.getName())
             .build());
     }
