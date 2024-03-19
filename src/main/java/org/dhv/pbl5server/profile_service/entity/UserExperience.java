@@ -27,7 +27,7 @@ public class UserExperience extends AbstractEntity {
     private String workPlace;
     private String position;
     private String note;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "account_id")
     private User user;
 }

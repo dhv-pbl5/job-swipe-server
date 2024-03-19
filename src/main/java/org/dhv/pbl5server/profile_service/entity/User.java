@@ -1,10 +1,12 @@
 package org.dhv.pbl5server.profile_service.entity;
 
+import io.hypersistence.utils.hibernate.type.array.ListArrayType;
 import jakarta.persistence.*;
 import lombok.*;
 import org.dhv.pbl5server.common_service.model.AbstractEntity;
-import org.dhv.pbl5server.profile_service.config.JsonConverter;
-import org.dhv.pbl5server.profile_service.config.OtherDescription;
+import org.dhv.pbl5server.profile_service.model.OtherDescription;
+import org.dhv.pbl5server.profile_service.model.OtherDescriptionConverter;
+import org.hibernate.annotations.Type;
 
 import java.sql.Timestamp;
 import java.util.List;
@@ -25,10 +27,9 @@ public class User extends AbstractEntity {
     private Boolean gender;
     private Timestamp dateOfBirth;
     private String summaryIntroduction;
-    @ElementCollection
+    @Type(ListArrayType.class)
     private List<String> socialMediaLink;
-    @ElementCollection
-    @Convert(converter = JsonConverter.class)
+    @Convert(converter = OtherDescriptionConverter.class)
     private List<OtherDescription> other;
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
     private List<UserEducation> educations;

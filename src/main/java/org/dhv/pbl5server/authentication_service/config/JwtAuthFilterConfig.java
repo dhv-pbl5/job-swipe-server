@@ -13,8 +13,8 @@ import org.dhv.pbl5server.common_service.exception.ForbiddenException;
 import org.dhv.pbl5server.common_service.exception.UnauthorizedException;
 import org.dhv.pbl5server.common_service.model.ApiDataResponse;
 import org.dhv.pbl5server.common_service.model.ErrorResponse;
+import org.dhv.pbl5server.common_service.utils.CommonUtils;
 import org.dhv.pbl5server.common_service.utils.ErrorUtils;
-import org.dhv.pbl5server.common_service.utils.LogUtils;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -54,7 +54,7 @@ public class JwtAuthFilterConfig extends OncePerRequestFilter {
 
             filterChain.doFilter(request, response);
         } catch (ForbiddenException | UnauthorizedException ex) {
-            LogUtils.error(request.getMethod(), request.getRequestURL().toString(), ex.getMessage());
+            CommonUtils.logError(request.getMethod(), request.getRequestURL().toString(), ex.getMessage());
             response.setStatus(ex instanceof UnauthorizedException ? HttpServletResponse.SC_UNAUTHORIZED : HttpServletResponse.SC_FORBIDDEN);
             response.setContentType("application/json");
             response.setCharacterEncoding("UTF-8");
@@ -64,7 +64,7 @@ public class JwtAuthFilterConfig extends OncePerRequestFilter {
                 .getWriter()
                 .write(Objects.requireNonNull(ErrorUtils.convertToJSONString(apiDataResponse)));
         } catch (Exception ex) {
-            LogUtils.error(request.getMethod(), request.getRequestURL().toString(), ex.getMessage());
+            CommonUtils.logError(request.getMethod(), request.getRequestURL().toString(), ex.getMessage());
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             response.setContentType("application/json");
             response.setCharacterEncoding("UTF-8");

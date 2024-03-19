@@ -6,11 +6,10 @@ import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.Getter;
 import lombok.Setter;
 import org.dhv.pbl5server.constant_service.entity.Constant;
-import org.dhv.pbl5server.profile_service.config.OtherDescription;
-import org.dhv.pbl5server.profile_service.entity.ApplicationPosition;
 import org.dhv.pbl5server.profile_service.entity.UserAward;
 import org.dhv.pbl5server.profile_service.entity.UserEducation;
 import org.dhv.pbl5server.profile_service.entity.UserExperience;
+import org.dhv.pbl5server.profile_service.model.OtherDescription;
 
 import java.sql.Timestamp;
 import java.util.List;
@@ -19,7 +18,7 @@ import java.util.UUID;
 @Getter
 @Setter
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-@JsonInclude(JsonInclude.Include.ALWAYS)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class UserProfileResponse {
     // Account entity data
     private String email;
@@ -28,6 +27,7 @@ public class UserProfileResponse {
     private String avatar;
     private String phoneNumber;
     private Constant systemRole;
+    //    private List<ApplicationPosition> applicationPositions;
     // User entity data
     private UUID accountId;
     private String firstName;
@@ -40,7 +40,6 @@ public class UserProfileResponse {
     private List<UserEducation> educations;
     private List<UserAward> awards;
     private List<UserExperience> experiences;
-    private List<ApplicationPosition> applicationPositions;
     private Timestamp createdAt;
     private Timestamp updatedAt;
     private Timestamp deletedAt;

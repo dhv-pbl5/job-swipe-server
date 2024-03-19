@@ -21,7 +21,7 @@ public class UserAward extends AbstractEntity {
     private Timestamp certificateTime;
     private String certificateName;
     private String note;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "account_id")
     private User user;
 }

@@ -17,7 +17,7 @@ public interface UserMapper {
     @Mapping(source = "account.systemRole", target = "systemRole")
     @Mapping(source = "account.accountId", target = "accountId")
     @Mapping(source = "account.deletedAt", target = "deletedAt")
-    @Mapping(source = "account.applicationPositions", target = "applicationPositions")
+//    @Mapping(source = "account.applicationPositions", target = "applicationPositions", ignore = true)
     @Mapping(source = "user.firstName", target = "firstName")
     @Mapping(source = "user.lastName", target = "lastName")
     @Mapping(source = "user.gender", target = "gender")
@@ -28,9 +28,9 @@ public interface UserMapper {
     @Mapping(source = "user.updatedAt", target = "updatedAt")
     @Mapping(source = "user.other", target = "other")
     @Mapping(source = "user.educations", target = "educations")
-    @Mapping(source = "user.awards", target = "awards")
-    @Mapping(source = "user.experiences", target = "experiences")
+    @Mapping(source = "user.awards", target = "awards", ignore = true)
+    @Mapping(source = "user.experiences", target = "experiences", ignore = true)
     UserProfileResponse toUserProfileResponse(Account account, User user);
-
-    User toUser(Account account);
+//
+//    User toUser(Account account);
 }

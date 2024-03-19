@@ -84,9 +84,9 @@ user_register_request:
     not_blank:
       code: VAL_REG0112
       message: First name cannot be blank
-      not_null:
-        code: VAL_REG0113
-        message: First name cannot be null
+    not_null:
+      code: VAL_REG0113
+      message: First name cannot be null
   last_name:
     not_blank:
       code: VAL_REG0114

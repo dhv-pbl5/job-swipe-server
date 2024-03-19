@@ -14,7 +14,7 @@ import org.dhv.pbl5server.common_service.constant.ErrorMessageConstant;
 import org.dhv.pbl5server.common_service.exception.BadRequestException;
 import org.dhv.pbl5server.common_service.exception.ForbiddenException;
 import org.dhv.pbl5server.common_service.exception.NotFoundObjectException;
-import org.dhv.pbl5server.common_service.utils.DateTimeUtils;
+import org.dhv.pbl5server.common_service.utils.CommonUtils;
 import org.dhv.pbl5server.constant_service.entity.Constant;
 import org.dhv.pbl5server.constant_service.enums.ConstantType;
 import org.dhv.pbl5server.constant_service.enums.SystemRole;
@@ -169,7 +169,7 @@ public class AuthServiceImpl implements AuthService {
         if (account.getDeletedAt() == null)
             throw new BadRequestException(ErrorMessageConstant.ACCOUNT_IS_ACTIVE);
         account.setDeletedAt(null);
-        account.setUpdatedAt(DateTimeUtils.getCurrentDateTime());
+        account.setUpdatedAt(CommonUtils.getCurrentTimestamp());
         return mapper.toAccountResponse(repository.save(account));
     }
 
@@ -179,8 +179,8 @@ public class AuthServiceImpl implements AuthService {
             .orElseThrow(() -> new NotFoundObjectException(ErrorMessageConstant.ACCOUNT_NOT_FOUND));
         if (account.getDeletedAt() != null)
             throw new BadRequestException(ErrorMessageConstant.ACCOUNT_IS_NOT_ACTIVE);
-        account.setDeletedAt(DateTimeUtils.getCurrentDateTime());
-        account.setUpdatedAt(DateTimeUtils.getCurrentDateTime());
+        account.setDeletedAt(CommonUtils.getCurrentTimestamp());
+        account.setUpdatedAt(CommonUtils.getCurrentTimestamp());
         return mapper.toAccountResponse(repository.save(account));
     }
 

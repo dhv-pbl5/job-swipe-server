@@ -4,8 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.dhv.pbl5server.common_service.constant.ErrorMessageConstant;
 import org.dhv.pbl5server.common_service.exception.BadRequestException;
-import org.dhv.pbl5server.common_service.utils.DateTimeUtils;
-import org.dhv.pbl5server.common_service.utils.StringUtils;
+import org.dhv.pbl5server.common_service.utils.CommonUtils;
 import org.dhv.pbl5server.s3_service.config.S3ApplicationProperty;
 import org.dhv.pbl5server.s3_service.service.S3Service;
 import org.springframework.stereotype.Service;
@@ -36,7 +35,7 @@ public class S3ServiceImpl implements S3Service {
 
     public String uploadFile(MultipartFile replacedFile, String oldFileName) {
         try {
-            if (StringUtils.isEmptyOrNull(oldFileName) || !deleteFile(oldFileName))
+            if (CommonUtils.isEmptyOrNullString(oldFileName) || !deleteFile(oldFileName))
                 throw new BadRequestException(ErrorMessageConstant.DELETE_FILE_FAILED);
             var fileName = generateFileName(replacedFile);
             s3.putObject(s3Config.putObjectRequest(fileName), RequestBody.fromBytes(replacedFile.getBytes()));
@@ -85,7 +84,7 @@ public class S3ServiceImpl implements S3Service {
     }
 
     private String generateFileName(MultipartFile file) {
-        var fileName = STR."\{DateTimeUtils.getCurrentDateTime().toString()}-\{file.getOriginalFilename()}"
+        var fileName = STR."\{CommonUtils.getCurrentTimestamp().toString()}-\{file.getOriginalFilename()}"
             .replaceAll(" ", "_");
         log.info("Generated file name: {}", fileName);
         return fileName;

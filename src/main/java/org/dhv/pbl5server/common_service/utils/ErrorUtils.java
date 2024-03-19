@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.dhv.pbl5server.common_service.model.ErrorResponse;
 
 import java.util.Map;
+import java.util.Objects;
 
 @Slf4j
 public class ErrorUtils {
@@ -46,8 +47,8 @@ public class ErrorUtils {
      */
     @SuppressWarnings("unchecked")
     public static ErrorResponse getExceptionError(String error) {
-        ReadYAMLFileUtil readYAML = new ReadYAMLFileUtil();
-        Map<String, Object> errors = readYAML.getValueFromYAMLFile(ERROR_FILE);
+        CommonUtils readYAMLFileUtil = new CommonUtils();
+        Map<String, Object> errors = readYAMLFileUtil.getValueFromYAMLFile(ERROR_FILE);
         Map<String, Object> objError = (Map<String, Object>) errors.get(error);
         String code = (String) objError.get("code");
         String message = (String) objError.get("message");
@@ -67,12 +68,14 @@ public class ErrorUtils {
         if (fieldName.contains("[")) {
             fieldName = handleFieldName(fieldName);
         }
-        ReadYAMLFileUtil readYAML = new ReadYAMLFileUtil();
-        Map<String, Object> errors = readYAML.getValueFromYAMLFile(VALIDATION_FILE);
+        CommonUtils readYAMLFileUtil = new CommonUtils();
+        Map<String, Object> errors = readYAMLFileUtil.getValueFromYAMLFile(VALIDATION_FILE);
         Map<String, Object> fields = (Map<String, Object>) errors.get(resource);
         Map<String, Object> objErrors = (Map<String, Object>) fields.get(fieldName);
         Map<String, Object> objError = (Map<String, Object>) objErrors.get(error);
-        String code = (String) objError.get("code");
+        if (objError == null)
+            new ErrorResponse("ERR_SER0101", "objError is null");
+        String code = (String) Objects.requireNonNull(objError).get("code");
         String message = (String) objError.get("message");
         return new ErrorResponse(code, message);
     }
