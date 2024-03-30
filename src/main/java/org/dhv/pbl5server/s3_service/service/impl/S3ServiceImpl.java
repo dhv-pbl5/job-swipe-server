@@ -33,8 +33,9 @@ public class S3ServiceImpl implements S3Service {
         }
     }
 
-    public String uploadFile(MultipartFile replacedFile, String oldFileName) {
+    public String uploadFile(MultipartFile replacedFile, String oldUrl) {
         try {
+            var oldFileName = getFileName(oldUrl);
             if (CommonUtils.isEmptyOrNullString(oldFileName) || !deleteFile(oldFileName))
                 throw new BadRequestException(ErrorMessageConstant.DELETE_FILE_FAILED);
             var fileName = generateFileName(replacedFile);
@@ -56,7 +57,8 @@ public class S3ServiceImpl implements S3Service {
         }).toList();
     }
 
-    public List<String> uploadFiles(List<MultipartFile> replacedFiles, List<String> oldFileNames) {
+    public List<String> uploadFiles(List<MultipartFile> replacedFiles, List<String> oldUrls) {
+        var oldFileNames = oldUrls.stream().map(this::getFileName).toList();
         s3.deleteObjects(s3Config.deleteObjectsRequest(oldFileNames));
         return replacedFiles.stream().map(file -> {
             try {
@@ -66,6 +68,13 @@ public class S3ServiceImpl implements S3Service {
                 throw new BadRequestException(ErrorMessageConstant.UPLOAD_FILE_FAILED);
             }
         }).toList();
+    }
+
+    @Override
+    public String getFileName(String fileUrl) {
+        if (CommonUtils.isEmptyOrNullString(fileUrl)) return null;
+        var arr = fileUrl.split("/");
+        return arr[arr.length - 1];
     }
 
     public String getFileUrl(String fileName) {

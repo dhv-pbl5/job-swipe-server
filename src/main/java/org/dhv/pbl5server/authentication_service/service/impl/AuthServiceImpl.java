@@ -73,7 +73,6 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public CredentialResponse refreshToken(RefreshTokenRequest refreshTokenRequest, boolean isAdmin) {
         try {
-
             return jwtService.refreshToken(refreshTokenRequest.getRefreshToken(), isAdmin);
         } catch (Exception ex) {
             log.error("Error when refresh token", ex);
@@ -84,6 +83,14 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public AccountResponse getAccount(Account currentAccount) {
         return mapper.toAccountResponse(currentAccount);
+    }
+
+    @Override
+    public AccountResponse getAccountById(String id) {
+        return mapper.toAccountResponse(
+            repository.findById(UUID.fromString(id))
+                .orElseThrow(() -> new NotFoundObjectException(ErrorMessageConstant.ACCOUNT_NOT_FOUND))
+        );
     }
 
     @Override

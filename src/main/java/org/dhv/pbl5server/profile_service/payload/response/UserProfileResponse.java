@@ -34,7 +34,7 @@ public class UserProfileResponse {
     private Timestamp dateOfBirth;
     private String summaryIntroduction;
     private List<String> socialMediaLink;
-    private List<OtherDescription> other;
+    private List<OtherDescription> others;
     private List<UserEducationResponse> educations;
     private List<UserAwardResponse> awards;
     private List<UserExperienceResponse> experiences;

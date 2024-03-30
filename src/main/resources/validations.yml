@@ -300,4 +300,21 @@ user_education_request:
       code: VAL_EDU0108
       message: CPA cannot be null
 
+# OtherDescription
+other_description:
+  title:
+    not_blank:
+      code: VAL_OTH0101
+      message: Title cannot be blank
+    not_null:
+      code: VAL_OTH0102
+      message: Title cannot be null
+  description:
+    not_blank:
+      code: VAL_OTH0103
+      message: Description cannot be blank
+    not_null:
+      code: VAL_OTH0104
+      message: Description cannot be null
+
 

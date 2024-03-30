@@ -1,7 +1,7 @@
 package org.dhv.pbl5server.profile_service.entity;
 
 import io.hypersistence.utils.hibernate.type.array.ListArrayType;
-import io.hypersistence.utils.hibernate.type.json.JsonType;
+import io.hypersistence.utils.hibernate.type.json.JsonBinaryType;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -32,8 +32,8 @@ public class User extends AbstractEntity {
     private String summaryIntroduction;
     @Type(ListArrayType.class)
     private List<String> socialMediaLink;
-    @Type(JsonType.class)
-    private List<OtherDescription> other;
+    @Type(JsonBinaryType.class)
+    private List<OtherDescription> others;
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.ALL)
     private List<UserEducation> educations;
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.ALL)

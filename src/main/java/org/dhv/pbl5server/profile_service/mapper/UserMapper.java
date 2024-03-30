@@ -35,6 +35,8 @@ public interface UserMapper {
     @Mapping(source = "user.account.accountId", target = "accountId")
     @Mapping(source = "user.account.deletedAt", target = "deletedAt")
     @Mapping(source = "user.account.applicationPositions", target = "applicationPositions", ignore = true)
+    @Mapping(source = "user.others", target = "others")
+    @Mapping(source = "user.educations", target = "educations")
     @Mapping(source = "user.awards", target = "awards")
     @Mapping(source = "user.experiences", target = "experiences")
     UserProfileResponse toUserProfileResponse(User user);
@@ -45,28 +47,28 @@ public interface UserMapper {
     @Mapping(source = "request.dateOfBirth", target = "dateOfBirth")
     @Mapping(source = "request.summaryIntroduction", target = "summaryIntroduction")
     @Mapping(source = "request.socialMediaLink", target = "socialMediaLink")
-    @Mapping(source = "user.other", target = "other")
+    @Mapping(source = "user.others", target = "others")
     @Mapping(source = "user.educations", target = "educations", ignore = true)
     @Mapping(source = "user.awards", target = "awards", ignore = true)
     @Mapping(source = "user.experiences", target = "experiences", ignore = true)
     @Mapping(source = "user.account", target = "account")
     User toUser(User user, UserBasicInfoRequest request);
 
-    @Mapping(source = "user.other", target = "other")
+    @Mapping(source = "user.others", target = "others")
     @Mapping(source = "requests", target = "educations")
     @Mapping(source = "user.awards", target = "awards", ignore = true)
     @Mapping(source = "user.experiences", target = "experiences", ignore = true)
     @Mapping(source = "user.account", target = "account")
     User toUserWithinListEducations(User user, List<UserEducationRequest> requests);
 
-    @Mapping(source = "user.other", target = "other")
+    @Mapping(source = "user.others", target = "others")
     @Mapping(source = "user.educations", target = "educations", ignore = true)
     @Mapping(source = "requests", target = "awards")
     @Mapping(source = "user.experiences", target = "experiences", ignore = true)
     @Mapping(source = "user.account", target = "account")
     User toUserWithinListAwards(User user, List<UserAwardRequest> requests);
 
-    @Mapping(source = "user.other", target = "other")
+    @Mapping(source = "user.others", target = "others")
     @Mapping(source = "user.educations", target = "educations", ignore = true)
     @Mapping(source = "user.awards", target = "awards", ignore = true)
     @Mapping(source = "requests", target = "experiences")

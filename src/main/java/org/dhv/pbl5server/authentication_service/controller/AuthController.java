@@ -52,6 +52,14 @@ public class AuthController {
         return ResponseEntity.ok(ApiDataResponse.successWithoutMeta(authService.getAccount(currentAccount)));
     }
 
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'USER', 'COMPANY')")
+    @GetMapping("/auth/account/{id}")
+    public ResponseEntity<ApiDataResponse> getAccountById(
+        @PathVariable("id") String id,
+        @CurrentAccount Account currentAccount) {
+        return ResponseEntity.ok(ApiDataResponse.successWithoutMeta(authService.getAccountById(id)));
+    }
+
     @PostMapping("/auth/user-register")
     public ResponseEntity<ApiDataResponse> userRegister(@Valid @RequestBody UserRegisterRequest request) {
         return ResponseEntity.ok(ApiDataResponse.successWithoutMeta(authService.register(request)));

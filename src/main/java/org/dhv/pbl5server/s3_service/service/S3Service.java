@@ -7,11 +7,13 @@ import java.util.List;
 public interface S3Service {
     String uploadFile(MultipartFile file);
 
-    String uploadFile(MultipartFile replacedFile, String oldFileName);
+    String uploadFile(MultipartFile replacedFile, String oldUrl);
 
     List<String> uploadFiles(List<MultipartFile> files);
 
-    List<String> uploadFiles(List<MultipartFile> replacedFiles, List<String> oldFileNames);
+    List<String> uploadFiles(List<MultipartFile> replacedFiles, List<String> oldUrls);
+
+    String getFileName(String fileUrl);
 
     String getFileUrl(String fileName);
 }

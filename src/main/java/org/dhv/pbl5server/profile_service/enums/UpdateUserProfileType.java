@@ -4,5 +4,6 @@ public enum UpdateUserProfileType {
     BASIC_INFO,
     EDUCATION,
     EXPERIENCE,
-    AWARD
+    AWARD,
+    OTHER_DESCRIPTION
 }

@@ -120,6 +120,12 @@ basic_info_request_must_be_object:
 basic_info_request_invalid:
   code: ERR_USE0103
   message: Basic info request is invalid!
+user_id_is_required:
+  code: ERR_USE0104
+  message: With user, user id is required!
+id_is_required:
+  code: ERR_USE0105
+  message: With user profile component, id is required!
 
 # Education
 study_end_time_must_be_greater_than_start_time:
@@ -131,6 +137,9 @@ education_request_must_be_list:
 education_request_invalid:
   code: ERR_EDU0103
   message: Education request is invalid!
+education_not_found:
+  code: ERR_EDU0104
+  message: Education not found!
 
 # Award
 award_request_must_be_list:
@@ -139,6 +148,9 @@ award_request_must_be_list:
 award_request_invalid:
   code: ERR_AWA0102
   message: Award request is invalid!
+award_not_found:
+  code: ERR_AWA0103
+  message: Award not found!
 
 # Experience
 experience_request_must_be_list:
@@ -150,3 +162,25 @@ experience_request_invalid:
 experience_end_time_must_be_greater_than_start_time:
   code: ERR_EXP0101
   message: Experience end time must be greater than start time!
+experience_not_found:
+  code: ERR_EXP0102
+  message: Experience not found!
+
+# OtherDescription
+other_description_request_must_be_list:
+  code: ERR_ODS0101
+  message: Other description request must be a list!
+other_description_request_invalid:
+  code: ERR_ODS0102
+  message: Other description request is invalid!
+other_description_not_found:
+  code: ERR_ODS0103
+  message: Other description not found!
+other_description_user_id_is_required:
+  code: ERR_ODS0104
+  message: With other description, user id is required!
+
+# Delete[Award|Education|OtherDescription|Experience]
+delete_ids_request_have_one_not_found:
+  code: ERR_DEL0101
+  message: Delete ids request have one id which is not found!

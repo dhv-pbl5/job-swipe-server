@@ -13,6 +13,8 @@ public interface AuthService {
 
     AccountResponse getAccount(Account currentAccount);
 
+    AccountResponse getAccountById(String id);
+
     void logout(Account currentAccount);
 
     AccountResponse register(UserRegisterRequest request);
