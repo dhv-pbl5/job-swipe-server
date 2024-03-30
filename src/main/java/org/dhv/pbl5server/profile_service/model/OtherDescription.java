@@ -1,13 +1,11 @@
 package org.dhv.pbl5server.profile_service.model;
 
-import lombok.*;
+import lombok.Getter;
+import lombok.Setter;
 import org.dhv.pbl5server.common_service.utils.CommonUtils;
 
 @Getter
 @Setter
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
 public class OtherDescription {
     private String title;
     private String description;

@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.Getter;
 import lombok.Setter;
-import org.dhv.pbl5server.constant_service.entity.Constant;
+import org.dhv.pbl5server.constant_service.payload.ConstantResponse;
 
 import java.sql.Timestamp;
 import java.util.UUID;
@@ -21,7 +21,7 @@ public class AccountResponse {
     private String address;
     private String avatar;
     private String phoneNumber;
-    private Constant systemRole;
+    private ConstantResponse systemRole;
     private Timestamp createdAt;
     private Timestamp updatedAt;
     private Timestamp deletedAt;

@@ -114,3 +114,39 @@ delete_file_failed:
 user_not_found:
   code: ERR_USE0101
   message: User is not found!
+basic_info_request_must_be_object:
+  code: ERR_USE0102
+  message: Basic info request must be an object!
+basic_info_request_invalid:
+  code: ERR_USE0103
+  message: Basic info request is invalid!
+
+# Education
+study_end_time_must_be_greater_than_start_time:
+  code: ERR_EDU0101
+  message: Study end time must be greater than start time!
+education_request_must_be_list:
+  code: ERR_EDU0102
+  message: Education request must be a list!
+education_request_invalid:
+  code: ERR_EDU0103
+  message: Education request is invalid!
+
+# Award
+award_request_must_be_list:
+  code: ERR_AWA0101
+  message: Award request must be a list!
+award_request_invalid:
+  code: ERR_AWA0102
+  message: Award request is invalid!
+
+# Experience
+experience_request_must_be_list:
+  code: ERR_EXP0101
+  message: Experience request must be a list!
+experience_request_invalid:
+  code: ERR_EXP0102
+  message: Experience request is invalid!
+experience_end_time_must_be_greater_than_start_time:
+  code: ERR_EXP0101
+  message: Experience end time must be greater than start time!

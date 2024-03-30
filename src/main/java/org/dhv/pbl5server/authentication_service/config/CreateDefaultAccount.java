@@ -3,8 +3,12 @@ package org.dhv.pbl5server.authentication_service.config;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.dhv.pbl5server.authentication_service.entity.Account;
+import org.dhv.pbl5server.authentication_service.payload.request.CompanyRegisterRequest;
+import org.dhv.pbl5server.authentication_service.payload.request.UserRegisterRequest;
 import org.dhv.pbl5server.authentication_service.repository.AccountRepository;
-import org.dhv.pbl5server.constant_service.enums.ConstantType;
+import org.dhv.pbl5server.authentication_service.service.AuthService;
+import org.dhv.pbl5server.common_service.utils.CommonUtils;
+import org.dhv.pbl5server.constant_service.entity.Constant;
 import org.dhv.pbl5server.constant_service.enums.SystemRole;
 import org.dhv.pbl5server.constant_service.service.ConstantService;
 import org.springframework.boot.CommandLineRunner;
@@ -20,10 +24,12 @@ import java.util.List;
 @Order(2)
 public class CreateDefaultAccount implements CommandLineRunner {
     private final AccountRepository repository;
+    private final AuthService authService;
     private final ConstantService constantService;
     private final PasswordEncoder passwordEncoder;
 
     @Override
+    @SuppressWarnings("unchecked")
     public void run(String... args) throws Exception {
         // If data was existed, will return
         if (!repository.findAll().isEmpty()) return;
@@ -36,30 +42,39 @@ public class CreateDefaultAccount implements CommandLineRunner {
             .phoneNumber("Default")
             .build();
         // User account
-        var userAccount = Account.builder()
+        var userRegisterRequest = UserRegisterRequest.builder()
             .email("user@gmail.com")
-            .password(passwordEncoder.encode("123456Aa"))
+            .password("123456Aa")
             .address("Default")
             .phoneNumber("Default")
+            .dateOfBirth(CommonUtils.getCurrentTimestamp())
+            .lastName("Nguyen Van")
+            .firstName("A")
+            .gender(true)
             .build();
         // Company account
-        var companyAccount = Account.builder()
+        var companyRegisterRequest = CompanyRegisterRequest.builder()
             .email("company@gmail.com")
-            .password(passwordEncoder.encode("123456Aa"))
+            .password("123456Aa")
             .address("Default")
             .phoneNumber("Default")
+            .companyName("Default Company")
+            .companyUrl("http://default-company")
+            .establishedDate(CommonUtils.getCurrentTimestamp())
             .build();
-        for (var item : constantService.getConstantsByType(ConstantType.SYSTEM_ROLE.name())) {
+        for (var item : (List<Constant>) constantService.getSystemRoles(null)) {
             if (item.getConstantName().equalsIgnoreCase(SystemRole.ADMIN.name()))
                 adminAccount.setSystemRole(item);
             if (item.getConstantName().equalsIgnoreCase(SystemRole.COMPANY.name()))
-                companyAccount.setSystemRole(item);
+                companyRegisterRequest.setSystemRole(item);
             if (item.getConstantName().equalsIgnoreCase(SystemRole.USER.name()))
-                userAccount.setSystemRole(item);
+                userRegisterRequest.setSystemRole(item);
         }
         try {
-            repository.saveAll(List.of(adminAccount, companyAccount, userAccount));
-            log.info("Successfully created default account");
+            repository.save(adminAccount);
+            authService.register(userRegisterRequest);
+            authService.register(companyRegisterRequest);
+            log.info("--------------------- Successfully created default account ---------------------");
         } catch (Exception ex) {
             log.error("Error when creating default account: ", ex);
         }

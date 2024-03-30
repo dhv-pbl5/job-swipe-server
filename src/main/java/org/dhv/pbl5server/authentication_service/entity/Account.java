@@ -1,7 +1,10 @@
 package org.dhv.pbl5server.authentication_service.entity;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 import org.dhv.pbl5server.common_service.model.AbstractEntity;
 import org.dhv.pbl5server.constant_service.entity.Constant;
 import org.dhv.pbl5server.profile_service.entity.ApplicationPosition;
@@ -15,11 +18,10 @@ import java.util.List;
 import java.util.UUID;
 
 
-@NoArgsConstructor
 @Getter
 @Setter
-@AllArgsConstructor
-@Builder
+@SuperBuilder
+@NoArgsConstructor
 @Entity
 @Table(name = "accounts")
 public class Account extends AbstractEntity implements UserDetails {

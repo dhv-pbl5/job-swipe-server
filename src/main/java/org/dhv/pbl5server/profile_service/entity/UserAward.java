@@ -1,7 +1,10 @@
 package org.dhv.pbl5server.profile_service.entity;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 import org.dhv.pbl5server.common_service.model.AbstractEntity;
 
 import java.sql.Timestamp;
@@ -9,9 +12,8 @@ import java.util.UUID;
 
 @Getter
 @Setter
+@SuperBuilder
 @NoArgsConstructor
-@AllArgsConstructor
-@Builder
 @Entity
 @Table(name = "user_awards")
 public class UserAward extends AbstractEntity {

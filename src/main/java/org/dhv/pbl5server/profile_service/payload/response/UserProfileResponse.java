@@ -5,10 +5,8 @@ import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.Getter;
 import lombok.Setter;
-import org.dhv.pbl5server.constant_service.entity.Constant;
-import org.dhv.pbl5server.profile_service.entity.UserAward;
-import org.dhv.pbl5server.profile_service.entity.UserEducation;
-import org.dhv.pbl5server.profile_service.entity.UserExperience;
+import org.dhv.pbl5server.constant_service.payload.ConstantResponse;
+import org.dhv.pbl5server.profile_service.entity.ApplicationPosition;
 import org.dhv.pbl5server.profile_service.model.OtherDescription;
 
 import java.sql.Timestamp;
@@ -26,8 +24,8 @@ public class UserProfileResponse {
     private String address;
     private String avatar;
     private String phoneNumber;
-    private Constant systemRole;
-    //    private List<ApplicationPosition> applicationPositions;
+    private ConstantResponse systemRole;
+    private List<ApplicationPosition> applicationPositions;
     // User entity data
     private UUID accountId;
     private String firstName;
@@ -37,9 +35,9 @@ public class UserProfileResponse {
     private String summaryIntroduction;
     private List<String> socialMediaLink;
     private List<OtherDescription> other;
-    private List<UserEducation> educations;
-    private List<UserAward> awards;
-    private List<UserExperience> experiences;
+    private List<UserEducationResponse> educations;
+    private List<UserAwardResponse> awards;
+    private List<UserExperienceResponse> experiences;
     private Timestamp createdAt;
     private Timestamp updatedAt;
     private Timestamp deletedAt;

@@ -5,10 +5,7 @@ import jakarta.annotation.Nonnull;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.dhv.pbl5server.common_service.constant.ErrorMessageConstant;
-import org.dhv.pbl5server.common_service.exception.BadRequestException;
-import org.dhv.pbl5server.common_service.exception.ForbiddenException;
-import org.dhv.pbl5server.common_service.exception.NotFoundObjectException;
-import org.dhv.pbl5server.common_service.exception.UnauthorizedException;
+import org.dhv.pbl5server.common_service.exception.*;
 import org.dhv.pbl5server.common_service.model.ApiDataResponse;
 import org.dhv.pbl5server.common_service.model.ErrorResponse;
 import org.dhv.pbl5server.common_service.utils.ErrorUtils;
@@ -51,6 +48,7 @@ public class RestApiExceptionHandler extends ResponseEntityExceptionHandler {
      * 6. AccessDeniedException
      * 7. GlobalException
      * 8. AuthenticationCredentialsNotFoundException
+     * 9. InvalidDataException
      */
     @SuppressWarnings("unused")
     @ExceptionHandler(NotFoundObjectException.class)
@@ -118,7 +116,7 @@ public class RestApiExceptionHandler extends ResponseEntityExceptionHandler {
         MethodArgumentTypeMismatchException ex, HttpServletRequest request) {
         String msg =
             STR."\{ex.getName()} should be of type \{Objects.requireNonNull(ex.getRequiredType()).getName()}";
-        ErrorResponse error = new ErrorResponse(ErrorMessageConstant.INTERNAL_SERVER_ERROR, msg);
+        ErrorResponse error = new ErrorResponse(ErrorMessageConstant.INTERNAL_SERVER_ERROR_CODE, msg);
         ApiDataResponse response = ApiDataResponse.error(error);
         return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
     }
@@ -129,7 +127,7 @@ public class RestApiExceptionHandler extends ResponseEntityExceptionHandler {
         Exception ex, HttpServletRequest request
     ) {
         ex.printStackTrace();
-        ErrorResponse error = new ErrorResponse("ERR_SER0101", ex.getMessage());
+        ErrorResponse error = new ErrorResponse(ErrorMessageConstant.INTERNAL_SERVER_ERROR_CODE, ex.getMessage());
         ApiDataResponse response = ApiDataResponse.error(error);
         return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
     }
@@ -144,6 +142,14 @@ public class RestApiExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
     }
 
+    @ExceptionHandler(InvalidDataException.class)
+    public ResponseEntity<ApiDataResponse> handleInvalidDataException(
+        InvalidDataException ex, HttpServletRequest request
+    ) {
+        ErrorResponse error = ErrorUtils.getValidationError(ex.resource, ex.fieldName, ex.getMessage());
+        ApiDataResponse response = ApiDataResponse.error(error);
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
 
     /**
      * Handle rest response entity exception
@@ -192,9 +198,9 @@ public class RestApiExceptionHandler extends ResponseEntityExceptionHandler {
         @Nonnull HttpStatusCode status,
         @Nonnull WebRequest request
     ) {
-        ErrorResponse error = new ErrorResponse(ErrorMessageConstant.INTERNAL_SERVER_ERROR, ex.getMessage());
+        ErrorResponse error = new ErrorResponse(ErrorMessageConstant.INTERNAL_SERVER_ERROR_CODE, ex.getMessage());
         ApiDataResponse response = ApiDataResponse.error(error);
-        return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
     @Override
@@ -210,7 +216,7 @@ public class RestApiExceptionHandler extends ResponseEntityExceptionHandler {
         Objects.requireNonNull(ex.getSupportedHttpMethods())
             .forEach(t -> builder.append(t).append(" "));
 
-        ErrorResponse error = new ErrorResponse(ErrorMessageConstant.INTERNAL_SERVER_ERROR, builder.toString());
+        ErrorResponse error = new ErrorResponse(ErrorMessageConstant.INTERNAL_SERVER_ERROR_CODE, builder.toString());
         ApiDataResponse response = ApiDataResponse.error(error);
         return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
     }
@@ -227,7 +233,7 @@ public class RestApiExceptionHandler extends ResponseEntityExceptionHandler {
         builder.append(" media type is not supported. Supported media types are ");
         ex.getSupportedMediaTypes().forEach(t -> builder.append(t).append(", "));
 
-        ErrorResponse error = new ErrorResponse(ErrorMessageConstant.INTERNAL_SERVER_ERROR, builder.toString());
+        ErrorResponse error = new ErrorResponse(ErrorMessageConstant.INTERNAL_SERVER_ERROR_CODE, builder.toString());
         ApiDataResponse response = ApiDataResponse.error(error);
         return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
     }
@@ -251,7 +257,7 @@ public class RestApiExceptionHandler extends ResponseEntityExceptionHandler {
         @Nonnull HttpStatusCode status,
         @Nonnull WebRequest request
     ) {
-        ApiDataResponse response = ApiDataResponse.error(new ErrorResponse("ERR_SER0101", ex.getMessage()));
+        ApiDataResponse response = ApiDataResponse.error(new ErrorResponse(ErrorMessageConstant.INTERNAL_SERVER_ERROR_CODE, ex.getMessage()));
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 }

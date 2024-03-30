@@ -18,7 +18,7 @@ import org.dhv.pbl5server.common_service.utils.CommonUtils;
 import org.dhv.pbl5server.constant_service.entity.Constant;
 import org.dhv.pbl5server.constant_service.enums.ConstantType;
 import org.dhv.pbl5server.constant_service.enums.SystemRole;
-import org.dhv.pbl5server.constant_service.service.ConstantService;
+import org.dhv.pbl5server.constant_service.repository.ConstantRepository;
 import org.dhv.pbl5server.profile_service.entity.Company;
 import org.dhv.pbl5server.profile_service.entity.User;
 import org.dhv.pbl5server.profile_service.repository.CompanyRepository;
@@ -41,7 +41,7 @@ public class AuthServiceImpl implements AuthService {
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
     private final AccountMapper mapper;
-    private final ConstantService constantService;
+    private final ConstantRepository constantRepository;
     private final PasswordEncoder passwordEncoder;
 
     public CredentialResponse login(LoginRequest loginRequest, boolean isAdmin) {
@@ -189,11 +189,12 @@ public class AuthServiceImpl implements AuthService {
         if (repository.existsByEmail(email))
             throw new BadRequestException(ErrorMessageConstant.EMAIL_ALREADY_EXISTS);
         // Check constant's id is not null
-        if (roleId == null)
+        if (CommonUtils.isEmptyOrNullString(roleId.toString()))
             throw new BadRequestException(ErrorMessageConstant.SYSTEM_ROLE_NOT_FOUND);
-        Constant role = constantService.getConstantById(roleId);
-        // Check constant is system role
-        if (!role.getConstantType().equalsIgnoreCase(ConstantType.SYSTEM_ROLE.name()))
+        Constant role = constantRepository.findById(roleId).orElseThrow(() ->
+            new NotFoundObjectException(ErrorMessageConstant.SYSTEM_ROLE_NOT_FOUND));
+        // Check constant is not system role
+        if (!ConstantType.isSystemRole(role.getConstantType()))
             throw new BadRequestException(ErrorMessageConstant.SYSTEM_ROLE_NOT_FOUND);
         // Check if the role is admin
         if (role.getConstantName().equalsIgnoreCase(SystemRole.ADMIN.name()))

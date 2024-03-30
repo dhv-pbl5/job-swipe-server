@@ -1,16 +1,13 @@
 package org.dhv.pbl5server.constant_service.controller;
 
 import jakarta.annotation.Nullable;
-import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.dhv.pbl5server.common_service.constant.ErrorMessageConstant;
 import org.dhv.pbl5server.common_service.exception.BadRequestException;
 import org.dhv.pbl5server.common_service.model.ApiDataResponse;
-import org.dhv.pbl5server.constant_service.payload.ConstantRequest;
 import org.dhv.pbl5server.constant_service.service.ConstantService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
@@ -40,9 +37,4 @@ public class ConstantController {
         return ResponseEntity.ok(ApiDataResponse.successWithoutMeta(service.getConstantById(UUID.fromString(constantId))));
     }
 
-    @PreAuthorize("hasAuthority('ADMIN')")
-    @PostMapping("/admin/constant")
-    public ResponseEntity<ApiDataResponse> createConstant(@Valid @RequestBody ConstantRequest request) {
-        return ResponseEntity.ok(ApiDataResponse.successWithoutMeta(service.create(request)));
-    }
 }

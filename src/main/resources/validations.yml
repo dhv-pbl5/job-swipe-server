@@ -228,4 +228,76 @@ change_password_request:
       code: VAL_CHA0109
       message: New password confirmation has at least 8 characters, containing at least 1 uppercase letter, 1 lowercase letter, 1 numeric character
 
+# UserBasicInfoRequest
+user_basic_info_request:
+  first_name:
+    not_blank:
+      code: VAL_BAS0101
+      message: First name cannot be blank
+    not_null:
+      code: VAL_BAS0102
+      message: First name cannot be null
+  last_name:
+    not_blank:
+      code: VAL_BAS0103
+      message: Last name cannot be blank
+    not_null:
+      code: VAL_BAS0104
+      message: Last name cannot
+  account_status:
+    not_null:
+      code: VAL_BAS0105
+      message: Account status cannot be null
+  address:
+    not_blank:
+      code: VAL_BAS0106
+      message: Address cannot be blank
+    not_null:
+      code: VAL_BAS0107
+      message: Address cannot be null
+  phone_number:
+    not_blank:
+      code: VAL_BAS0108
+      message: Phone number cannot be blank
+    not_null:
+      code: VAL_BAS0109
+      message: Phone number cannot be null
+  gender:
+    not_null:
+      code: VAL_BAS0110
+      message: Gender cannot be null
+  date_of_birth:
+    not_null:
+      code: VAL_BAS0111
+      message: Date of birth cannot be null
+
+# UserEducationRequest
+user_education_request:
+  study_place:
+    not_blank:
+      code: VAL_EDU0101
+      message: Study place cannot be blank
+    not_null:
+      code: VAL_EDU0102
+      message: Study place cannot be null
+  study_start_time:
+    not_null:
+      code: VAL_EDU0103
+      message: Study start time cannot be null
+  study_end_time:
+    not_null:
+      code: VAL_EDU0104
+      message: Study end time cannot be null
+  majority:
+    not_null:
+      code: VAL_EDU0106
+      message: Majority cannot be null
+    not_blank:
+      code: VAL_EDU0107
+      message: Majority cannot be blank
+  cpa:
+    not_null:
+      code: VAL_EDU0108
+      message: CPA cannot be null
+
 

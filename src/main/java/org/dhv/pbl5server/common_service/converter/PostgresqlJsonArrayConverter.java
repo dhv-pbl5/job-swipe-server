@@ -8,13 +8,9 @@ import java.util.Arrays;
 import java.util.List;
 
 @Converter
-public class PostgresqlJsonArrayConverter<T> implements AttributeConverter<List<T>, String> {
+public abstract class PostgresqlJsonArrayConverter<T> implements AttributeConverter<List<T>, String> {
 
-    private final Class<T> clazz;
-
-    public PostgresqlJsonArrayConverter(Class<T> clazz) {
-        this.clazz = clazz;
-    }
+    protected abstract Class<T> getClazz();
 
     /**
      * @param attribute the list object data
@@ -23,6 +19,7 @@ public class PostgresqlJsonArrayConverter<T> implements AttributeConverter<List<
      */
     @Override
     public String convertToDatabaseColumn(List<T> attribute) {
+        if (CommonUtils.isEmptyOrNullList(attribute)) return null;
         var jsonEncode = attribute.stream()
             .map(item -> {
                 var json = CommonUtils.convertToJson(item);
@@ -52,6 +49,8 @@ public class PostgresqlJsonArrayConverter<T> implements AttributeConverter<List<
      */
     @Override
     public List<T> convertToEntityAttribute(String dbData) {
+        var clazz = getClazz();
+        if (clazz == null || CommonUtils.isEmptyOrNullString(dbData)) return null;
         StringBuilder str = new StringBuilder();
         for (int i = 2; i < dbData.length() - 2; i++) {
             if (dbData.charAt(i) != '\\')
