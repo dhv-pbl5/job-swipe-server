@@ -4,8 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.dhv.pbl5server.common_service.constant.ErrorMessageConstant;
 import org.dhv.pbl5server.common_service.exception.BadRequestException;
-import org.dhv.pbl5server.common_service.utils.DateTimeUtils;
-import org.dhv.pbl5server.common_service.utils.StringUtils;
+import org.dhv.pbl5server.common_service.utils.CommonUtils;
 import org.dhv.pbl5server.s3_service.config.S3ApplicationProperty;
 import org.dhv.pbl5server.s3_service.service.S3Service;
 import org.springframework.stereotype.Service;
@@ -34,9 +33,10 @@ public class S3ServiceImpl implements S3Service {
         }
     }
 
-    public String uploadFile(MultipartFile replacedFile, String oldFileName) {
+    public String uploadFile(MultipartFile replacedFile, String oldUrl) {
         try {
-            if (StringUtils.isEmptyOrNull(oldFileName) || !deleteFile(oldFileName))
+            var oldFileName = getFileName(oldUrl);
+            if (CommonUtils.isEmptyOrNullString(oldFileName) || !deleteFile(oldFileName))
                 throw new BadRequestException(ErrorMessageConstant.DELETE_FILE_FAILED);
             var fileName = generateFileName(replacedFile);
             s3.putObject(s3Config.putObjectRequest(fileName), RequestBody.fromBytes(replacedFile.getBytes()));
@@ -57,7 +57,8 @@ public class S3ServiceImpl implements S3Service {
         }).toList();
     }
 
-    public List<String> uploadFiles(List<MultipartFile> replacedFiles, List<String> oldFileNames) {
+    public List<String> uploadFiles(List<MultipartFile> replacedFiles, List<String> oldUrls) {
+        var oldFileNames = oldUrls.stream().map(this::getFileName).toList();
         s3.deleteObjects(s3Config.deleteObjectsRequest(oldFileNames));
         return replacedFiles.stream().map(file -> {
             try {
@@ -67,6 +68,13 @@ public class S3ServiceImpl implements S3Service {
                 throw new BadRequestException(ErrorMessageConstant.UPLOAD_FILE_FAILED);
             }
         }).toList();
+    }
+
+    @Override
+    public String getFileName(String fileUrl) {
+        if (CommonUtils.isEmptyOrNullString(fileUrl)) return null;
+        var arr = fileUrl.split("/");
+        return arr[arr.length - 1];
     }
 
     public String getFileUrl(String fileName) {
@@ -85,7 +93,7 @@ public class S3ServiceImpl implements S3Service {
     }
 
     private String generateFileName(MultipartFile file) {
-        var fileName = STR."\{DateTimeUtils.getCurrentDateTime().toString()}-\{file.getOriginalFilename()}"
+        var fileName = STR."\{CommonUtils.getCurrentTimestamp().toString()}-\{file.getOriginalFilename()}"
             .replaceAll(" ", "_");
         log.info("Generated file name: {}", fileName);
         return fileName;

@@ -26,22 +26,22 @@ public class CreateDefaultSystemRole implements CommandLineRunner {
         log.info("--------------------- Creating default system role ---------------------");
         // Admin role
         var adminRole = Constant.builder()
-            .constantType(ConstantType.SYSTEM_ROLE.name())
+            .constantType(ConstantType.ADMIN.getValue())
             .constantName(SystemRole.ADMIN.name())
             .build();
         // Company role
         var companyRole = Constant.builder()
-            .constantType(ConstantType.SYSTEM_ROLE.name())
+            .constantType(ConstantType.COMPANY.getValue())
             .constantName(SystemRole.COMPANY.name())
             .build();
         // User role
         var userRole = Constant.builder()
-            .constantType(ConstantType.SYSTEM_ROLE.name())
+            .constantType(ConstantType.USER.getValue())
             .constantName(SystemRole.USER.name())
             .build();
         try {
             repository.saveAll(List.of(adminRole, companyRole, userRole));
-            log.info("Successfully created default system role");
+            log.info("--------------------- Successfully created default system role ---------------------");
         } catch (Exception ex) {
             log.error("Error when creating default system role: ", ex);
         }

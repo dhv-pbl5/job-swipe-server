@@ -13,9 +13,13 @@ public interface AuthService {
 
     AccountResponse getAccount(Account currentAccount);
 
+    AccountResponse getAccountById(String id);
+
     void logout(Account currentAccount);
 
-    AccountResponse register(RegisterRequest request);
+    AccountResponse register(UserRegisterRequest request);
+
+    AccountResponse register(CompanyRegisterRequest request);
 
     String forgotPassword(ForgotPasswordRequest request);
 

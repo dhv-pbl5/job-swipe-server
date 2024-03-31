@@ -7,17 +7,21 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.dhv.pbl5server.common_service.constant.CommonConstant;
 import org.dhv.pbl5server.constant_service.entity.Constant;
 import org.hibernate.validator.constraints.Length;
 
+import java.sql.Timestamp;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-public class RegisterRequest {
+public class UserRegisterRequest {
     @Email
     @NotBlank
     private String email;
@@ -33,4 +37,14 @@ public class RegisterRequest {
     private String phoneNumber;
     @NotNull
     private Constant systemRole;
+    @NotNull
+    private Timestamp dateOfBirth;
+    @NotNull
+    @NotBlank
+    private String firstName;
+    @NotNull
+    @NotBlank
+    private String lastName;
+    @NotNull
+    private Boolean gender;
 }

@@ -1,9 +1,13 @@
 package org.dhv.pbl5server.authentication_service.entity;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 import org.dhv.pbl5server.common_service.model.AbstractEntity;
 import org.dhv.pbl5server.constant_service.entity.Constant;
+import org.dhv.pbl5server.profile_service.entity.ApplicationPosition;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -14,11 +18,10 @@ import java.util.List;
 import java.util.UUID;
 
 
-@NoArgsConstructor
 @Getter
 @Setter
-@AllArgsConstructor
-@Builder
+@SuperBuilder
+@NoArgsConstructor
 @Entity
 @Table(name = "accounts")
 public class Account extends AbstractEntity implements UserDetails {
@@ -38,6 +41,9 @@ public class Account extends AbstractEntity implements UserDetails {
     private Constant systemRole;
     private String refreshToken;
     private Timestamp deletedAt;
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "account")
+    private List<ApplicationPosition> applicationPositions;
+
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
