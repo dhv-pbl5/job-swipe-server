@@ -10,6 +10,7 @@ import org.dhv.pbl5server.authentication_service.service.AuthService;
 import org.dhv.pbl5server.common_service.utils.CommonUtils;
 import org.dhv.pbl5server.constant_service.entity.Constant;
 import org.dhv.pbl5server.constant_service.enums.SystemRole;
+import org.dhv.pbl5server.constant_service.payload.ConstantSelectionRequest;
 import org.dhv.pbl5server.constant_service.service.ConstantService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.core.annotation.Order;
@@ -66,9 +67,9 @@ public class CreateDefaultAccount implements CommandLineRunner {
             if (item.getConstantName().equalsIgnoreCase(SystemRole.ADMIN.name()))
                 adminAccount.setSystemRole(item);
             if (item.getConstantName().equalsIgnoreCase(SystemRole.COMPANY.name()))
-                companyRegisterRequest.setSystemRole(item);
+                companyRegisterRequest.setSystemRole(new ConstantSelectionRequest(item.getConstantId()));
             if (item.getConstantName().equalsIgnoreCase(SystemRole.USER.name()))
-                userRegisterRequest.setSystemRole(item);
+                userRegisterRequest.setSystemRole(new ConstantSelectionRequest(item.getConstantId()));
         }
         try {
             repository.save(adminAccount);

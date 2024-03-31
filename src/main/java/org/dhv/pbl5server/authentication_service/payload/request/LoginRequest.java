@@ -6,7 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.dhv.pbl5server.common_service.annotation.JsonSnakeCaseNaming;
-import org.hibernate.validator.constraints.Length;
+import org.dhv.pbl5server.common_service.annotation.PasswordValidation;
 
 @Data
 @NoArgsConstructor
@@ -16,8 +16,7 @@ public class LoginRequest {
     @NotBlank
     @Email
     private String email;
-
-    @NotBlank
-    @Length(min = 8, max = 20)
+    
+    @PasswordValidation
     private String password;
 }

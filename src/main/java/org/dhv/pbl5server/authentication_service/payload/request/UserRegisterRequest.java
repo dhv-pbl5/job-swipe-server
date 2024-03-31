@@ -3,15 +3,14 @@ package org.dhv.pbl5server.authentication_service.payload.request;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.dhv.pbl5server.common_service.annotation.JsonSnakeCaseNaming;
-import org.dhv.pbl5server.common_service.constant.CommonConstant;
-import org.dhv.pbl5server.constant_service.entity.Constant;
-import org.hibernate.validator.constraints.Length;
+import org.dhv.pbl5server.common_service.annotation.NotBlankStringValidation;
+import org.dhv.pbl5server.common_service.annotation.PasswordValidation;
+import org.dhv.pbl5server.constant_service.payload.ConstantSelectionRequest;
 
 import java.sql.Timestamp;
 
@@ -24,25 +23,19 @@ public class UserRegisterRequest {
     @Email
     @NotBlank
     private String email;
-    @NotBlank
-    @Length(min = 8, max = 20)
-    @Pattern(regexp = CommonConstant.PASSWORD_REGEXP_PATTERN)
+    @PasswordValidation
     private String password;
-    @NotNull
-    @NotBlank
+    @NotBlankStringValidation
     private String address;
-    @NotNull
-    @NotBlank
+    @NotBlankStringValidation
     private String phoneNumber;
     @NotNull
-    private Constant systemRole;
+    private ConstantSelectionRequest systemRole;
     @NotNull
     private Timestamp dateOfBirth;
-    @NotNull
-    @NotBlank
+    @NotBlankStringValidation
     private String firstName;
-    @NotNull
-    @NotBlank
+    @NotBlankStringValidation
     private String lastName;
     @NotNull
     private Boolean gender;
