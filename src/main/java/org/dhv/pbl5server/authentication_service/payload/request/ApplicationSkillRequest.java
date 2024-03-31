@@ -1,22 +1,21 @@
-package org.dhv.pbl5server.profile_service.payload.response;
+package org.dhv.pbl5server.authentication_service.payload.request;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.dhv.pbl5server.common_service.annotation.JsonSnakeCaseNaming;
+import org.dhv.pbl5server.constant_service.entity.Constant;
 
-import java.sql.Timestamp;
 import java.util.UUID;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @JsonSnakeCaseNaming
-public class UserAwardResponse {
+public class ApplicationSkillRequest {
     private UUID id;
-    private Timestamp certificateTime;
-    private String certificateName;
     private String note;
-    private Timestamp createdAt;
-    private Timestamp updatedAt;
+    @NotNull
+    private Constant skill;
 }

@@ -1,11 +1,10 @@
 package org.dhv.pbl5server.authentication_service.payload.response;
 
-import com.fasterxml.jackson.databind.PropertyNamingStrategies;
-import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.dhv.pbl5server.common_service.annotation.JsonSnakeCaseNaming;
 
 import java.sql.Timestamp;
 
@@ -13,7 +12,7 @@ import java.sql.Timestamp;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+@JsonSnakeCaseNaming
 public class CredentialResponse {
     private String accessToken;
     private String refreshToken;

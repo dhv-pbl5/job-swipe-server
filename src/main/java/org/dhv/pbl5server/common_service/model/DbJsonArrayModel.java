@@ -1,11 +1,10 @@
 package org.dhv.pbl5server.common_service.model;
 
-import com.fasterxml.jackson.databind.PropertyNamingStrategies;
-import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
+import org.dhv.pbl5server.common_service.annotation.JsonSnakeCaseNaming;
 
 import java.sql.Timestamp;
 
@@ -13,7 +12,7 @@ import java.sql.Timestamp;
 @Setter
 @NoArgsConstructor
 @SuperBuilder
-@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+@JsonSnakeCaseNaming
 public abstract class DbJsonArrayModel<K> {
     protected K id;
     protected Timestamp createdAt;

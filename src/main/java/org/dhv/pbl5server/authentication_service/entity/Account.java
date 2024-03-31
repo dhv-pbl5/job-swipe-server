@@ -7,7 +7,6 @@ import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 import org.dhv.pbl5server.common_service.model.AbstractEntity;
 import org.dhv.pbl5server.constant_service.entity.Constant;
-import org.dhv.pbl5server.profile_service.entity.ApplicationPosition;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

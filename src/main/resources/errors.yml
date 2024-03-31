@@ -125,7 +125,7 @@ user_id_is_required:
   message: With user, user id is required!
 id_is_required:
   code: ERR_USE0105
-  message: With user profile component, id is required!
+  message: With user profile component, component_id is required!
 
 # Education
 study_end_time_must_be_greater_than_start_time:

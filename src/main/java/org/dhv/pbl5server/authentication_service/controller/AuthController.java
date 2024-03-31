@@ -3,12 +3,14 @@ package org.dhv.pbl5server.authentication_service.controller;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.dhv.pbl5server.authentication_service.annotation.CurrentAccount;
+import org.dhv.pbl5server.authentication_service.annotation.PreAuthorizeAdmin;
+import org.dhv.pbl5server.authentication_service.annotation.PreAuthorizeSystemRole;
+import org.dhv.pbl5server.authentication_service.annotation.PreAuthorizeSystemRoleWithoutAdmin;
 import org.dhv.pbl5server.authentication_service.entity.Account;
 import org.dhv.pbl5server.authentication_service.payload.request.*;
 import org.dhv.pbl5server.authentication_service.service.AuthService;
 import org.dhv.pbl5server.common_service.model.ApiDataResponse;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
@@ -39,20 +41,20 @@ public class AuthController {
         return ResponseEntity.ok(ApiDataResponse.successWithoutMeta(authService.refreshToken(refreshTokenRequest, true)));
     }
 
-    @PreAuthorize("hasAnyAuthority('ADMIN', 'USER', 'COMPANY')")
+    @PreAuthorizeSystemRole
     @PostMapping("/auth/logout")
     public ResponseEntity<ApiDataResponse> logoutUser(@CurrentAccount Account currentAccount) {
         authService.logout(currentAccount);
         return ResponseEntity.ok(ApiDataResponse.successWithoutMetaAndData());
     }
 
-    @PreAuthorize("hasAnyAuthority('ADMIN', 'USER', 'COMPANY')")
+    @PreAuthorizeSystemRole
     @GetMapping("/auth/account")
     public ResponseEntity<ApiDataResponse> getAccount(@CurrentAccount Account currentAccount) {
         return ResponseEntity.ok(ApiDataResponse.successWithoutMeta(authService.getAccount(currentAccount)));
     }
 
-    @PreAuthorize("hasAnyAuthority('ADMIN', 'USER', 'COMPANY')")
+    @PreAuthorizeSystemRole
     @GetMapping("/auth/account/{id}")
     public ResponseEntity<ApiDataResponse> getAccountById(
         @PathVariable("id") String id,
@@ -70,7 +72,7 @@ public class AuthController {
         return ResponseEntity.ok(ApiDataResponse.successWithoutMeta(authService.register(request)));
     }
 
-    @PreAuthorize("hasAnyAuthority('USER', 'COMPANY')")
+    @PreAuthorizeSystemRoleWithoutAdmin
     @PostMapping("/auth/forgot-password")
     public ResponseEntity<ApiDataResponse> forgotPassword(@Valid @RequestBody ForgotPasswordRequest request) {
         String resetPasswordToken = authService.forgotPassword(request);
@@ -78,7 +80,7 @@ public class AuthController {
         return ResponseEntity.ok(ApiDataResponse.successWithoutMeta(data));
     }
 
-    @PreAuthorize("hasAnyAuthority('USER', 'COMPANY')")
+    @PreAuthorizeSystemRoleWithoutAdmin
     @PostMapping("/auth/reset-password")
     public ResponseEntity<ApiDataResponse> resetPassword(
         @Valid @RequestBody ResetPasswordRequest request,
@@ -88,7 +90,7 @@ public class AuthController {
         return ResponseEntity.ok(ApiDataResponse.successWithoutMetaAndData());
     }
 
-    @PreAuthorize("hasAnyAuthority('USER', 'COMPANY')")
+    @PreAuthorizeSystemRoleWithoutAdmin
     @PostMapping("/auth/change-password")
     public ResponseEntity<ApiDataResponse> changePassword(
         @Valid @RequestBody ChangePasswordRequest request,
@@ -98,13 +100,13 @@ public class AuthController {
         return ResponseEntity.ok(ApiDataResponse.successWithoutMetaAndData());
     }
 
-    @PreAuthorize("hasAnyAuthority('ADMIN')")
+    @PreAuthorizeAdmin
     @PostMapping("/auth/deactivate-account/{accountId}")
     public ResponseEntity<ApiDataResponse> deactivateAccount(@PathVariable("accountId") String accountId) {
         return ResponseEntity.ok(ApiDataResponse.successWithoutMeta(authService.deactivateAccount(accountId)));
     }
 
-    @PreAuthorize("hasAnyAuthority('ADMIN')")
+    @PreAuthorizeAdmin
     @PostMapping("/auth/activate-account/{accountId}")
     public ResponseEntity<ApiDataResponse> activateAccount(@PathVariable("accountId") String accountId) {
         return ResponseEntity.ok(ApiDataResponse.successWithoutMeta(authService.activateAccount(accountId)));

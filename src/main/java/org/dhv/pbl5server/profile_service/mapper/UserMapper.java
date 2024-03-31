@@ -1,6 +1,7 @@
 package org.dhv.pbl5server.profile_service.mapper;
 
 import org.dhv.pbl5server.authentication_service.entity.Account;
+import org.dhv.pbl5server.common_service.config.SpringMapStructConfig;
 import org.dhv.pbl5server.constant_service.mapper.ConstantMapper;
 import org.dhv.pbl5server.profile_service.entity.User;
 import org.dhv.pbl5server.profile_service.payload.request.UserAwardRequest;
@@ -10,13 +11,11 @@ import org.dhv.pbl5server.profile_service.payload.request.UserExperienceRequest;
 import org.dhv.pbl5server.profile_service.payload.response.UserProfileResponse;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.NullValueCheckStrategy;
 
 import java.util.List;
 
 @Mapper(
-    componentModel = "spring",
-    nullValueCheckStrategy = NullValueCheckStrategy.ALWAYS,
+    config = SpringMapStructConfig.class,
     uses = {
         ConstantMapper.class,
         EducationMapper.class,
