@@ -66,9 +66,53 @@ public class UserController {
     }
 
     @PreAuthorizeUser
+    @PostMapping("")
+    @SuppressWarnings("unchecked")
+    public ResponseEntity<ApiDataResponse> insertProfileComponent(
+        @RequestParam("type") UpdateUserProfileType type,
+        @RequestBody Object body,
+        @CurrentAccount Account currentAccount
+    ) {
+        Set<ConstraintViolation<Object>> violations = null;
+        Object object = null;
+        switch (type) {
+            case AWARD:
+                object = getObjectFromUpdateApi(body, type);
+                for (var obj : (List<UserAwardRequest>) Objects.requireNonNull(object)) {
+                    violations = validator.validate(Objects.requireNonNull(obj));
+                    ErrorUtils.checkConstraintViolation(violations);
+                }
+                return ResponseEntity.ok(ApiDataResponse.successWithoutMeta(service.insertAwards(currentAccount, (List<UserAwardRequest>) object)));
+            case EDUCATION:
+                object = getObjectFromUpdateApi(body, type);
+                for (var obj : (List<UserEducationRequest>) Objects.requireNonNull(object)) {
+                    violations = validator.validate(Objects.requireNonNull(obj));
+                    ErrorUtils.checkConstraintViolation(violations);
+                }
+                return ResponseEntity.ok(ApiDataResponse.successWithoutMeta(service.insertEducations(currentAccount, (List<UserEducationRequest>) object)));
+            case EXPERIENCE:
+                object = getObjectFromUpdateApi(body, type);
+                for (var obj : (List<UserExperienceRequest>) Objects.requireNonNull(object)) {
+                    violations = validator.validate(Objects.requireNonNull(obj));
+                    ErrorUtils.checkConstraintViolation(violations);
+                }
+                return ResponseEntity.ok(ApiDataResponse.successWithoutMeta(service.insertExperiences(currentAccount, (List<UserExperienceRequest>) object)));
+            case OTHER_DESCRIPTION:
+                object = getObjectFromUpdateApi(body, type);
+                for (var obj : (List<OtherDescription>) Objects.requireNonNull(object)) {
+                    violations = validator.validate(Objects.requireNonNull(obj));
+                    ErrorUtils.checkConstraintViolation(violations);
+                }
+                return ResponseEntity.ok(ApiDataResponse.successWithoutMeta(service.insertOtherDescriptions(currentAccount, (List<OtherDescription>) object)));
+            default:
+                return ResponseEntity.badRequest().body(ApiDataResponse.builder().status(CommonConstant.FAILURE).build());
+        }
+    }
+
+    @PreAuthorizeUser
     @PatchMapping("")
     @SuppressWarnings("unchecked")
-    public ResponseEntity<ApiDataResponse> updateBasicInfo(
+    public ResponseEntity<ApiDataResponse> updateUserInfo(
         @RequestParam("type") UpdateUserProfileType type,
         @RequestBody Object body,
         @CurrentAccount Account currentAccount

@@ -67,6 +67,10 @@ user_register_request:
     not_null:
       code: VAL_REG0110
       message: Gender cannot be null
+  system_role.constant_id:
+    uuid_validation:
+      code: VAL_REG0111
+      message: System role constant ID must be a valid UUID
 
 # CompanyRegisterRequest
 company_register_request:
@@ -105,6 +109,10 @@ company_register_request:
     not_null:
       code: VAL_REG0209
       message: Established date cannot be null
+  system_role.constant_id:
+    uuid_validation:
+      code: VAL_REG0210
+      message: System role constant ID must be a valid UUID
 
 # ForgotPasswordRequest
 forgot_password_request:
@@ -211,4 +219,40 @@ other_description:
       code: VAL_OTH0102
       message: Description cannot be blank
 
+# ApplicationPositionRequest
+application_position_request:
+  status:
+    not_null:
+      code: VAL_APP0101
+      message: Status cannot be null
+  apply_position:
+    not_null:
+      code: VAL_APP0102
+      message: Apply position cannot be null
+  apply_position.constant_id:
+    uuid_validation:
+      code: VAL_APP0103
+      message: Apply position constant ID must be a valid UUID
+  skills:
+    not_null:
+      code: VAL_APP0104
+      message: Skills cannot be null
+    not_empty:
+      code: VAL_APP0105
+      message: Skills cannot be empty
+
+# ApplicationSkillRequest
+application_skill_request:
+  note:
+    not_blank_string_validation:
+      code: VAL_SKI0101
+      message: Note cannot be blank
+  skill:
+    not_null:
+      code: VAL_SKI0102
+      message: Skill cannot be null
+  skill.constant_id:
+    uuid_validation:
+      code: VAL_SKI0103
+      message: Skill constant ID must be a valid UUID
 

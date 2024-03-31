@@ -56,9 +56,7 @@ public class AuthController {
 
     @PreAuthorizeSystemRole
     @GetMapping("/auth/account/{id}")
-    public ResponseEntity<ApiDataResponse> getAccountById(
-        @PathVariable("id") String id,
-        @CurrentAccount Account currentAccount) {
+    public ResponseEntity<ApiDataResponse> getAccountById(@PathVariable("id") String id) {
         return ResponseEntity.ok(ApiDataResponse.successWithoutMeta(authService.getAccountById(id)));
     }
 

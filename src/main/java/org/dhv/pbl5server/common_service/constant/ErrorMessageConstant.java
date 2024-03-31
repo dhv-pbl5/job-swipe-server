@@ -84,6 +84,7 @@ public final class ErrorMessageConstant {
     public static final String EDUCATION_REQUEST_INVALID = "education_request_invalid";
     public static final String EDUCATION_REQUEST_MUST_BE_LIST = "education_request_must_be_list";
     public static final String EDUCATION_NOT_FOUND = "education_not_found";
+    public static final String EDUCATION_ID_IS_REQUIRED = "education_id_is_required";
 
     /*
        Award
@@ -91,6 +92,7 @@ public final class ErrorMessageConstant {
     public static final String AWARD_REQUEST_MUST_BE_LIST = "award_request_must_be_list";
     public static final String AWARD_REQUEST_INVALID = "award_request_invalid";
     public static final String AWARD_NOT_FOUND = "award_not_found";
+    public static final String AWARD_ID_IS_REQUIRED = "award_id_is_required";
 
     /*
        Experience
@@ -99,6 +101,7 @@ public final class ErrorMessageConstant {
     public static final String EXPERIENCE_REQUEST_INVALID = "experience_request_invalid";
     public static final String EXPERIENCE_TIME_INVALID = "experience_end_time_must_be_greater_than_start_time";
     public static final String EXPERIENCE_NOT_FOUND = "experience_not_found";
+    public static final String EXPERIENCE_ID_IS_REQUIRED = "experience_id_is_required";
 
     /*
        Other Description
@@ -107,7 +110,13 @@ public final class ErrorMessageConstant {
     public static final String OTHER_DESCRIPTION_REQUEST_INVALID = "other_description_request_invalid";
     public static final String OTHER_DESCRIPTION_NOT_FOUND = "other_description_not_found";
     public static final String OTHER_DESCRIPTION_USER_ID_IS_REQUIRED = "other_description_user_id_is_required";
+    public static final String OTHER_DESCRIPTION_ID_IS_REQUIRED = "other_description_id_is_required";
     public static final String DELETE_IDS_REQUEST_HAVE_ONE_NOT_FOUND = "delete_ids_request_have_one_not_found";
+
+    /*
+       Application Position
+    */
+    public static final String APPLICATION_POSITION_NOT_FOUND = "application_position_not_found";
 
     private ErrorMessageConstant() {
     }

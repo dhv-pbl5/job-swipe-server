@@ -32,7 +32,7 @@ import java.lang.annotation.Target;
 @Pattern(regexp = CommonConstant.PASSWORD_REGEXP_PATTERN)
 @ReportAsSingleViolation
 public @interface PasswordValidation {
-    String message() default "Password format is invalid";
+    String message() default "pbl5.validation.constraints.PasswordValidation.message";
 
     Class<?>[] groups() default {};
 

@@ -23,7 +23,7 @@ import java.lang.annotation.Target;
 @Pattern(regexp = CommonConstant.UUID_REGEX_PATTERN)
 @ReportAsSingleViolation
 public @interface UuidValidation {
-    String message() default "UUID format is invalid";
+    String message() default "pbl5.validation.constraints.UuidValidation.message";
 
     Class<?>[] groups() default {};
 

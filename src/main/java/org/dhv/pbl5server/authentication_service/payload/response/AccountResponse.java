@@ -6,6 +6,7 @@ import org.dhv.pbl5server.common_service.annotation.JsonSnakeCaseNaming;
 import org.dhv.pbl5server.constant_service.payload.ConstantResponse;
 
 import java.sql.Timestamp;
+import java.util.List;
 import java.util.UUID;
 
 @Getter
@@ -22,4 +23,5 @@ public class AccountResponse {
     private Timestamp createdAt;
     private Timestamp updatedAt;
     private Timestamp deletedAt;
+    private List<ApplicationPositionResponse> applicationPositions;
 }

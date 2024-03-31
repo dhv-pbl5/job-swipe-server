@@ -140,6 +140,9 @@ education_request_invalid:
 education_not_found:
   code: ERR_EDU0104
   message: Education not found!
+education_id_is_required:
+  code: ERR_EDU0105
+  message: Education id is required!
 
 # Award
 award_request_must_be_list:
@@ -151,6 +154,9 @@ award_request_invalid:
 award_not_found:
   code: ERR_AWA0103
   message: Award not found!
+award_id_is_required:
+  code: ERR_AWA0104
+  message: Award id is required!
 
 # Experience
 experience_request_must_be_list:
@@ -165,6 +171,9 @@ experience_end_time_must_be_greater_than_start_time:
 experience_not_found:
   code: ERR_EXP0102
   message: Experience not found!
+experience_id_is_required:
+  code: ERR_EXP0103
+  message: Experience id is required!
 
 # OtherDescription
 other_description_request_must_be_list:
@@ -179,8 +188,16 @@ other_description_not_found:
 other_description_user_id_is_required:
   code: ERR_ODS0104
   message: With other description, user id is required!
+other_description_id_is_required:
+  code: ERR_ODS0105
+  message: Other description id is required!
 
 # Delete[Award|Education|OtherDescription|Experience]
 delete_ids_request_have_one_not_found:
   code: ERR_DEL0101
   message: Delete ids request have one id which is not found!
+
+# ApplicationPosition
+application_position_not_found:
+  code: ERR_APP0101
+  message: Application position not found!

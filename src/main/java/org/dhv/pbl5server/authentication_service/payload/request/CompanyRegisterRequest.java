@@ -1,5 +1,6 @@
 package org.dhv.pbl5server.authentication_service.payload.request;
 
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -30,6 +31,7 @@ public class CompanyRegisterRequest {
     @NotBlankStringValidation
     private String phoneNumber;
     @NotNull
+    @Valid
     private ConstantSelectionRequest systemRole;
     @NotBlankStringValidation
     private String companyName;

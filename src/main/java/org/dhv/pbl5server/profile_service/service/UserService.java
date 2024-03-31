@@ -29,6 +29,13 @@ public interface UserService {
 
     OtherDescription getUserOtherDescriptionById(String userId, String id);
 
+    UserProfileResponse insertEducations(Account account, List<UserEducationRequest> request);
+
+    UserProfileResponse insertExperiences(Account account, List<UserExperienceRequest> request);
+
+    UserProfileResponse insertOtherDescriptions(Account account, List<OtherDescription> request);
+
+    UserProfileResponse insertAwards(Account account, List<UserAwardRequest> request);
 
     UserProfileResponse updateBasicInfo(Account account, UserBasicInfoRequest request);
 

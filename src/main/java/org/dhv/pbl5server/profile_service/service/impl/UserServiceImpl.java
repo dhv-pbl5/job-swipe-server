@@ -90,6 +90,63 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public UserProfileResponse insertEducations(Account account, List<UserEducationRequest> request) {
+        var user = repository.findById(account.getAccountId())
+            .orElseThrow(() -> new NotFoundObjectException(ErrorMessageConstant.USER_NOT_FOUND));
+        // Remove id if exist
+        request.forEach(e -> e.setId(null));
+        var updatedUser = userMapper.toUserWithinListEducations(user, request);
+        for (var education : updatedUser.getEducations()) {
+            if (education.getStudyEndTime().before(education.getStudyStartTime()))
+                throw new NotFoundObjectException(ErrorMessageConstant.EDUCATION_TIME_INVALID);
+            education.setUser(user);
+        }
+        repository.save(updatedUser);
+        return userMapper.toUserProfileResponse(getAllDataByAccountId(account.getAccountId()));
+    }
+
+    @Override
+    public UserProfileResponse insertExperiences(Account account, List<UserExperienceRequest> request) {
+        var user = repository.findById(account.getAccountId())
+            .orElseThrow(() -> new NotFoundObjectException(ErrorMessageConstant.USER_NOT_FOUND));
+        // Remove id if exist
+        request.forEach(e -> e.setId(null));
+        var updatedUser = userMapper.toUserWithinListExperiences(user, request);
+        for (var experience : updatedUser.getExperiences()) {
+            if (experience.getExperienceEndTime().before(experience.getExperienceStartTime()))
+                throw new NotFoundObjectException(ErrorMessageConstant.EXPERIENCE_TIME_INVALID);
+            experience.setUser(user);
+        }
+        repository.save(updatedUser);
+        return userMapper.toUserProfileResponse(getAllDataByAccountId(account.getAccountId()));
+    }
+
+    @Override
+    public UserProfileResponse insertOtherDescriptions(Account account, List<OtherDescription> request) {
+        // Remove id if exist
+        request.forEach(e -> e.setId(null));
+        var user = repository.findById(account.getAccountId())
+            .orElseThrow(() -> new NotFoundObjectException(ErrorMessageConstant.USER_NOT_FOUND));
+        user.setOthers(otherDescriptionRepository.saveAll(user.getOthers(), request));
+        repository.save(user);
+        return userMapper.toUserProfileResponse(getAllDataByAccountId(account.getAccountId()));
+    }
+
+    @Override
+    public UserProfileResponse insertAwards(Account account, List<UserAwardRequest> request) {
+        // Remove id if exist
+        request.forEach(e -> e.setId(null));
+        var user = repository.fetchAllDataEducationById(account.getAccountId())
+            .orElseThrow(() -> new NotFoundObjectException(ErrorMessageConstant.USER_NOT_FOUND));
+        var updatedUser = userMapper.toUserWithinListAwards(user, request);
+        for (var award : updatedUser.getAwards()) {
+            award.setUser(user);
+        }
+        repository.save(updatedUser);
+        return userMapper.toUserProfileResponse(getAllDataByAccountId(account.getAccountId()));
+    }
+
+    @Override
     public UserProfileResponse updateBasicInfo(Account account, UserBasicInfoRequest request) {
         var user = repository.findById(account.getAccountId())
             .orElseThrow(() -> new NotFoundObjectException(ErrorMessageConstant.USER_NOT_FOUND));
@@ -102,7 +159,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserProfileResponse updateEducations(Account account, List<UserEducationRequest> request) {
-        var user = repository.fetchAllDataEducationById(account.getAccountId())
+        for (var req : request) {
+            if (req.getId() == null)
+                throw new BadRequestException(ErrorMessageConstant.EDUCATION_ID_IS_REQUIRED);
+            if (!educationRepository.existsById(req.getId()))
+                throw new NotFoundObjectException(ErrorMessageConstant.EDUCATION_NOT_FOUND);
+        }
+        var user = repository.findById(account.getAccountId())
             .orElseThrow(() -> new NotFoundObjectException(ErrorMessageConstant.USER_NOT_FOUND));
         var updatedUser = userMapper.toUserWithinListEducations(user, request);
         for (var education : updatedUser.getEducations()) {
@@ -116,7 +179,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserProfileResponse updateExperiences(Account account, List<UserExperienceRequest> request) {
-        var user = repository.fetchAllDataEducationById(account.getAccountId())
+        for (var req : request) {
+            if (req.getId() == null)
+                throw new BadRequestException(ErrorMessageConstant.EXPERIENCE_ID_IS_REQUIRED);
+            if (!experienceRepository.existsById(req.getId()))
+                throw new NotFoundObjectException(ErrorMessageConstant.EXPERIENCE_NOT_FOUND);
+        }
+        var user = repository.findById(account.getAccountId())
             .orElseThrow(() -> new NotFoundObjectException(ErrorMessageConstant.USER_NOT_FOUND));
         var updatedUser = userMapper.toUserWithinListExperiences(user, request);
         for (var experience : updatedUser.getExperiences()) {
@@ -132,6 +201,12 @@ public class UserServiceImpl implements UserService {
     public UserProfileResponse updateOtherDescriptions(Account account, List<OtherDescription> request) {
         var user = repository.findById(account.getAccountId())
             .orElseThrow(() -> new NotFoundObjectException(ErrorMessageConstant.USER_NOT_FOUND));
+        for (var req : request) {
+            if (req.getId() == null)
+                throw new BadRequestException(ErrorMessageConstant.OTHER_DESCRIPTION_ID_IS_REQUIRED);
+            if (!otherDescriptionRepository.existsById(user.getOthers(), req.getId()))
+                throw new NotFoundObjectException(ErrorMessageConstant.OTHER_DESCRIPTION_NOT_FOUND);
+        }
         user.setOthers(otherDescriptionRepository.saveAll(user.getOthers(), request));
         repository.save(user);
         return userMapper.toUserProfileResponse(getAllDataByAccountId(account.getAccountId()));
@@ -139,6 +214,12 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserProfileResponse updateAwards(Account account, List<UserAwardRequest> request) {
+        for (var req : request) {
+            if (req.getId() == null)
+                throw new BadRequestException(ErrorMessageConstant.AWARD_ID_IS_REQUIRED);
+            if (!awardRepository.existsById(req.getId()))
+                throw new NotFoundObjectException(ErrorMessageConstant.AWARD_NOT_FOUND);
+        }
         var user = repository.fetchAllDataEducationById(account.getAccountId())
             .orElseThrow(() -> new NotFoundObjectException(ErrorMessageConstant.USER_NOT_FOUND));
         var updatedUser = userMapper.toUserWithinListAwards(user, request);

@@ -18,7 +18,7 @@ import java.lang.annotation.Target;
 @NotNull
 @ReportAsSingleViolation
 public @interface NotBlankStringValidation {
-    String message() default "String must be not null and not empty";
+    String message() default "pbl5.validation.constraints.NotBlankStringValidation.message";
 
     Class<?>[] groups() default {};
 

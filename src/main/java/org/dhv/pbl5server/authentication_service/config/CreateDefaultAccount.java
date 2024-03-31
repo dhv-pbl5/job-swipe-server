@@ -67,9 +67,9 @@ public class CreateDefaultAccount implements CommandLineRunner {
             if (item.getConstantName().equalsIgnoreCase(SystemRole.ADMIN.name()))
                 adminAccount.setSystemRole(item);
             if (item.getConstantName().equalsIgnoreCase(SystemRole.COMPANY.name()))
-                companyRegisterRequest.setSystemRole(new ConstantSelectionRequest(item.getConstantId()));
+                companyRegisterRequest.setSystemRole(new ConstantSelectionRequest(item.getConstantId().toString()));
             if (item.getConstantName().equalsIgnoreCase(SystemRole.USER.name()))
-                userRegisterRequest.setSystemRole(new ConstantSelectionRequest(item.getConstantId()));
+                userRegisterRequest.setSystemRole(new ConstantSelectionRequest(item.getConstantId().toString()));
         }
         try {
             repository.save(adminAccount);
