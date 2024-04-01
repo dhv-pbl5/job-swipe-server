@@ -228,3 +228,8 @@ application_skill_not_found:
 application_skill_id_is_required:
   code: ERR_APP0202
   message: Application skill id is required!
+
+# CompanyProfile
+company_profile_not_found:
+  code: ERR_COM0101
+  message: Company profile not found!

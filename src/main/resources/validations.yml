@@ -256,3 +256,18 @@ application_skill_request:
       code: VAL_SKI0103
       message: Skill constant ID must be a valid UUID
 
+# CompanyRequest
+company_request:
+  company_name:
+    not_blank_string_validation:
+      code: VAL_COM0101
+      message: Company name cannot be blank
+  company_url:
+    not_blank_string_validation:
+      code: VAL_COM0102
+      message: Company URL cannot be blank
+  established_date:
+    not_null:
+      code: VAL_COM0103
+      message: Established date cannot be null
+
