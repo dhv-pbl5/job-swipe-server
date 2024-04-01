@@ -20,6 +20,11 @@ public class CrudDbJsonArrayRepositoryImpl<T extends DbJsonArrayModel<K>, K> imp
         return Optional.of(mapData.get(id));
     }
 
+    @Override
+    public boolean existsById(List<T> data, K id) {
+        var mapData = convertArrayToMap(data);
+        return mapData.containsKey(id);
+    }
 
     @Override
     public List<T> save(List<T> data, T object) {

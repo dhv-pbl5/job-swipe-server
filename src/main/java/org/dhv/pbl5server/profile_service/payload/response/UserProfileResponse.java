@@ -1,12 +1,9 @@
 package org.dhv.pbl5server.profile_service.payload.response;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.databind.PropertyNamingStrategies;
-import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.Getter;
 import lombok.Setter;
+import org.dhv.pbl5server.common_service.annotation.JsonSnakeCaseNaming;
 import org.dhv.pbl5server.constant_service.payload.ConstantResponse;
-import org.dhv.pbl5server.profile_service.entity.ApplicationPosition;
 import org.dhv.pbl5server.profile_service.model.OtherDescription;
 
 import java.sql.Timestamp;
@@ -15,8 +12,7 @@ import java.util.UUID;
 
 @Getter
 @Setter
-@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-@JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonSnakeCaseNaming
 public class UserProfileResponse {
     // Account entity data
     private String email;
@@ -25,7 +21,7 @@ public class UserProfileResponse {
     private String avatar;
     private String phoneNumber;
     private ConstantResponse systemRole;
-    private List<ApplicationPosition> applicationPositions;
+    private List<ApplicationPositionResponse> applicationPositions;
     // User entity data
     private UUID accountId;
     private String firstName;

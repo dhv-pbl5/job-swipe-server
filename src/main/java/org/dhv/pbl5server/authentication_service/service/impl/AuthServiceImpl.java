@@ -191,14 +191,15 @@ public class AuthServiceImpl implements AuthService {
         return mapper.toAccountResponse(repository.save(account));
     }
 
-    private Constant checkValidSystemRole(String email, UUID roleId) {
+    private Constant checkValidSystemRole(String email, String roleId) {
+        var roleIdUUID = UUID.fromString(roleId);
         // Check if the email is already used
         if (repository.existsByEmail(email))
             throw new BadRequestException(ErrorMessageConstant.EMAIL_ALREADY_EXISTS);
         // Check constant's id is not null
-        if (CommonUtils.isEmptyOrNullString(roleId.toString()))
+        if (CommonUtils.isEmptyOrNullString(roleId))
             throw new BadRequestException(ErrorMessageConstant.SYSTEM_ROLE_NOT_FOUND);
-        Constant role = constantRepository.findById(roleId).orElseThrow(() ->
+        Constant role = constantRepository.findById(roleIdUUID).orElseThrow(() ->
             new NotFoundObjectException(ErrorMessageConstant.SYSTEM_ROLE_NOT_FOUND));
         // Check constant is not system role
         if (!ConstantType.isSystemRole(role.getConstantType()))

@@ -30,4 +30,6 @@ public interface AuthService {
     AccountResponse activateAccount(String accountId);
 
     AccountResponse deactivateAccount(String accountId);
+
+
 }

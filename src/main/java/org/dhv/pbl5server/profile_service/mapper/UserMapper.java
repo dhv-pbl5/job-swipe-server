@@ -1,6 +1,7 @@
 package org.dhv.pbl5server.profile_service.mapper;
 
 import org.dhv.pbl5server.authentication_service.entity.Account;
+import org.dhv.pbl5server.common_service.config.SpringMapStructConfig;
 import org.dhv.pbl5server.constant_service.mapper.ConstantMapper;
 import org.dhv.pbl5server.profile_service.entity.User;
 import org.dhv.pbl5server.profile_service.payload.request.UserAwardRequest;
@@ -10,18 +11,18 @@ import org.dhv.pbl5server.profile_service.payload.request.UserExperienceRequest;
 import org.dhv.pbl5server.profile_service.payload.response.UserProfileResponse;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.NullValueCheckStrategy;
 
 import java.util.List;
 
 @Mapper(
-    componentModel = "spring",
-    nullValueCheckStrategy = NullValueCheckStrategy.ALWAYS,
+    config = SpringMapStructConfig.class,
     uses = {
         ConstantMapper.class,
         EducationMapper.class,
         AwardMapper.class,
         ExperienceMapper.class,
+        ApplicationPositionMapper.class,
+        ApplicationSkillMapper.class
     }
 )
 public interface UserMapper {
@@ -34,7 +35,7 @@ public interface UserMapper {
     @Mapping(source = "user.account.systemRole", target = "systemRole")
     @Mapping(source = "user.account.accountId", target = "accountId")
     @Mapping(source = "user.account.deletedAt", target = "deletedAt")
-    @Mapping(source = "user.account.applicationPositions", target = "applicationPositions", ignore = true)
+    @Mapping(source = "user.account.applicationPositions", target = "applicationPositions")
     @Mapping(source = "user.others", target = "others")
     @Mapping(source = "user.educations", target = "educations")
     @Mapping(source = "user.awards", target = "awards")

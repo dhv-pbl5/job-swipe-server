@@ -1,12 +1,11 @@
 package org.dhv.pbl5server.profile_service.payload.request;
 
-import com.fasterxml.jackson.databind.PropertyNamingStrategies;
-import com.fasterxml.jackson.databind.annotation.JsonNaming;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.dhv.pbl5server.common_service.annotation.JsonSnakeCaseNaming;
+import org.dhv.pbl5server.common_service.annotation.NotBlankStringValidation;
 
 import java.sql.Timestamp;
 import java.util.List;
@@ -14,21 +13,17 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+@JsonSnakeCaseNaming
 public class UserBasicInfoRequest {
     @NotNull
     private Boolean accountStatus;
-    @NotBlank
-    @NotNull
+    @NotBlankStringValidation
     private String address;
-    @NotBlank
-    @NotNull
+    @NotBlankStringValidation
     private String phoneNumber;
-    @NotBlank
-    @NotNull
+    @NotBlankStringValidation
     private String firstName;
-    @NotBlank
-    @NotNull
+    @NotBlankStringValidation
     private String lastName;
     @NotNull
     private Boolean gender;

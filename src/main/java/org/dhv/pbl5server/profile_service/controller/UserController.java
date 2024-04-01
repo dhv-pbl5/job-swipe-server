@@ -4,6 +4,8 @@ import jakarta.annotation.Nullable;
 import jakarta.validation.ConstraintViolation;
 import lombok.RequiredArgsConstructor;
 import org.dhv.pbl5server.authentication_service.annotation.CurrentAccount;
+import org.dhv.pbl5server.authentication_service.annotation.PreAuthorizeSystemRoleWithoutAdmin;
+import org.dhv.pbl5server.authentication_service.annotation.PreAuthorizeUser;
 import org.dhv.pbl5server.authentication_service.entity.Account;
 import org.dhv.pbl5server.common_service.constant.CommonConstant;
 import org.dhv.pbl5server.common_service.constant.ErrorMessageConstant;
@@ -19,7 +21,6 @@ import org.dhv.pbl5server.profile_service.payload.request.UserEducationRequest;
 import org.dhv.pbl5server.profile_service.payload.request.UserExperienceRequest;
 import org.dhv.pbl5server.profile_service.service.UserService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.beanvalidation.SpringValidatorAdapter;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -36,7 +37,7 @@ public class UserController {
     private final UserService service;
     private final SpringValidatorAdapter validator;
 
-    @PreAuthorize("hasAnyAuthority('USER', 'COMPANY')")
+    @PreAuthorizeSystemRoleWithoutAdmin
     @GetMapping("")
     public ResponseEntity<ApiDataResponse> getUserProfileComponentById(
         @Nullable @RequestParam("user_id") String userId,
@@ -64,10 +65,54 @@ public class UserController {
         };
     }
 
-    @PreAuthorize("hasAuthority('USER')")
+    @PreAuthorizeUser
+    @PostMapping("")
+    @SuppressWarnings("unchecked")
+    public ResponseEntity<ApiDataResponse> insertProfileComponent(
+        @RequestParam("type") UpdateUserProfileType type,
+        @RequestBody Object body,
+        @CurrentAccount Account currentAccount
+    ) {
+        Set<ConstraintViolation<Object>> violations = null;
+        Object object = null;
+        switch (type) {
+            case AWARD:
+                object = getObjectFromUpdateApi(body, type);
+                for (var obj : (List<UserAwardRequest>) Objects.requireNonNull(object)) {
+                    violations = validator.validate(Objects.requireNonNull(obj));
+                    ErrorUtils.checkConstraintViolation(violations);
+                }
+                return ResponseEntity.ok(ApiDataResponse.successWithoutMeta(service.insertAwards(currentAccount, (List<UserAwardRequest>) object)));
+            case EDUCATION:
+                object = getObjectFromUpdateApi(body, type);
+                for (var obj : (List<UserEducationRequest>) Objects.requireNonNull(object)) {
+                    violations = validator.validate(Objects.requireNonNull(obj));
+                    ErrorUtils.checkConstraintViolation(violations);
+                }
+                return ResponseEntity.ok(ApiDataResponse.successWithoutMeta(service.insertEducations(currentAccount, (List<UserEducationRequest>) object)));
+            case EXPERIENCE:
+                object = getObjectFromUpdateApi(body, type);
+                for (var obj : (List<UserExperienceRequest>) Objects.requireNonNull(object)) {
+                    violations = validator.validate(Objects.requireNonNull(obj));
+                    ErrorUtils.checkConstraintViolation(violations);
+                }
+                return ResponseEntity.ok(ApiDataResponse.successWithoutMeta(service.insertExperiences(currentAccount, (List<UserExperienceRequest>) object)));
+            case OTHER_DESCRIPTION:
+                object = getObjectFromUpdateApi(body, type);
+                for (var obj : (List<OtherDescription>) Objects.requireNonNull(object)) {
+                    violations = validator.validate(Objects.requireNonNull(obj));
+                    ErrorUtils.checkConstraintViolation(violations);
+                }
+                return ResponseEntity.ok(ApiDataResponse.successWithoutMeta(service.insertOtherDescriptions(currentAccount, (List<OtherDescription>) object)));
+            default:
+                return ResponseEntity.badRequest().body(ApiDataResponse.builder().status(CommonConstant.FAILURE).build());
+        }
+    }
+
+    @PreAuthorizeUser
     @PatchMapping("")
     @SuppressWarnings("unchecked")
-    public ResponseEntity<ApiDataResponse> updateBasicInfo(
+    public ResponseEntity<ApiDataResponse> updateUserInfo(
         @RequestParam("type") UpdateUserProfileType type,
         @RequestBody Object body,
         @CurrentAccount Account currentAccount
@@ -113,13 +158,13 @@ public class UserController {
         return ResponseEntity.badRequest().body(ApiDataResponse.builder().status(CommonConstant.FAILURE).build());
     }
 
-    @PreAuthorize("hasAuthority('USER')")
+    @PreAuthorizeUser
     @PatchMapping("/avatar")
     public ResponseEntity<ApiDataResponse> updateAvatar(MultipartFile file, @CurrentAccount Account currentAccount) {
         return ResponseEntity.ok(ApiDataResponse.successWithoutMeta(service.updateAvatar(currentAccount, file)));
     }
 
-    @PreAuthorize("hasAuthority('USER')")
+    @PreAuthorizeUser
     @DeleteMapping("")
     public ResponseEntity<ApiDataResponse> deleteEducations(
         @RequestParam("type") UpdateUserProfileType type,

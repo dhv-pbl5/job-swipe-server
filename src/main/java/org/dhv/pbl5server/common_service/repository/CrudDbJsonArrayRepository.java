@@ -18,6 +18,8 @@ import java.util.Optional;
 public interface CrudDbJsonArrayRepository<T extends DbJsonArrayModel<K>, K> {
     Optional<T> findById(List<T> data, K id);
 
+    boolean existsById(List<T> data, K id);
+
 
     List<T> save(List<T> data, T object);
 

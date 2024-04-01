@@ -1,15 +1,14 @@
 package org.dhv.pbl5server.common_service.model;
 
-import com.fasterxml.jackson.databind.PropertyNamingStrategies;
-import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.dhv.pbl5server.common_service.annotation.JsonSnakeCaseNaming;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+@JsonSnakeCaseNaming
 public class PageInfo {
     private int currentPage;
     private int nextPage;

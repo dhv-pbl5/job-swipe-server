@@ -1,10 +1,9 @@
 package org.dhv.pbl5server.profile_service.payload.response;
 
-import com.fasterxml.jackson.databind.PropertyNamingStrategies;
-import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.dhv.pbl5server.common_service.annotation.JsonSnakeCaseNaming;
 
 import java.sql.Timestamp;
 import java.util.UUID;
@@ -12,7 +11,7 @@ import java.util.UUID;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+@JsonSnakeCaseNaming
 public class UserAwardResponse {
     private UUID id;
     private Timestamp certificateTime;

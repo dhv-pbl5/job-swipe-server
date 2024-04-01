@@ -1,19 +1,18 @@
 package org.dhv.pbl5server.authentication_service.payload.response;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.databind.PropertyNamingStrategies;
-import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.Getter;
 import lombok.Setter;
+import org.dhv.pbl5server.common_service.annotation.JsonSnakeCaseNaming;
 import org.dhv.pbl5server.constant_service.payload.ConstantResponse;
+import org.dhv.pbl5server.profile_service.payload.response.ApplicationPositionResponse;
 
 import java.sql.Timestamp;
+import java.util.List;
 import java.util.UUID;
 
 @Getter
 @Setter
-@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-@JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonSnakeCaseNaming
 public class AccountResponse {
     private UUID accountId;
     private String email;
@@ -25,4 +24,5 @@ public class AccountResponse {
     private Timestamp createdAt;
     private Timestamp updatedAt;
     private Timestamp deletedAt;
+    private List<ApplicationPositionResponse> applicationPositions;
 }

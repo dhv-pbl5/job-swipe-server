@@ -21,11 +21,10 @@ public class ApplicationSkill extends AbstractEntity {
     @GeneratedValue
     private UUID id;
     private String note;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "skill_id")
     private Constant skill;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "application_position_id")
     private ApplicationPosition applicationPosition;
-
 }

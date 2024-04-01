@@ -8,36 +8,23 @@ login_request:
       code: VAL_LOG0102
       message: Email must be a well-formed email address
   password:
-    not_blank:
+    password_validation:
       code: VAL_LOG0103
-      message: Password cannot be blank
-    length:
-      code: VAL_LOG0104
-      message: Password must be between 8 and 20 characters
+      message: Password is required. It must be between 8 and 32 characters, containing at least 1 uppercase letter, 1 lowercase letter, 1 numeric character.
 
 # RefreshTokenRequest
 refresh_token_request:
   refresh_token:
-    not_blank:
+    not_blank_string_validation:
       code: VAL_REF0101
       message: Refresh token cannot be blank
 
-# ConstantRequest
-constant_request:
-  type:
-    not_null:
-      code: VAL_CON0101
-      message: Type cannot be null
-    min:
-      code: VAL_CON0102
-      message: Type must be greater than or equal to 1
-  name:
-    not_null:
-      code: VAL_CON0103
-      message: Name cannot be null
-    not_blank:
-      code: VAL_CON0104
-      message: Name cannot be blank
+# ConstantSelectionRequest
+constant_selection_request:
+  constant_id:
+    uuid_validation:
+      code: VAL_SEL0101
+      message: Constant ID must be a valid UUID
 
 # UserRegisterRequest
 user_register_request:
@@ -49,111 +36,83 @@ user_register_request:
       code: VAL_REG0102
       message: Email cannot be blank
   password:
-    not_blank:
+    password_validation:
       code: VAL_REG0103
-      message: Password cannot be blank
-    length:
-      code: VAL_REG0104
-      message: Password must be between 8 and 20 characters
-    pattern:
-      code: VAL_REG0105
-      message: Password has at least 8 characters, containing at least 1 uppercase letter, 1 lowercase letter, 1 numeric character.
+      message: Password is required. It must be between 8 and 32 characters, containing at least 1 uppercase letter, 1 lowercase letter, 1 numeric character.
   address:
-    not_blank:
-      code: VAL_REG0106
+    not_blank_string_validation:
+      code: VAL_REG0104
       message: Address cannot be blank
-    not_null:
-      code: VAL_REG0107
-      message: Address cannot be null
   phone_number:
-    not_blank:
-      code: VAL_REG0108
+    not_blank_string_validation:
+      code: VAL_REG0105
       message: Phone number cannot be blank
-    not_null:
-      code: VAL_REG0109
-      message: Phone number cannot be null
   system_role:
     not_null:
-      code: VAL_REG0110
+      code: VAL_REG0106
       message: System role cannot be null
   date_of_birth:
     not_null:
-      code: VAL_REG0111
+      code: VAL_REG0107
       message: Date of birth cannot be null
   first_name:
-    not_blank:
-      code: VAL_REG0112
+    not_blank_string_validation:
+      code: VAL_REG0108
       message: First name cannot be blank
-    not_null:
-      code: VAL_REG0113
-      message: First name cannot be null
   last_name:
-    not_blank:
-      code: VAL_REG0114
+    not_blank_string_validation:
+      code: VAL_REG0109
       message: Last name cannot be blank
-    not_null:
-      code: VAL_REG0115
-      message: Last name cannot be null
   gender:
     not_null:
-      code: VAL_REG0116
+      code: VAL_REG0110
       message: Gender cannot be null
+  system_role.constant_id:
+    uuid_validation:
+      code: VAL_REG0111
+      message: System role constant ID must be a valid UUID
 
 # CompanyRegisterRequest
 company_register_request:
   email:
     email:
-      code: VAL_REG0101
+      code: VAL_REG0201
       message: Email must be a well-formed email address
     not_blank:
-      code: VAL_REG0102
+      code: VAL_REG0202
       message: Email cannot be blank
   password:
-    not_blank:
-      code: VAL_REG0103
-      message: Password cannot be blank
-    length:
-      code: VAL_REG0104
-      message: Password must be between 8 and 20 characters
-    pattern:
-      code: VAL_REG0105
-      message: Password has at least 8 characters, containing at least 1 uppercase letter, 1 lowercase letter, 1 numeric character.
+    password_validation:
+      code: VAL_REG0203
+      message: Password is required. It must be between 8 and 32 characters, containing at least 1 uppercase letter, 1 lowercase letter, 1 numeric character.
   address:
-    not_blank:
-      code: VAL_REG0106
+    not_blank_string_validation:
+      code: VAL_REG0204
       message: Address cannot be blank
-    not_null:
-      code: VAL_REG0107
-      message: Address cannot be null
   phone_number:
-    not_blank:
-      code: VAL_REG0108
+    not_blank_string_validation:
+      code: VAL_REG0205
       message: Phone number cannot be blank
-    not_null:
-      code: VAL_REG0109
-      message: Phone number cannot be null
   system_role:
     not_null:
-      code: VAL_REG0110
+      code: VAL_REG0206
       message: System role cannot be null
   company_name:
-    not_null:
-      code: VAL_REG0117
-      message: Company name cannot be null
-    not_blank:
-      code: VAL_REG0118
+    not_blank_string_validation:
+      code: VAL_REG0207
       message: Company name cannot be blank
   company_url:
-    not_null:
-      code: VAL_REG0119
-      message: Company URL cannot be null
-    not_blank:
-      code: VAL_REG0120
+    not_blank_string_validation:
+      code: VAL_REG0208
       message: Company URL cannot be blank
   established_date:
     not_null:
-      code: VAL_REG0121
+      code: VAL_REG0209
       message: Established date cannot be null
+  system_role.constant_id:
+    uuid_validation:
+      code: VAL_REG0210
+      message: System role constant ID must be a valid UUID
 
 # ForgotPasswordRequest
 forgot_password_request:
@@ -168,153 +127,132 @@ forgot_password_request:
 # ResetPasswordRequest
 reset_password_request:
   reset_password_token:
-    not_null:
+    not_blank_string_validation:
       code: VAL_RES0101
-      message: Reset password token cannot be null
-    not_blank:
-      code: VAL_RES0102
       message: Reset password token cannot be blank
   new_password:
-    not_blank:
-      code: VAL_RES0103
-      message: New password cannot be blank
-    length:
-      code: VAL_RES0104
-      message: New password must be between 8 and 20 characters
-    pattern:
-      code: VAL_RES0105
-      message: New password has at least 8 characters, containing at least 1 uppercase letter, 1 lowercase letter, 1 numeric character.
+    password_validation:
+      code: VAL_RES0102
+      message: New password is required. It must be between 8 and 32 characters, containing at least 1 uppercase letter, 1 lowercase letter, 1 numeric character.
   new_password_confirmation:
-    not_blank:
-      code: VAL_RES0106
-      message: New password confirmation cannot be blank
-    length:
-      code: VAL_RES0107
-      message: New password confirmation must be between 8 and 20 characters
-    pattern:
-      code: VAL_RES0108
-      message: New password confirmation has at least 8 characters, containing at least 1 uppercase letter, 1 lowercase letter, 1 numeric character.
+    password_validation:
+      code: VAL_RES0103
+      message: New password confirmation is required. It must be between 8 and 32 characters, containing at least 1 uppercase letter, 1 lowercase letter, 1 numeric character.
 
 # ChangePasswordRequest
 change_password_request:
   current_password:
-    length:
+    password_validation:
       code: VAL_CHA0101
-      message: Current password must be between 8 and 20 characters
-    pattern:
-      code: VAL_CHA0102
-      message: Current password has at least 8 characters, containing at least 1 uppercase letter, 1 lowercase letter, 1 numeric character
-    not_blank:
-      code: VAL_CHA0103
-      message: Current password cannot be blank
+      message: Current password is required. It must be between 8 and 32 characters, containing at least 1 uppercase letter, 1 lowercase letter, 1 numeric character.
   new_password:
-    not_blank:
-      code: VAL_CHA0104
-      message: New password cannot be blank
-    length:
-      code: VAL_CHA0105
-      message: New password must be between 8 and 20 characters
-    pattern:
-      code: VAL_CHA0106
-      message: New password has at least 8 characters, containing at least 1 uppercase letter, 1 lowercase letter, 1 numeric character
+    password_validation:
+      code: VAL_CHA0102
+      message: New password is required. It must be between 8 and 32 characters, containing at least 1 uppercase letter, 1 lowercase letter, 1 numeric character.
   new_password_confirmation:
-    not_blank:
-      code: VAL_CHA0107
-      message: New password confirmation cannot be blank
-    length:
-      code: VAL_CHA0108
-      message: New password confirmation must be between 8 and 20 characters
-    pattern:
-      code: VAL_CHA0109
-      message: New password confirmation has at least 8 characters, containing at least 1 uppercase letter, 1 lowercase letter, 1 numeric character
+    password_validation:
+      code: VAL_CHA0103
+      message: New password confirmation is required. It must be between 8 and 32 characters, containing at least 1 uppercase letter, 1 lowercase letter, 1 numeric character.
 
 # UserBasicInfoRequest
 user_basic_info_request:
   first_name:
-    not_blank:
+    not_blank_string_validation:
       code: VAL_BAS0101
       message: First name cannot be blank
-    not_null:
-      code: VAL_BAS0102
-      message: First name cannot be null
   last_name:
-    not_blank:
-      code: VAL_BAS0103
+    not_blank_string_validation:
+      code: VAL_BAS0102
       message: Last name cannot be blank
-    not_null:
-      code: VAL_BAS0104
-      message: Last name cannot
   account_status:
     not_null:
-      code: VAL_BAS0105
+      code: VAL_BAS0103
       message: Account status cannot be null
   address:
-    not_blank:
-      code: VAL_BAS0106
+    not_blank_string_validation:
+      code: VAL_BAS0104
       message: Address cannot be blank
-    not_null:
-      code: VAL_BAS0107
-      message: Address cannot be null
   phone_number:
-    not_blank:
-      code: VAL_BAS0108
-      message: Phone number cannot be blank
-    not_null:
-      code: VAL_BAS0109
-      message: Phone number cannot be null
+    not_blank_string_validation:
+      code: VAL_BAS0105
+      message: Phone number cannot be blanks
   gender:
     not_null:
-      code: VAL_BAS0110
+      code: VAL_BAS0106
       message: Gender cannot be null
   date_of_birth:
     not_null:
-      code: VAL_BAS0111
+      code: VAL_BAS0107
       message: Date of birth cannot be null
 
 # UserEducationRequest
 user_education_request:
   study_place:
-    not_blank:
+    not_blank_string_validation:
       code: VAL_EDU0101
       message: Study place cannot be blank
-    not_null:
-      code: VAL_EDU0102
-      message: Study place cannot be null
   study_start_time:
     not_null:
-      code: VAL_EDU0103
+      code: VAL_EDU0102
       message: Study start time cannot be null
   study_end_time:
     not_null:
-      code: VAL_EDU0104
+      code: VAL_EDU0103
       message: Study end time cannot be null
   majority:
-    not_null:
-      code: VAL_EDU0106
-      message: Majority cannot be null
-    not_blank:
-      code: VAL_EDU0107
+    not_blank_string_validation:
+      code: VAL_EDU0104
       message: Majority cannot be blank
   cpa:
     not_null:
-      code: VAL_EDU0108
+      code: VAL_EDU0105
       message: CPA cannot be null
 
 # OtherDescription
 other_description:
   title:
-    not_blank:
+    not_blank_string_validation:
       code: VAL_OTH0101
       message: Title cannot be blank
-    not_null:
-      code: VAL_OTH0102
-      message: Title cannot be null
   description:
-    not_blank:
-      code: VAL_OTH0103
+    not_blank_string_validation:
+      code: VAL_OTH0102
       message: Description cannot be blank
-    not_null:
-      code: VAL_OTH0104
-      message: Description cannot be null
 
+# ApplicationPositionRequest
+application_position_request:
+  status:
+    not_null:
+      code: VAL_APP0101
+      message: Status cannot be null
+  apply_position:
+    not_null:
+      code: VAL_APP0102
+      message: Apply position cannot be null
+  apply_position.constant_id:
+    uuid_validation:
+      code: VAL_APP0103
+      message: Apply position constant ID must be a valid UUID
+  skills:
+    not_null:
+      code: VAL_APP0104
+      message: Skills cannot be null
+    not_empty:
+      code: VAL_APP0105
+      message: Skills cannot be empty
+
+# ApplicationSkillRequest
+application_skill_request:
+  note:
+    not_blank_string_validation:
+      code: VAL_SKI0101
+      message: Note cannot be blank
+  skill:
+    not_null:
+      code: VAL_SKI0102
+      message: Skill cannot be null
+  skill.constant_id:
+    uuid_validation:
+      code: VAL_SKI0103
+      message: Skill constant ID must be a valid UUID
 
