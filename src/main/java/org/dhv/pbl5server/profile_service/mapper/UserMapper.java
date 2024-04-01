@@ -21,6 +21,8 @@ import java.util.List;
         EducationMapper.class,
         AwardMapper.class,
         ExperienceMapper.class,
+        ApplicationPositionMapper.class,
+        ApplicationSkillMapper.class
     }
 )
 public interface UserMapper {
@@ -33,7 +35,7 @@ public interface UserMapper {
     @Mapping(source = "user.account.systemRole", target = "systemRole")
     @Mapping(source = "user.account.accountId", target = "accountId")
     @Mapping(source = "user.account.deletedAt", target = "deletedAt")
-    @Mapping(source = "user.account.applicationPositions", target = "applicationPositions", ignore = true)
+    @Mapping(source = "user.account.applicationPositions", target = "applicationPositions")
     @Mapping(source = "user.others", target = "others")
     @Mapping(source = "user.educations", target = "educations")
     @Mapping(source = "user.awards", target = "awards")

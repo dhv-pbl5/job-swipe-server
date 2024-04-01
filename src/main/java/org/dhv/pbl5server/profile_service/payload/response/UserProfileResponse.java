@@ -2,7 +2,6 @@ package org.dhv.pbl5server.profile_service.payload.response;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.dhv.pbl5server.authentication_service.entity.ApplicationPosition;
 import org.dhv.pbl5server.common_service.annotation.JsonSnakeCaseNaming;
 import org.dhv.pbl5server.constant_service.payload.ConstantResponse;
 import org.dhv.pbl5server.profile_service.model.OtherDescription;
@@ -22,7 +21,7 @@ public class UserProfileResponse {
     private String avatar;
     private String phoneNumber;
     private ConstantResponse systemRole;
-    private List<ApplicationPosition> applicationPositions;
+    private List<ApplicationPositionResponse> applicationPositions;
     // User entity data
     private UUID accountId;
     private String firstName;

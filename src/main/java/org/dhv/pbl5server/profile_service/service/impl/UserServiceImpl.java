@@ -29,6 +29,7 @@ import org.dhv.pbl5server.profile_service.repository.UserAwardRepository;
 import org.dhv.pbl5server.profile_service.repository.UserEducationRepository;
 import org.dhv.pbl5server.profile_service.repository.UserExperienceRepository;
 import org.dhv.pbl5server.profile_service.repository.UserRepository;
+import org.dhv.pbl5server.profile_service.service.ApplicationPositionService;
 import org.dhv.pbl5server.profile_service.service.UserService;
 import org.dhv.pbl5server.s3_service.service.S3Service;
 import org.springframework.stereotype.Service;
@@ -51,6 +52,7 @@ public class UserServiceImpl implements UserService {
     private final AwardMapper awardMapper;
     private final ExperienceMapper experienceMapper;
     private final S3Service s3Service;
+    private final ApplicationPositionService applicationPositionService;
 
     @Override
     public UserProfileResponse getUserProfile(Account account) {
@@ -93,13 +95,13 @@ public class UserServiceImpl implements UserService {
     public UserProfileResponse insertEducations(Account account, List<UserEducationRequest> request) {
         var user = repository.findById(account.getAccountId())
             .orElseThrow(() -> new NotFoundObjectException(ErrorMessageConstant.USER_NOT_FOUND));
-        // Remove id if exist
-        request.forEach(e -> e.setId(null));
         var updatedUser = userMapper.toUserWithinListEducations(user, request);
         for (var education : updatedUser.getEducations()) {
             if (education.getStudyEndTime().before(education.getStudyStartTime()))
                 throw new NotFoundObjectException(ErrorMessageConstant.EDUCATION_TIME_INVALID);
             education.setUser(user);
+            // Remove id if exist
+            education.setId(null);
         }
         repository.save(updatedUser);
         return userMapper.toUserProfileResponse(getAllDataByAccountId(account.getAccountId()));
@@ -109,13 +111,13 @@ public class UserServiceImpl implements UserService {
     public UserProfileResponse insertExperiences(Account account, List<UserExperienceRequest> request) {
         var user = repository.findById(account.getAccountId())
             .orElseThrow(() -> new NotFoundObjectException(ErrorMessageConstant.USER_NOT_FOUND));
-        // Remove id if exist
-        request.forEach(e -> e.setId(null));
         var updatedUser = userMapper.toUserWithinListExperiences(user, request);
         for (var experience : updatedUser.getExperiences()) {
             if (experience.getExperienceEndTime().before(experience.getExperienceStartTime()))
                 throw new NotFoundObjectException(ErrorMessageConstant.EXPERIENCE_TIME_INVALID);
             experience.setUser(user);
+            // Remove id if exist
+            experience.setId(null);
         }
         repository.save(updatedUser);
         return userMapper.toUserProfileResponse(getAllDataByAccountId(account.getAccountId()));
@@ -134,13 +136,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserProfileResponse insertAwards(Account account, List<UserAwardRequest> request) {
-        // Remove id if exist
-        request.forEach(e -> e.setId(null));
         var user = repository.fetchAllDataEducationById(account.getAccountId())
             .orElseThrow(() -> new NotFoundObjectException(ErrorMessageConstant.USER_NOT_FOUND));
         var updatedUser = userMapper.toUserWithinListAwards(user, request);
         for (var award : updatedUser.getAwards()) {
             award.setUser(user);
+            // Remove id if exist
+            award.setId(null);
         }
         repository.save(updatedUser);
         return userMapper.toUserProfileResponse(getAllDataByAccountId(account.getAccountId()));
@@ -296,6 +298,8 @@ public class UserServiceImpl implements UserService {
         user.setAwards(repository.fetchAllDataAwardById(accountId)
             .orElseThrow(() -> new NotFoundObjectException(ErrorMessageConstant.USER_NOT_FOUND))
             .getAwards());
+        // Account with application position
+        user.setAccount(applicationPositionService.getAccountWithAllApplicationPositions(accountId));
         return user;
     }
 

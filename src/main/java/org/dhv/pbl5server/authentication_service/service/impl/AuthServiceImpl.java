@@ -4,13 +4,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.dhv.pbl5server.authentication_service.entity.Account;
 import org.dhv.pbl5server.authentication_service.mapper.AccountMapper;
-import org.dhv.pbl5server.authentication_service.mapper.ApplicationPositionMapper;
 import org.dhv.pbl5server.authentication_service.payload.request.*;
 import org.dhv.pbl5server.authentication_service.payload.response.AccountResponse;
 import org.dhv.pbl5server.authentication_service.payload.response.CredentialResponse;
 import org.dhv.pbl5server.authentication_service.repository.AccountRepository;
-import org.dhv.pbl5server.authentication_service.repository.ApplicationPositionRepository;
-import org.dhv.pbl5server.authentication_service.repository.ApplicationSkillRepository;
 import org.dhv.pbl5server.authentication_service.service.AuthService;
 import org.dhv.pbl5server.authentication_service.service.JwtService;
 import org.dhv.pbl5server.common_service.constant.ErrorMessageConstant;
@@ -44,10 +41,7 @@ public class AuthServiceImpl implements AuthService {
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
     private final AccountMapper mapper;
-    private final ApplicationPositionMapper applicationPositionMapper;
     private final ConstantRepository constantRepository;
-    private final ApplicationPositionRepository applicationPositionRepository;
-    private final ApplicationSkillRepository applicationSkillRepository;
     private final PasswordEncoder passwordEncoder;
 
     public CredentialResponse login(LoginRequest loginRequest, boolean isAdmin) {

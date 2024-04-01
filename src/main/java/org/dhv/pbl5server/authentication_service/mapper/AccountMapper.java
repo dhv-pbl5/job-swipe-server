@@ -1,12 +1,14 @@
 package org.dhv.pbl5server.authentication_service.mapper;
 
 import org.dhv.pbl5server.authentication_service.entity.Account;
-import org.dhv.pbl5server.authentication_service.payload.request.ApplicationPositionRequest;
 import org.dhv.pbl5server.authentication_service.payload.request.CompanyRegisterRequest;
 import org.dhv.pbl5server.authentication_service.payload.request.UserRegisterRequest;
 import org.dhv.pbl5server.authentication_service.payload.response.AccountResponse;
 import org.dhv.pbl5server.common_service.config.SpringMapStructConfig;
 import org.dhv.pbl5server.constant_service.mapper.ConstantMapper;
+import org.dhv.pbl5server.profile_service.mapper.ApplicationPositionMapper;
+import org.dhv.pbl5server.profile_service.mapper.ApplicationSkillMapper;
+import org.dhv.pbl5server.profile_service.payload.request.ApplicationPositionRequest;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 

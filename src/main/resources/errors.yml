@@ -79,6 +79,22 @@ system_role_not_found:
 constant_type_must_be_number:
   code: ERR_CON0103
   message: Constant type must be a number!
+constant_type_must_be_system_role:
+  code: ERR_CON0104
+  message: Constant type must be a system role!
+constant_type_must_be_apply_position:
+  code: ERR_CON0105
+  message: Constant type must be an apply position!
+constant_type_must_be_apply_skill:
+  code: ERR_CON0106
+  message: Constant type must be an apply skill!
+constant_type_must_be_experience:
+  code: ERR_CON0107
+  message: Constant type must be an experience!
+constant_type_must_be_notification:
+  code: ERR_CON0108
+  message: Constant type must be a notification!
+
 
 # Register
 email_already_exists:
@@ -201,3 +217,14 @@ delete_ids_request_have_one_not_found:
 application_position_not_found:
   code: ERR_APP0101
   message: Application position not found!
+application_position_id_is_required:
+  code: ERR_APP0102
+  message: Application position id is required!
+
+# ApplicationSkill
+application_skill_not_found:
+  code: ERR_APP0201
+  message: Application skill not found!
+application_skill_id_is_required:
+  code: ERR_APP0202
+  message: Application skill id is required!

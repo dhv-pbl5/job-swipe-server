@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.dhv.pbl5server.common_service.annotation.JsonSnakeCaseNaming;
 import org.dhv.pbl5server.constant_service.payload.ConstantResponse;
+import org.dhv.pbl5server.profile_service.payload.response.ApplicationPositionResponse;
 
 import java.sql.Timestamp;
 import java.util.List;

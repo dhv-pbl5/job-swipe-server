@@ -47,6 +47,11 @@ public final class ErrorMessageConstant {
     public static final String CONSTANT_NOT_FOUND = "constant_not_found";
     public static final String SYSTEM_ROLE_NOT_FOUND = "system_role_not_found";
     public static final String CONSTANT_TYPE_MUST_BE_NUMBER = "constant_type_must_be_number";
+    public static final String CONSTANT_TYPE_MUST_BE_SYSTEM_ROLE = "constant_type_must_be_system_role";
+    public static final String CONSTANT_TYPE_MUST_BE_APPLY_POSITION = "constant_type_must_be_apply_position";
+    public static final String CONSTANT_TYPE_MUST_BE_APPLY_SKILL = "constant_type_must_be_apply_skill";
+    public static final String CONSTANT_TYPE_MUST_BE_EXPERIENCE = "constant_type_must_be_experience";
+    public static final String CONSTANT_TYPE_MUST_BE_NOTIFICATION = "constant_type_must_be_notification";
 
     /*
         Register
@@ -117,6 +122,13 @@ public final class ErrorMessageConstant {
        Application Position
     */
     public static final String APPLICATION_POSITION_NOT_FOUND = "application_position_not_found";
+    public static final String APPLICATION_POSITION_ID_REQUIRED = "application_position_id_is_required";
+
+    /*
+       Application Position
+    */
+    public static final String APPLICATION_SKILL_NOT_FOUND = "application_skill_not_found";
+    public static final String APPLICATION_SKILL_ID_REQUIRED = "application_skill_id_is_required";
 
     private ErrorMessageConstant() {
     }

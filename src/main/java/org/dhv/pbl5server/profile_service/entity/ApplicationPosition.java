@@ -1,10 +1,11 @@
-package org.dhv.pbl5server.authentication_service.entity;
+package org.dhv.pbl5server.profile_service.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
+import org.dhv.pbl5server.authentication_service.entity.Account;
 import org.dhv.pbl5server.common_service.model.AbstractEntity;
 import org.dhv.pbl5server.constant_service.entity.Constant;
 

@@ -1,4 +1,4 @@
-package org.dhv.pbl5server.authentication_service.entity;
+package org.dhv.pbl5server.profile_service.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;
