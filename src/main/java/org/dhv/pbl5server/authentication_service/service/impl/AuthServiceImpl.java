@@ -169,28 +169,6 @@ public class AuthServiceImpl implements AuthService {
         repository.save(currentAccount);
     }
 
-    @Override
-    public AccountResponse activateAccount(String accountId) {
-        Account account = repository.findById(UUID.fromString(accountId))
-            .orElseThrow(() -> new NotFoundObjectException(ErrorMessageConstant.ACCOUNT_NOT_FOUND));
-        if (account.getDeletedAt() == null)
-            throw new BadRequestException(ErrorMessageConstant.ACCOUNT_IS_ACTIVE);
-        account.setDeletedAt(null);
-        account.setUpdatedAt(CommonUtils.getCurrentTimestamp());
-        return mapper.toAccountResponse(repository.save(account));
-    }
-
-    @Override
-    public AccountResponse deactivateAccount(String accountId) {
-        Account account = repository.findById(UUID.fromString(accountId))
-            .orElseThrow(() -> new NotFoundObjectException(ErrorMessageConstant.ACCOUNT_NOT_FOUND));
-        if (account.getDeletedAt() != null)
-            throw new BadRequestException(ErrorMessageConstant.ACCOUNT_IS_NOT_ACTIVE);
-        account.setDeletedAt(CommonUtils.getCurrentTimestamp());
-        account.setUpdatedAt(CommonUtils.getCurrentTimestamp());
-        return mapper.toAccountResponse(repository.save(account));
-    }
-
     private Constant checkValidSystemRole(String email, String roleId) {
         var roleIdUUID = UUID.fromString(roleId);
         // Check if the email is already used

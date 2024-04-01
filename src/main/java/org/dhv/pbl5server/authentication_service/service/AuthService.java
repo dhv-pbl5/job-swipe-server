@@ -27,9 +27,5 @@ public interface AuthService {
 
     void changePassword(ChangePasswordRequest request, Account currentAccount);
 
-    AccountResponse activateAccount(String accountId);
-
-    AccountResponse deactivateAccount(String accountId);
-
 
 }

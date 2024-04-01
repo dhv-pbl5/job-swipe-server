@@ -303,6 +303,16 @@ public class UserServiceImpl implements UserService {
         return user;
     }
 
+    @Override
+    public List<UserProfileResponse> getAllData() {
+        List<User> users = repository.findAll();
+        return users.stream()
+            .map(u -> userMapper.toUserProfileResponse(
+                getAllDataByAccountId(u.getAccountId()
+                ))
+            ).toList();
+    }
+
     private boolean checkDeleteIdsRequest(List<UUID> data, List<String> ids) {
         for (var id : ids) {
             if (!data.contains(UUID.fromString(id)))

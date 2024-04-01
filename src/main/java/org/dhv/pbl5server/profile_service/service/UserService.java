@@ -59,4 +59,6 @@ public interface UserService {
 
 
     User getAllDataByAccountId(UUID accountId);
+
+    List<UserProfileResponse> getAllData();
 }
