@@ -130,6 +130,11 @@ public final class ErrorMessageConstant {
     public static final String APPLICATION_SKILL_NOT_FOUND = "application_skill_not_found";
     public static final String APPLICATION_SKILL_ID_REQUIRED = "application_skill_id_is_required";
 
+    /*
+       Company profile
+    */
+    public static final String COMPANY_PROFILE_NOT_FOUND = "company_profile_not_found";
+
     private ErrorMessageConstant() {
     }
 }

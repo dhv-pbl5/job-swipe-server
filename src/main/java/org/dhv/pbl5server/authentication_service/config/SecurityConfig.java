@@ -30,6 +30,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
+            .cors(AbstractHttpConfigurer::disable)
             .csrf(AbstractHttpConfigurer::disable)
             .securityMatcher(new AntPathRequestMatcher("/api/**"))
             .authorizeHttpRequests(authorize -> authorize
@@ -42,7 +43,6 @@ public class SecurityConfig {
             .httpBasic(Customizer.withDefaults());
         return http.build();
     }
-
 
     @Bean(BeanIds.AUTHENTICATION_MANAGER)
     public AuthenticationManager authenticationManagerBean() throws Exception {
