@@ -24,6 +24,7 @@ public interface CompanyService {
 
     OtherDescription getOtherDescriptionById(String companyId, String id);
 
-
     Company getAllDataByAccountId(UUID accountId);
+
+    List<CompanyProfileResponse> getAllData();
 }

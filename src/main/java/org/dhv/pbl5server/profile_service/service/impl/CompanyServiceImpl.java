@@ -100,6 +100,16 @@ public class CompanyServiceImpl implements CompanyService {
         return company;
     }
 
+    @Override
+    public List<CompanyProfileResponse> getAllData() {
+        List<Company> companies = repository.findAll();
+        return companies.stream()
+            .map(u -> mapper.toCompanyResponse(
+                getAllDataByAccountId(u.getAccountId()
+                ))
+            ).toList();
+    }
+
     private boolean checkDeleteIdsRequest(List<UUID> data, List<String> ids) {
         for (var id : ids) {
             if (!data.contains(UUID.fromString(id)))
