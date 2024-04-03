@@ -5,7 +5,9 @@ import org.dhv.pbl5server.authentication_service.entity.Account;
 import org.dhv.pbl5server.common_service.constant.ErrorMessageConstant;
 import org.dhv.pbl5server.common_service.exception.BadRequestException;
 import org.dhv.pbl5server.common_service.exception.NotFoundObjectException;
+import org.dhv.pbl5server.common_service.model.ApiDataResponse;
 import org.dhv.pbl5server.common_service.repository.CrudDbJsonArrayRepository;
+import org.dhv.pbl5server.common_service.utils.PageUtils;
 import org.dhv.pbl5server.profile_service.entity.Company;
 import org.dhv.pbl5server.profile_service.mapper.CompanyMapper;
 import org.dhv.pbl5server.profile_service.model.OtherDescription;
@@ -14,6 +16,8 @@ import org.dhv.pbl5server.profile_service.payload.response.CompanyProfileRespons
 import org.dhv.pbl5server.profile_service.repository.CompanyRepository;
 import org.dhv.pbl5server.profile_service.service.ApplicationPositionService;
 import org.dhv.pbl5server.profile_service.service.CompanyService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -101,13 +105,14 @@ public class CompanyServiceImpl implements CompanyService {
     }
 
     @Override
-    public List<CompanyProfileResponse> getAllData() {
-        List<Company> companies = repository.findAll();
-        return companies.stream()
-            .map(u -> mapper.toCompanyResponse(
-                getAllDataByAccountId(u.getAccountId()
-                ))
-            ).toList();
+    public ApiDataResponse getAllData(Pageable pageable) {
+        Page<Company> page = repository.findAll(pageable);
+        return ApiDataResponse.success(page
+                .getContent()
+                .stream()
+                .map(mapper::toCompanyResponseWithBasicInfoOnly)
+                .toList(),
+            PageUtils.makePageInfo(page));
     }
 
     private boolean checkDeleteIdsRequest(List<UUID> data, List<String> ids) {

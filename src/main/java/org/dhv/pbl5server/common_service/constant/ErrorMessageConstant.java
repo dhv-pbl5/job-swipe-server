@@ -3,6 +3,7 @@ package org.dhv.pbl5server.common_service.constant;
 public final class ErrorMessageConstant {
 
     public static final String INTERNAL_SERVER_ERROR_CODE = "ERR_SER0101";
+    public static final String BAD_REQUEST_ERROR_CODE = "ERR_SER0102";
 
     /*
         Common

@@ -8,6 +8,7 @@ import org.dhv.pbl5server.profile_service.payload.request.ApplicationSkillReques
 import org.dhv.pbl5server.profile_service.payload.response.ApplicationPositionResponse;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.Named;
 
 import java.util.List;
 
@@ -28,9 +29,14 @@ public interface ApplicationPositionMapper {
     ApplicationPosition toApplicationPosition(ApplicationPosition applicationPosition, List<ApplicationSkillRequest> request);
 
 
+    @Named("toApplicationPositionResponse")
     @Mapping(source = "skills", target = "skills")
     @Mapping(source = "applyPosition", target = "applyPosition")
     ApplicationPositionResponse toApplicationPositionResponse(ApplicationPosition applicationPosition);
+
+    @Mapping(source = "skills", target = "skills")
+    @Mapping(source = "applyPosition", target = "applyPosition", ignore = true)
+    ApplicationPositionResponse toApplicationPositionResponseWithBasicInfoOnly(ApplicationPosition applicationPosition);
 
 
 }

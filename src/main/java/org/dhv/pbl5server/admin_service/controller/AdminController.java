@@ -1,5 +1,6 @@
 package org.dhv.pbl5server.admin_service.controller;
 
+import jakarta.annotation.Nullable;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
@@ -9,7 +10,9 @@ import org.dhv.pbl5server.authentication_service.annotation.PreAuthorizeAdmin;
 import org.dhv.pbl5server.authentication_service.payload.request.LoginRequest;
 import org.dhv.pbl5server.authentication_service.payload.request.RefreshTokenRequest;
 import org.dhv.pbl5server.authentication_service.service.AuthService;
+import org.dhv.pbl5server.common_service.enums.DataSortOrder;
 import org.dhv.pbl5server.common_service.model.ApiDataResponse;
+import org.dhv.pbl5server.common_service.utils.PageUtils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -45,11 +48,16 @@ public class AdminController {
     @PreAuthorizeAdmin
     @GetMapping("")
     public ResponseEntity<ApiDataResponse> getAll(
-        @NotNull @RequestParam GetAllByType type
+        @NotNull @RequestParam GetAllByType type,
+        @Nullable @RequestParam("page") Integer page,
+        @Nullable @RequestParam("paging") Integer paging,
+        @Nullable @RequestParam("sort_by") String sortBy,
+        @Nullable @RequestParam("order") DataSortOrder order
     ) {
+        var pageRequest = PageUtils.makePageRequest(sortBy, order, page, paging);
         return switch (type) {
-            case COMPANY -> ResponseEntity.ok(ApiDataResponse.successWithoutMeta(service.getAllCompany()));
-            case USER -> ResponseEntity.ok(ApiDataResponse.successWithoutMeta(service.getAllUser()));
+            case COMPANY -> ResponseEntity.ok(ApiDataResponse.successWithoutMeta(service.getAllCompany(pageRequest)));
+            case USER -> ResponseEntity.ok(ApiDataResponse.successWithoutMeta(service.getAllUser(pageRequest)));
         };
     }
 }

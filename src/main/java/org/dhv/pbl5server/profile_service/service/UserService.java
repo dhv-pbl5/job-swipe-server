@@ -1,6 +1,7 @@
 package org.dhv.pbl5server.profile_service.service;
 
 import org.dhv.pbl5server.authentication_service.entity.Account;
+import org.dhv.pbl5server.common_service.model.ApiDataResponse;
 import org.dhv.pbl5server.profile_service.entity.User;
 import org.dhv.pbl5server.profile_service.model.OtherDescription;
 import org.dhv.pbl5server.profile_service.payload.request.UserAwardRequest;
@@ -11,6 +12,7 @@ import org.dhv.pbl5server.profile_service.payload.response.UserAwardResponse;
 import org.dhv.pbl5server.profile_service.payload.response.UserEducationResponse;
 import org.dhv.pbl5server.profile_service.payload.response.UserExperienceResponse;
 import org.dhv.pbl5server.profile_service.payload.response.UserProfileResponse;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -21,9 +23,15 @@ public interface UserService {
 
     UserProfileResponse getUserProfileById(String id);
 
+    ApiDataResponse getListAwardByUserId(String userId, Pageable pageable);
+
     UserAwardResponse getUserAwardById(String id);
 
+    ApiDataResponse getListEducationByUserId(String userId, Pageable pageable);
+
     UserEducationResponse getUserEducationById(String id);
+
+    ApiDataResponse getListExperienceByUserId(String userId, Pageable pageable);
 
     UserExperienceResponse getUserExperienceById(String id);
 
@@ -60,5 +68,5 @@ public interface UserService {
 
     User getAllDataByAccountId(UUID accountId);
 
-    List<UserProfileResponse> getAllData();
+    ApiDataResponse getAllData(Pageable pageable);
 }

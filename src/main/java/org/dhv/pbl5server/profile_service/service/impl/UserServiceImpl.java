@@ -6,8 +6,10 @@ import org.dhv.pbl5server.authentication_service.repository.AccountRepository;
 import org.dhv.pbl5server.common_service.constant.ErrorMessageConstant;
 import org.dhv.pbl5server.common_service.exception.BadRequestException;
 import org.dhv.pbl5server.common_service.exception.NotFoundObjectException;
+import org.dhv.pbl5server.common_service.model.ApiDataResponse;
 import org.dhv.pbl5server.common_service.repository.CrudDbJsonArrayRepository;
 import org.dhv.pbl5server.common_service.utils.CommonUtils;
+import org.dhv.pbl5server.common_service.utils.PageUtils;
 import org.dhv.pbl5server.profile_service.entity.User;
 import org.dhv.pbl5server.profile_service.entity.UserAward;
 import org.dhv.pbl5server.profile_service.entity.UserEducation;
@@ -32,6 +34,8 @@ import org.dhv.pbl5server.profile_service.repository.UserRepository;
 import org.dhv.pbl5server.profile_service.service.ApplicationPositionService;
 import org.dhv.pbl5server.profile_service.service.UserService;
 import org.dhv.pbl5server.s3_service.service.S3Service;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -66,15 +70,48 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public ApiDataResponse getListAwardByUserId(String userId, Pageable pageable) {
+        var page = awardRepository.findAllByUserId(UUID.fromString(userId), pageable);
+        return ApiDataResponse.success(page
+                .getContent()
+                .stream()
+                .map(awardMapper::toUserAwardResponse)
+                .toList(),
+            PageUtils.makePageInfo(page));
+    }
+
+    @Override
     public UserAwardResponse getUserAwardById(String id) {
         return awardMapper.toUserAwardResponse(awardRepository.findById(UUID.fromString(id))
             .orElseThrow(() -> new NotFoundObjectException(ErrorMessageConstant.AWARD_NOT_FOUND)));
     }
 
     @Override
+    public ApiDataResponse getListEducationByUserId(String userId, Pageable pageable) {
+        var page = educationRepository.findAllByUserId(UUID.fromString(userId), pageable);
+        return ApiDataResponse.success(page
+                .getContent()
+                .stream()
+                .map(educationMapper::toUserEducationResponse)
+                .toList(),
+            PageUtils.makePageInfo(page));
+    }
+
+    @Override
     public UserEducationResponse getUserEducationById(String id) {
         return educationMapper.toUserEducationResponse(educationRepository.findById(UUID.fromString(id))
             .orElseThrow(() -> new NotFoundObjectException(ErrorMessageConstant.EDUCATION_NOT_FOUND)));
+    }
+
+    @Override
+    public ApiDataResponse getListExperienceByUserId(String userId, Pageable pageable) {
+        var page = experienceRepository.findAllByUserId(UUID.fromString(userId), pageable);
+        return ApiDataResponse.success(page
+                .getContent()
+                .stream()
+                .map(experienceMapper::toUserExperienceResponse)
+                .toList(),
+            PageUtils.makePageInfo(page));
     }
 
     @Override
@@ -304,13 +341,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<UserProfileResponse> getAllData() {
-        List<User> users = repository.findAll();
-        return users.stream()
-            .map(u -> userMapper.toUserProfileResponse(
-                getAllDataByAccountId(u.getAccountId()
-                ))
-            ).toList();
+    public ApiDataResponse getAllData(Pageable pageable) {
+        Page<User> page = repository.findAll(pageable);
+        return ApiDataResponse.success(page
+                .getContent()
+                .stream()
+                .map(userMapper::toUserProfileResponseWithBasicInfoOnly)
+                .toList(),
+            PageUtils.makePageInfo(page));
     }
 
     private boolean checkDeleteIdsRequest(List<UUID> data, List<String> ids) {
