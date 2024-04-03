@@ -2,8 +2,11 @@
 internal_server_error:
   code: ERR_SER0101
   message: Internal server error!
-page_not_found:
+bad_request_error:
   code: ERR_SER0102
+  message: Bad request error!
+page_not_found:
+  code: ERR_SER0103
   message: Page was not found!
 forbidden:
   code: ERR_AUTH0101

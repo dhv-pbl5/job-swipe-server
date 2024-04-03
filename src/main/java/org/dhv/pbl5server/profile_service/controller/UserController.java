@@ -9,11 +9,13 @@ import org.dhv.pbl5server.authentication_service.annotation.PreAuthorizeUser;
 import org.dhv.pbl5server.authentication_service.entity.Account;
 import org.dhv.pbl5server.common_service.constant.CommonConstant;
 import org.dhv.pbl5server.common_service.constant.ErrorMessageConstant;
+import org.dhv.pbl5server.common_service.enums.DataSortOrder;
 import org.dhv.pbl5server.common_service.exception.BadRequestException;
 import org.dhv.pbl5server.common_service.model.ApiDataResponse;
 import org.dhv.pbl5server.common_service.utils.CommonUtils;
 import org.dhv.pbl5server.common_service.utils.ErrorUtils;
-import org.dhv.pbl5server.profile_service.enums.UpdateUserProfileType;
+import org.dhv.pbl5server.common_service.utils.PageUtils;
+import org.dhv.pbl5server.profile_service.enums.UserProfileRequestType;
 import org.dhv.pbl5server.profile_service.model.OtherDescription;
 import org.dhv.pbl5server.profile_service.payload.request.UserAwardRequest;
 import org.dhv.pbl5server.profile_service.payload.request.UserBasicInfoRequest;
@@ -42,18 +44,18 @@ public class UserController {
     public ResponseEntity<ApiDataResponse> getUserProfileComponentById(
         @Nullable @RequestParam("user_id") String userId,
         @Nullable @RequestParam("component_id") String id,
-        @Nullable @RequestParam UpdateUserProfileType type,
+        @Nullable @RequestParam UserProfileRequestType type,
         @CurrentAccount Account currentAccount
     ) {
         if (userId == null && id == null && type == null)
             return ResponseEntity.ok(ApiDataResponse.successWithoutMeta(service.getUserProfile(currentAccount)));
-        if ((type == null || type == UpdateUserProfileType.BASIC_INFO) && userId == null)
+        if ((type == null || type == UserProfileRequestType.BASIC_INFO) && userId == null)
             throw new BadRequestException(ErrorMessageConstant.USER_ID_IS_REQUIRED);
         if (type == null)
             return ResponseEntity.ok(ApiDataResponse.successWithoutMeta(service.getUserProfileById(userId)));
-        if (type == UpdateUserProfileType.OTHER_DESCRIPTION && userId == null)
+        if (type == UserProfileRequestType.OTHER_DESCRIPTION && userId == null)
             throw new BadRequestException(ErrorMessageConstant.OTHER_DESCRIPTION_USER_ID_IS_REQUIRED);
-        if (type != UpdateUserProfileType.BASIC_INFO && id == null)
+        if (type != UserProfileRequestType.BASIC_INFO && id == null)
             throw new BadRequestException(ErrorMessageConstant.ID_IS_REQUIRED);
         return switch (type) {
             case AWARD -> ResponseEntity.ok(ApiDataResponse.successWithoutMeta(service.getUserAwardById(id)));
@@ -65,11 +67,31 @@ public class UserController {
         };
     }
 
+    @PreAuthorizeSystemRoleWithoutAdmin
+    @GetMapping("/{user_id}")
+    public ResponseEntity<ApiDataResponse> getAllByUserId(
+        @PathVariable("user_id") String userId,
+        @RequestParam UserProfileRequestType type,
+        @Nullable @RequestParam("page") Integer page,
+        @Nullable @RequestParam("paging") Integer paging,
+        @Nullable @RequestParam("sort_by") String sortBy,
+        @Nullable @RequestParam("order") DataSortOrder order,
+        @CurrentAccount Account currentAccount
+    ) {
+        var pageRequest = PageUtils.makePageRequest(sortBy, order, page, paging);
+        return switch (type) {
+            case AWARD -> ResponseEntity.ok(service.getListAwardByUserId(userId, pageRequest));
+            case EXPERIENCE -> ResponseEntity.ok(service.getListExperienceByUserId(userId, pageRequest));
+            case EDUCATION -> ResponseEntity.ok(service.getListEducationByUserId(userId, pageRequest));
+            default -> ResponseEntity.ok(ApiDataResponse.successWithoutMeta(List.of()));
+        };
+    }
+
     @PreAuthorizeUser
     @PostMapping("")
     @SuppressWarnings("unchecked")
     public ResponseEntity<ApiDataResponse> insertProfileComponent(
-        @RequestParam("type") UpdateUserProfileType type,
+        @RequestParam("type") UserProfileRequestType type,
         @RequestBody Object body,
         @CurrentAccount Account currentAccount
     ) {
@@ -113,7 +135,7 @@ public class UserController {
     @PatchMapping("")
     @SuppressWarnings("unchecked")
     public ResponseEntity<ApiDataResponse> updateUserInfo(
-        @RequestParam("type") UpdateUserProfileType type,
+        @RequestParam("type") UserProfileRequestType type,
         @RequestBody Object body,
         @CurrentAccount Account currentAccount
     ) {
@@ -167,7 +189,7 @@ public class UserController {
     @PreAuthorizeUser
     @DeleteMapping("")
     public ResponseEntity<ApiDataResponse> deleteEducations(
-        @RequestParam("type") UpdateUserProfileType type,
+        @RequestParam("type") UserProfileRequestType type,
         @RequestBody List<String> ids,
         @CurrentAccount Account currentAccount
     ) {
@@ -190,7 +212,7 @@ public class UserController {
 
 
     @SuppressWarnings("unchecked")
-    private Object getObjectFromUpdateApi(Object body, UpdateUserProfileType type) {
+    private Object getObjectFromUpdateApi(Object body, UserProfileRequestType type) {
         Object object = null;
         switch (type) {
             case BASIC_INFO:

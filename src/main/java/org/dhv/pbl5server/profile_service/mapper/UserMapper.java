@@ -35,12 +35,27 @@ public interface UserMapper {
     @Mapping(source = "user.account.systemRole", target = "systemRole")
     @Mapping(source = "user.account.accountId", target = "accountId")
     @Mapping(source = "user.account.deletedAt", target = "deletedAt")
-    @Mapping(source = "user.account.applicationPositions", target = "applicationPositions")
+    @Mapping(source = "user.account.applicationPositions", target = "applicationPositions", qualifiedByName = "toApplicationPositionResponse")
     @Mapping(source = "user.others", target = "others")
     @Mapping(source = "user.educations", target = "educations")
     @Mapping(source = "user.awards", target = "awards")
     @Mapping(source = "user.experiences", target = "experiences")
     UserProfileResponse toUserProfileResponse(User user);
+
+    @Mapping(source = "user.account.email", target = "email")
+    @Mapping(source = "user.account.accountStatus", target = "accountStatus")
+    @Mapping(source = "user.account.address", target = "address")
+    @Mapping(source = "user.account.avatar", target = "avatar")
+    @Mapping(source = "user.account.phoneNumber", target = "phoneNumber")
+    @Mapping(source = "user.account.systemRole", target = "systemRole")
+    @Mapping(source = "user.account.accountId", target = "accountId")
+    @Mapping(source = "user.account.deletedAt", target = "deletedAt")
+    @Mapping(source = "user.account.applicationPositions", target = "applicationPositions", ignore = true)
+    @Mapping(source = "user.others", target = "others")
+    @Mapping(source = "user.educations", target = "educations", ignore = true)
+    @Mapping(source = "user.awards", target = "awards", ignore = true)
+    @Mapping(source = "user.experiences", target = "experiences", ignore = true)
+    UserProfileResponse toUserProfileResponseWithBasicInfoOnly(User user);
 
     @Mapping(source = "request.firstName", target = "firstName")
     @Mapping(source = "request.lastName", target = "lastName")

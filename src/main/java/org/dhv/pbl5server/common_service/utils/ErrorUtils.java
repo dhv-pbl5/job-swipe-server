@@ -33,17 +33,6 @@ public class ErrorUtils {
     }
 
     /**
-     * Convert camel case to snake case
-     *
-     * @param input string type camel case
-     * @return String type snake case
-     */
-    public static String convertToSnakeCase(String input) {
-        return input.replaceAll("([^_A-Z])([A-Z])", "$1_$2").toLowerCase();
-    }
-
-
-    /**
      * Extract exception error
      *
      * @param error String error
@@ -93,10 +82,10 @@ public class ErrorUtils {
     public static InvalidDataException getInvalidDataException(Set<ConstraintViolation<Object>> violations) {
         if (violations.isEmpty()) return null;
         ConstraintViolation<Object> violation = violations.iterator().next();
-        String fieldName = convertToSnakeCase(violation.getPropertyPath().toString());
-        String resource = convertToSnakeCase(violation.getRootBeanClass().getSimpleName());
+        String fieldName = CommonUtils.convertToSnakeCase(violation.getPropertyPath().toString());
+        String resource = CommonUtils.convertToSnakeCase(violation.getRootBeanClass().getSimpleName());
         String[] arr = violation.getMessageTemplate().split("\\.");
-        String error = convertToSnakeCase(arr[arr.length - 2]);
+        String error = CommonUtils.convertToSnakeCase(arr[arr.length - 2]);
         return new InvalidDataException(resource, fieldName, error);
     }
 

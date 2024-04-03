@@ -9,10 +9,7 @@ import org.yaml.snakeyaml.Yaml;
 
 import java.io.InputStream;
 import java.sql.Timestamp;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Slf4j
 @NoArgsConstructor
@@ -77,6 +74,32 @@ public class CommonUtils {
         return str != null && !str.trim().isEmpty();
     }
 
+    /**
+     * Convert snake case
+     *
+     * @param input string
+     * @return String type snake case
+     */
+    public static String convertToSnakeCase(String input) {
+        if (isEmptyOrNullString(input)) return input;
+        return input.replaceAll("([^_A-Z])([A-Z])", "$1_$2").toLowerCase();
+    }
+
+    /**
+     * Convert camel case
+     *
+     * @param input string
+     * @return String type camel case
+     */
+    public static String convertToCamelCase(String input) {
+        if (isEmptyOrNullString(input)) return input;
+        return input.replaceAll(
+            "_([a-z])",
+            String.valueOf(
+                Character.toUpperCase(
+                    input.charAt(input.indexOf("_") + 1))));
+    }
+
     /*
      * List util
      */
@@ -92,6 +115,12 @@ public class CommonUtils {
         return obj != null && (obj.getClass().isArray() || obj instanceof Collection);
     }
 
+    /*
+     * Object util
+     */
+    public static <T> T getValueOrNull(T value) {
+        return Objects.requireNonNullElse(value, null);
+    }
 
     /*
      * YAML file util

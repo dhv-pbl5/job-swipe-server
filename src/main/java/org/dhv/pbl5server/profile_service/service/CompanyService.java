@@ -1,10 +1,12 @@
 package org.dhv.pbl5server.profile_service.service;
 
 import org.dhv.pbl5server.authentication_service.entity.Account;
+import org.dhv.pbl5server.common_service.model.ApiDataResponse;
 import org.dhv.pbl5server.profile_service.entity.Company;
 import org.dhv.pbl5server.profile_service.model.OtherDescription;
 import org.dhv.pbl5server.profile_service.payload.request.CompanyProfileRequest;
 import org.dhv.pbl5server.profile_service.payload.response.CompanyProfileResponse;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.UUID;
@@ -26,5 +28,5 @@ public interface CompanyService {
 
     Company getAllDataByAccountId(UUID accountId);
 
-    List<CompanyProfileResponse> getAllData();
+    ApiDataResponse getAllData(Pageable pageable);
 }

@@ -1,6 +1,6 @@
 package org.dhv.pbl5server.profile_service.enums;
 
-public enum UpdateUserProfileType {
+public enum UserProfileRequestType {
     BASIC_INFO,
     EDUCATION,
     EXPERIENCE,

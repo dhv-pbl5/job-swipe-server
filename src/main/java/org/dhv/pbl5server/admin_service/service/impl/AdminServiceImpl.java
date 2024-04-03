@@ -9,14 +9,13 @@ import org.dhv.pbl5server.authentication_service.repository.AccountRepository;
 import org.dhv.pbl5server.common_service.constant.ErrorMessageConstant;
 import org.dhv.pbl5server.common_service.exception.BadRequestException;
 import org.dhv.pbl5server.common_service.exception.NotFoundObjectException;
+import org.dhv.pbl5server.common_service.model.ApiDataResponse;
 import org.dhv.pbl5server.common_service.utils.CommonUtils;
-import org.dhv.pbl5server.profile_service.payload.response.CompanyProfileResponse;
-import org.dhv.pbl5server.profile_service.payload.response.UserProfileResponse;
 import org.dhv.pbl5server.profile_service.service.CompanyService;
 import org.dhv.pbl5server.profile_service.service.UserService;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -28,14 +27,13 @@ public class AdminServiceImpl implements AdminService {
     private final AccountMapper mapper;
 
     @Override
-    public List<CompanyProfileResponse> getAllCompany() {
-
-        return companyService.getAllData();
+    public ApiDataResponse getAllCompany(Pageable pageRequest) {
+        return companyService.getAllData(pageRequest);
     }
 
     @Override
-    public List<UserProfileResponse> getAllUser() {
-        return userService.getAllData();
+    public ApiDataResponse getAllUser(Pageable pageRequest) {
+        return userService.getAllData(pageRequest);
     }
 
     @Override

@@ -6,7 +6,9 @@ import org.dhv.pbl5server.authentication_service.repository.AccountRepository;
 import org.dhv.pbl5server.common_service.constant.ErrorMessageConstant;
 import org.dhv.pbl5server.common_service.exception.BadRequestException;
 import org.dhv.pbl5server.common_service.exception.NotFoundObjectException;
+import org.dhv.pbl5server.common_service.model.ApiDataResponse;
 import org.dhv.pbl5server.common_service.utils.CommonUtils;
+import org.dhv.pbl5server.common_service.utils.PageUtils;
 import org.dhv.pbl5server.constant_service.enums.ConstantType;
 import org.dhv.pbl5server.constant_service.service.ConstantService;
 import org.dhv.pbl5server.profile_service.entity.ApplicationPosition;
@@ -17,6 +19,7 @@ import org.dhv.pbl5server.profile_service.payload.response.ApplicationPositionRe
 import org.dhv.pbl5server.profile_service.repository.ApplicationPositionRepository;
 import org.dhv.pbl5server.profile_service.repository.ApplicationSkillRepository;
 import org.dhv.pbl5server.profile_service.service.ApplicationPositionService;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -75,6 +78,17 @@ public class ApplicationPositionServiceImpl implements ApplicationPositionServic
         for (var ap : aps)
             ap.setSkills(applicationSkillRepository.findAllByApplicationPositionId(ap.getId()));
         return aps.stream().map(mapper::toApplicationPositionResponse).toList();
+    }
+
+    @Override
+    public ApiDataResponse getApplicationPositions(String accountId, Pageable pageable) {
+        var page = repository.findAllByAccountId(UUID.fromString(accountId), pageable);
+        return ApiDataResponse.success(page
+                .getContent()
+                .stream()
+                .map(mapper::toApplicationPositionResponseWithBasicInfoOnly)
+                .toList(),
+            PageUtils.makePageInfo(page));
     }
 
     @Override
