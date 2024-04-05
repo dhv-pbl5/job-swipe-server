@@ -13,9 +13,11 @@ import org.dhv.pbl5server.authentication_service.repository.AccountRepository;
 import org.dhv.pbl5server.authentication_service.service.JwtService;
 import org.dhv.pbl5server.common_service.constant.CommonConstant;
 import org.dhv.pbl5server.common_service.constant.ErrorMessageConstant;
+import org.dhv.pbl5server.common_service.constant.RedisCacheConstant;
 import org.dhv.pbl5server.common_service.exception.BadRequestException;
 import org.dhv.pbl5server.common_service.exception.ForbiddenException;
 import org.dhv.pbl5server.common_service.exception.UnauthorizedException;
+import org.dhv.pbl5server.common_service.repository.RedisRepository;
 import org.dhv.pbl5server.constant_service.enums.SystemRole;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
@@ -30,11 +32,18 @@ import java.util.UUID;
 public class JwtServiceImpl implements JwtService {
     private final JwtApplicationProperty jwtAppProperty;
     private final AccountRepository accountRepository;
+    private final RedisRepository redisRepository;
 
 
     public UserDetails getAccountFromToken(String token) {
         Claims jwtClaims = getJwtClaims(token, TokenType.ACCESS_TOKEN);
         UUID accountId = UUID.fromString(jwtClaims.getSubject());
+        if (redisRepository.findAllByHashKeyPrefix(
+            RedisCacheConstant.AUTH_KEY,
+            RedisCacheConstant.REVOKE_ACCESS_TOKEN_HASH(accountId.toString(), false)
+        ).contains(token)) {
+            throw new UnauthorizedException(ErrorMessageConstant.REVOKED_TOKEN);
+        }
         return accountRepository.findById(accountId).orElseThrow(() -> new ForbiddenException(ErrorMessageConstant.FORBIDDEN));
     }
 

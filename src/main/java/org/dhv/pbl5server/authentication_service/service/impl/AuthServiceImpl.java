@@ -11,9 +11,11 @@ import org.dhv.pbl5server.authentication_service.repository.AccountRepository;
 import org.dhv.pbl5server.authentication_service.service.AuthService;
 import org.dhv.pbl5server.authentication_service.service.JwtService;
 import org.dhv.pbl5server.common_service.constant.ErrorMessageConstant;
+import org.dhv.pbl5server.common_service.constant.RedisCacheConstant;
 import org.dhv.pbl5server.common_service.exception.BadRequestException;
 import org.dhv.pbl5server.common_service.exception.ForbiddenException;
 import org.dhv.pbl5server.common_service.exception.NotFoundObjectException;
+import org.dhv.pbl5server.common_service.repository.RedisRepository;
 import org.dhv.pbl5server.common_service.utils.CommonUtils;
 import org.dhv.pbl5server.constant_service.entity.Constant;
 import org.dhv.pbl5server.constant_service.enums.ConstantType;
@@ -35,6 +37,7 @@ import java.util.UUID;
 @Service
 @Slf4j
 public class AuthServiceImpl implements AuthService {
+    private final RedisRepository redisRepository;
     private final AccountRepository repository;
     private final UserRepository userRepository;
     private final CompanyRepository companyRepository;
@@ -97,6 +100,11 @@ public class AuthServiceImpl implements AuthService {
     public void logout(Account currentAccount) {
         currentAccount.setRefreshToken(null);
         repository.save(currentAccount);
+        redisRepository.save(
+            RedisCacheConstant.AUTH_KEY,
+            RedisCacheConstant.REVOKE_ACCESS_TOKEN_HASH(currentAccount.getAccountId().toString(), true),
+            SecurityContextHolder.getContext().getAuthentication().getCredentials()
+        );
         SecurityContextHolder.clearContext();
     }
 

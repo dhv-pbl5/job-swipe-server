@@ -32,7 +32,7 @@ public class AuthController {
 
     @PreAuthorizeSystemRole
     @PostMapping("/logout")
-    public ResponseEntity<ApiDataResponse> logoutUser(@CurrentAccount Account currentAccount) {
+    public ResponseEntity<ApiDataResponse> logout(@CurrentAccount Account currentAccount) {
         authService.logout(currentAccount);
         return ResponseEntity.ok(ApiDataResponse.successWithoutMetaAndData());
     }

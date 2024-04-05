@@ -25,7 +25,7 @@ import java.sql.Timestamp;
 @JsonSnakeCaseNaming
 public abstract class AbstractEntity implements Serializable {
     @Serial
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 7156526077883281623L;
     @Column(updatable = false)
     @CreationTimestamp
     private Timestamp createdAt;
