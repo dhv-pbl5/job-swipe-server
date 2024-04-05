@@ -17,6 +17,9 @@ unauthorized:
 required_body_in_request:
   code: ERR_REQ0101
   message: The request body is required!
+invalid_uuid:
+  code: ERR_REQ0102
+  message: Invalid UUID!
 
 # Authentication
 invalid_token:
@@ -71,6 +74,9 @@ account_is_active:
 account_is_not_active:
   code: ERR_ACC0107
   message: Account is not active!
+account_id_is_required:
+  code: ERR_ACC0108
+  message: Account id is required!
 
 # Constant
 constant_not_found:

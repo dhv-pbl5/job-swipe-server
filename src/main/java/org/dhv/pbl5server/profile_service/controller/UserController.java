@@ -75,8 +75,7 @@ public class UserController {
         @Nullable @RequestParam("page") Integer page,
         @Nullable @RequestParam("paging") Integer paging,
         @Nullable @RequestParam("sort_by") String sortBy,
-        @Nullable @RequestParam("order") DataSortOrder order,
-        @CurrentAccount Account currentAccount
+        @Nullable @RequestParam("order") DataSortOrder order
     ) {
         var pageRequest = PageUtils.makePageRequest(sortBy, order, page, paging);
         return switch (type) {

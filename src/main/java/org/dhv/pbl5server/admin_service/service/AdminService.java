@@ -10,6 +10,13 @@ public interface AdminService {
 
     ApiDataResponse getAllUser(Pageable pageRequest);
 
+    ApiDataResponse getAllApplicationPosition(String accountId, Pageable pageRequest);
+
+    ApiDataResponse getAllUserAward(String userId, Pageable pageRequest);
+
+    ApiDataResponse getAllUserEducation(String userId, Pageable pageRequest);
+
+    ApiDataResponse getAllUserExperience(String userId, Pageable pageRequest);
 
     AccountResponse activateAccount(String accountId);
 

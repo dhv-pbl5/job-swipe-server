@@ -86,7 +86,10 @@ public class ApplicationPositionServiceImpl implements ApplicationPositionServic
         return ApiDataResponse.success(page
                 .getContent()
                 .stream()
-                .map(mapper::toApplicationPositionResponseWithBasicInfoOnly)
+                .map(e -> {
+                    e.setSkills(applicationSkillRepository.findAllByApplicationPositionId(e.getId()));
+                    return mapper.toApplicationPositionResponse(e);
+                })
                 .toList(),
             PageUtils.makePageInfo(page));
     }

@@ -10,6 +10,8 @@ import org.dhv.pbl5server.common_service.model.ApiDataResponse;
 import org.dhv.pbl5server.common_service.repository.CrudDbJsonArrayRepository;
 import org.dhv.pbl5server.common_service.utils.CommonUtils;
 import org.dhv.pbl5server.common_service.utils.PageUtils;
+import org.dhv.pbl5server.constant_service.enums.ConstantType;
+import org.dhv.pbl5server.constant_service.service.ConstantService;
 import org.dhv.pbl5server.profile_service.entity.User;
 import org.dhv.pbl5server.profile_service.entity.UserAward;
 import org.dhv.pbl5server.profile_service.entity.UserEducation;
@@ -57,6 +59,7 @@ public class UserServiceImpl implements UserService {
     private final ExperienceMapper experienceMapper;
     private final S3Service s3Service;
     private final ApplicationPositionService applicationPositionService;
+    private final ConstantService constantService;
 
     @Override
     public UserProfileResponse getUserProfile(Account account) {
@@ -146,6 +149,12 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserProfileResponse insertExperiences(Account account, List<UserExperienceRequest> request) {
+        // Check experience type
+        constantService.checkConstantWithType(request.stream()
+                .map(e -> UUID.fromString(e.getExperienceType().getConstantId()))
+                .toList(),
+            ConstantType.EXPERIENCE_TYPE
+        );
         var user = repository.findById(account.getAccountId())
             .orElseThrow(() -> new NotFoundObjectException(ErrorMessageConstant.USER_NOT_FOUND));
         var updatedUser = userMapper.toUserWithinListExperiences(user, request);
@@ -218,6 +227,12 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserProfileResponse updateExperiences(Account account, List<UserExperienceRequest> request) {
+        // Check experience type
+        constantService.checkConstantWithType(request.stream()
+                .map(e -> UUID.fromString(e.getExperienceType().getConstantId()))
+                .toList(),
+            ConstantType.EXPERIENCE_TYPE
+        );
         for (var req : request) {
             if (req.getId() == null)
                 throw new BadRequestException(ErrorMessageConstant.EXPERIENCE_ID_IS_REQUIRED);

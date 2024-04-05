@@ -11,6 +11,7 @@ import org.dhv.pbl5server.common_service.exception.BadRequestException;
 import org.dhv.pbl5server.common_service.exception.NotFoundObjectException;
 import org.dhv.pbl5server.common_service.model.ApiDataResponse;
 import org.dhv.pbl5server.common_service.utils.CommonUtils;
+import org.dhv.pbl5server.profile_service.service.ApplicationPositionService;
 import org.dhv.pbl5server.profile_service.service.CompanyService;
 import org.dhv.pbl5server.profile_service.service.UserService;
 import org.springframework.data.domain.Pageable;
@@ -24,7 +25,8 @@ public class AdminServiceImpl implements AdminService {
     private final AccountRepository repository;
     private final UserService userService;
     private final CompanyService companyService;
-    private final AccountMapper mapper;
+    private final ApplicationPositionService applicationPositionService;
+    private final AccountMapper accountMapper;
 
     @Override
     public ApiDataResponse getAllCompany(Pageable pageRequest) {
@@ -37,6 +39,26 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
+    public ApiDataResponse getAllApplicationPosition(String accountId, Pageable pageRequest) {
+        return applicationPositionService.getApplicationPositions(accountId, pageRequest);
+    }
+
+    @Override
+    public ApiDataResponse getAllUserAward(String userId, Pageable pageRequest) {
+        return userService.getListAwardByUserId(userId, pageRequest);
+    }
+
+    @Override
+    public ApiDataResponse getAllUserEducation(String userId, Pageable pageRequest) {
+        return userService.getListEducationByUserId(userId, pageRequest);
+    }
+
+    @Override
+    public ApiDataResponse getAllUserExperience(String userId, Pageable pageRequest) {
+        return userService.getListExperienceByUserId(userId, pageRequest);
+    }
+
+    @Override
     public AccountResponse activateAccount(String accountId) {
         Account account = repository.findById(UUID.fromString(accountId))
             .orElseThrow(() -> new NotFoundObjectException(ErrorMessageConstant.ACCOUNT_NOT_FOUND));
@@ -44,7 +66,7 @@ public class AdminServiceImpl implements AdminService {
             throw new BadRequestException(ErrorMessageConstant.ACCOUNT_IS_ACTIVE);
         account.setDeletedAt(null);
         account.setUpdatedAt(CommonUtils.getCurrentTimestamp());
-        return mapper.toAccountResponse(repository.save(account));
+        return accountMapper.toAccountResponse(repository.save(account));
     }
 
     @Override
@@ -55,6 +77,6 @@ public class AdminServiceImpl implements AdminService {
             throw new BadRequestException(ErrorMessageConstant.ACCOUNT_IS_NOT_ACTIVE);
         account.setDeletedAt(CommonUtils.getCurrentTimestamp());
         account.setUpdatedAt(CommonUtils.getCurrentTimestamp());
-        return mapper.toAccountResponse(repository.save(account));
+        return accountMapper.toAccountResponse(repository.save(account));
     }
 }
