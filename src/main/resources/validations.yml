@@ -208,6 +208,44 @@ user_education_request:
       code: VAL_EDU0105
       message: CPA cannot be null
 
+# UserExperienceRequest
+user_experience_request:
+  experience_start_time:
+    not_null:
+      code: VAL_EXP0101
+      message: Experience start time cannot be null
+  experience_end_time:
+    not_null:
+      code: VAL_EXP0102
+      message: Experience end time cannot be null
+  experience_type:
+    not_null:
+      code: VAL_EXP0103
+      message: Experience type cannot be null
+  experience_type.constant_id:
+    uuid_validation:
+      code: VAL_EXP0104
+      message: Experience type constant ID must be a valid UUID
+  work_place:
+    not_blank_string_validation:
+      code: VAL_EXP0105
+      message: Work place cannot be blank
+  position:
+    not_blank_string_validation:
+      code: VAL_EXP0106
+      message: Position cannot be blank
+
+# UserAwardRequest
+user_award_request:
+  certificate_time:
+    not_null:
+      code: VAL_AWA0101
+      message: Certificate time cannot be null
+  certificate_name:
+    not_blank_string_validation:
+      code: VAL_AWA0102
+      message: Certificate name cannot be blank
+
 # OtherDescription
 other_description:
   title:

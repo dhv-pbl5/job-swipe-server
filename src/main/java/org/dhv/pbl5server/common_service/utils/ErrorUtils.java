@@ -64,7 +64,10 @@ public class ErrorUtils {
         CommonUtils readYAMLFileUtil = new CommonUtils();
         Map<String, Object> errors = readYAMLFileUtil.getValueFromYAMLFile(VALIDATION_FILE);
         Map<String, Object> fields = (Map<String, Object>) errors.get(resource);
-        Map<String, Object> objErrors = (Map<String, Object>) fields.get(fieldName);
+        if (fields == null)
+            new ErrorResponse(ErrorMessageConstant.INTERNAL_SERVER_ERROR_CODE,
+                String.format("Don't have resource: {%s} in validation.yml", resource));
+        Map<String, Object> objErrors = (Map<String, Object>) Objects.requireNonNull(fields).get(fieldName);
         Map<String, Object> objError = (Map<String, Object>) objErrors.get(error);
         if (objError == null)
             new ErrorResponse(ErrorMessageConstant.INTERNAL_SERVER_ERROR_CODE, "objError is null");

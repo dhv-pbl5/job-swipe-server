@@ -36,11 +36,12 @@ public final class ErrorMessageConstant {
     public static final String PERMISSION_IS_REQUIRE = "permission_is_require";
 
     /*
-        User
+        Account
     */
     public static final String ACCOUNT_NOT_FOUND = "account_not_found";
     public static final String INCORRECT_EMAIL_OR_PASSWORD = "incorrect_email_or_password";
     public static final String ACCOUNT_IS_DISABLED = "account_is_disabled";
+    public static final String ACCOUNT_ID_IS_REQUIRED = "account_id_is_required";
 
     /*
         Constant

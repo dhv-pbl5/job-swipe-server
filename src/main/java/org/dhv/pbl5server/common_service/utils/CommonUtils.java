@@ -5,11 +5,13 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.dhv.pbl5server.common_service.constant.CommonConstant;
 import org.yaml.snakeyaml.Yaml;
 
 import java.io.InputStream;
 import java.sql.Timestamp;
 import java.util.*;
+import java.util.regex.Pattern;
 
 @Slf4j
 @NoArgsConstructor
@@ -66,6 +68,10 @@ public class CommonUtils {
     /*
      * String util
      */
+    public static boolean isValidUuid(String str) {
+        return isNotEmptyOrNullString(str) && Pattern.matches(CommonConstant.UUID_REGEX_PATTERN, str);
+    }
+
     public static boolean isEmptyOrNullString(String str) {
         return str == null || str.trim().isEmpty();
     }

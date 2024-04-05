@@ -10,8 +10,11 @@ import org.dhv.pbl5server.authentication_service.annotation.PreAuthorizeAdmin;
 import org.dhv.pbl5server.authentication_service.payload.request.LoginRequest;
 import org.dhv.pbl5server.authentication_service.payload.request.RefreshTokenRequest;
 import org.dhv.pbl5server.authentication_service.service.AuthService;
+import org.dhv.pbl5server.common_service.constant.ErrorMessageConstant;
 import org.dhv.pbl5server.common_service.enums.DataSortOrder;
+import org.dhv.pbl5server.common_service.exception.BadRequestException;
 import org.dhv.pbl5server.common_service.model.ApiDataResponse;
+import org.dhv.pbl5server.common_service.utils.CommonUtils;
 import org.dhv.pbl5server.common_service.utils.PageUtils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -52,12 +55,33 @@ public class AdminController {
         @Nullable @RequestParam("page") Integer page,
         @Nullable @RequestParam("paging") Integer paging,
         @Nullable @RequestParam("sort_by") String sortBy,
-        @Nullable @RequestParam("order") DataSortOrder order
+        @Nullable @RequestParam("order") DataSortOrder order,
+        @Nullable @RequestParam("account_id") String accountId
     ) {
         var pageRequest = PageUtils.makePageRequest(sortBy, order, page, paging);
         return switch (type) {
-            case COMPANY -> ResponseEntity.ok(ApiDataResponse.successWithoutMeta(service.getAllCompany(pageRequest)));
-            case USER -> ResponseEntity.ok(ApiDataResponse.successWithoutMeta(service.getAllUser(pageRequest)));
+            case COMPANY -> ResponseEntity.ok(service.getAllCompany(pageRequest));
+            case USER -> ResponseEntity.ok(service.getAllUser(pageRequest));
+            case APPLICATION_POSITION -> {
+                if (CommonUtils.isEmptyOrNullString(accountId))
+                    throw new BadRequestException(ErrorMessageConstant.ACCOUNT_ID_IS_REQUIRED);
+                yield ResponseEntity.ok(service.getAllApplicationPosition(accountId, pageRequest));
+            }
+            case USER_EXPERIENCE -> {
+                if (CommonUtils.isEmptyOrNullString(accountId))
+                    throw new BadRequestException(ErrorMessageConstant.ACCOUNT_ID_IS_REQUIRED);
+                yield ResponseEntity.ok(service.getAllUserExperience(accountId, pageRequest));
+            }
+            case USER_AWARD -> {
+                if (CommonUtils.isEmptyOrNullString(accountId))
+                    throw new BadRequestException(ErrorMessageConstant.ACCOUNT_ID_IS_REQUIRED);
+                yield ResponseEntity.ok(service.getAllUserAward(accountId, pageRequest));
+            }
+            case USER_EDUCATION -> {
+                if (CommonUtils.isEmptyOrNullString(accountId))
+                    throw new BadRequestException(ErrorMessageConstant.ACCOUNT_ID_IS_REQUIRED);
+                yield ResponseEntity.ok(service.getAllUserEducation(accountId, pageRequest));
+            }
         };
     }
 }
