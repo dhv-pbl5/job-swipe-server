@@ -21,7 +21,7 @@ public class PageUtils {
      */
     public static Pageable makePageRequest(String sortBy, DataSortOrder order, Integer page, Integer paging) {
         page = (page == null || page <= 0) ? 1 : page;
-        paging = paging == null ? 15 : paging;
+        paging = paging == null ? 15 : (paging >= 30) ? 30 : paging;
         Sort sort = null;
         if (order != null && CommonUtils.isNotEmptyOrNullString(sortBy)) {
             String sortField = CommonUtils.convertToCamelCase(sortBy);

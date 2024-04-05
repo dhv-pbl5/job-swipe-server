@@ -14,7 +14,7 @@ import java.util.List;
  * @param <T> the type of object in the list
  */
 @Converter
-public abstract class DbJsonArrayConverter<T> implements AttributeConverter<List<T>, Object> {
+public abstract class DbJsonArrayConverter<T> implements AttributeConverter<List<T>, String> {
 
     protected abstract Class<T> getClazz();
 
@@ -24,27 +24,26 @@ public abstract class DbJsonArrayConverter<T> implements AttributeConverter<List
      * {"{\"key\": \"_key\", \"value\": \"_value\"}","{\"key\": \"_key\", \"value\": \"_value\"}"}
      */
     @Override
-    public Object convertToDatabaseColumn(List<T> attribute) {
-        return attribute;
-//        if (CommonUtils.isEmptyOrNullList(attribute)) return null;
-//        var jsonEncode = attribute.stream()
-//            .map(item -> {
-//                var json = CommonUtils.convertToJson(item);
-//                if (json == null) return null;
-//                StringBuilder ans = new StringBuilder();
-//                for (int i = 1; i < json.length() - 1; i++) {
-//                    var character = json.charAt(i);
-//                    if (character == '\"') {
-//                        ans.append("\\");
-//                        ans.append(character);
-//                        continue;
-//                    }
-//                    ans.append(character);
-//                }
-//                return STR."\"{\{ans}}\"";
-//            })
-//            .toList();
-//        return STR."{\{String.join(",", jsonEncode)}}";
+    public String convertToDatabaseColumn(List<T> attribute) {
+        if (CommonUtils.isEmptyOrNullList(attribute)) return null;
+        var jsonEncode = attribute.stream()
+            .map(item -> {
+                var json = CommonUtils.convertToJson(item);
+                if (json == null) return null;
+                StringBuilder ans = new StringBuilder();
+                for (int i = 1; i < json.length() - 1; i++) {
+                    var character = json.charAt(i);
+                    if (character == '\"') {
+                        ans.append("\\");
+                        ans.append(character);
+                        continue;
+                    }
+                    ans.append(character);
+                }
+                return STR."\"{\{ans}}\"";
+            })
+            .toList();
+        return STR."{\{String.join(",", jsonEncode)}}";
     }
 
     /**
@@ -55,18 +54,16 @@ public abstract class DbJsonArrayConverter<T> implements AttributeConverter<List
      * @return a list of decoded object
      */
     @Override
-    public List<T> convertToEntityAttribute(Object dbData) {
-        var str1 = dbData.toString();
+    public List<T> convertToEntityAttribute(String dbData) {
         var clazz = getClazz();
-        if (clazz == null || CommonUtils.isEmptyOrNullString(str1)) return null;
+        if (clazz == null || CommonUtils.isEmptyOrNullString(dbData)) return null;
         StringBuilder str = new StringBuilder();
-        for (int i = 2; i < str1.length() - 2; i++) {
-            if (str1.charAt(i) != '\\')
-                str.append(str1.charAt(i));
+        for (int i = 2; i < dbData.length() - 2; i++) {
+            if (dbData.charAt(i) != '\\')
+                str.append(dbData.charAt(i));
         }
         if (CommonUtils.isEmptyOrNullString(str.toString())) return null;
-        var x = Arrays.stream(str.toString().split("\",\""))
+        return Arrays.stream(str.toString().split("\",\""))
             .map(json -> CommonUtils.decodeJson(json, clazz)).toList();
-        return x;
     }
 }

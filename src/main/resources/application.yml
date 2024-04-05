@@ -25,6 +25,14 @@ spring:
     database: postgresql
     open-in-view: false
     database-platform: org.hibernate.dialect.PostgreSQLDialect
+  cache:
+    type: redis
+    redis:
+      time-to-live: 6000
+  data:
+    redis:
+      host: localhost
+      port: 6003
 
 logging:
   level:
