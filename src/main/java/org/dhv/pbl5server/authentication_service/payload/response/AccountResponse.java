@@ -1,7 +1,9 @@
 package org.dhv.pbl5server.authentication_service.payload.response;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 import org.dhv.pbl5server.common_service.annotation.JsonSnakeCaseNaming;
 import org.dhv.pbl5server.constant_service.payload.ConstantResponse;
 import org.dhv.pbl5server.profile_service.payload.response.ApplicationPositionResponse;
@@ -12,6 +14,8 @@ import java.util.UUID;
 
 @Getter
 @Setter
+@NoArgsConstructor
+@SuperBuilder
 @JsonSnakeCaseNaming
 public class AccountResponse {
     private UUID accountId;

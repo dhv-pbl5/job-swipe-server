@@ -14,16 +14,18 @@ public class RedisCacheConstant {
      */
     public static String REVOKE_ACCESS_TOKEN_HASH(String uuid, boolean isGenerate) {
         if (!isGenerate)
-            return STR."revoke_access_token:\{uuid}";
-        return STR."revoke_access_token:\{uuid}:\{CommonUtils.getCurrentTimestamp()}"
-            .replaceAll(" ", "_");
+            return "revoke_access_token:%s".formatted(uuid);
+        return "revoke_access_token:%s:%s".formatted(uuid, getCurrentTimestamp());
     }
 
     public static String REVOKE_REFRESH_TOKEN_HASH(String uuid, boolean isGenerate) {
         if (!isGenerate)
-            return STR."revoke_refresh_token:\{uuid}";
-        return STR."revoke_refresh_token:\{uuid}:\{CommonUtils.getCurrentTimestamp()}"
-            .replaceAll(" ", "_");
+            return "revoke_refresh_token:%s".formatted(uuid);
+        return "revoke_refresh_token:%s:%s".formatted(uuid, getCurrentTimestamp());
+    }
+
+    private static String getCurrentTimestamp() {
+        return CommonUtils.getCurrentTimestamp().toString().replaceAll(" ", "_");
     }
 
     private RedisCacheConstant() {

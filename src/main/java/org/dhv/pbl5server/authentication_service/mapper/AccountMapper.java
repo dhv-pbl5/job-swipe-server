@@ -11,6 +11,7 @@ import org.dhv.pbl5server.profile_service.mapper.ApplicationSkillMapper;
 import org.dhv.pbl5server.profile_service.payload.request.ApplicationPositionRequest;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.Named;
 
 import java.util.List;
 
@@ -23,12 +24,15 @@ import java.util.List;
     }
 )
 public interface AccountMapper {
+    public static final String NAMED_ToAccountResponse = "toAccountResponse";
+
     @Mapping(source = "systemRole", target = "systemRole")
     Account toAccount(UserRegisterRequest request);
 
     @Mapping(source = "systemRole", target = "systemRole")
     Account toAccount(CompanyRegisterRequest request);
 
+    @Named(NAMED_ToAccountResponse)
     @Mapping(source = "systemRole", target = "systemRole")
     @Mapping(source = "applicationPositions", target = "applicationPositions", ignore = true)
     AccountResponse toAccountResponse(Account account);

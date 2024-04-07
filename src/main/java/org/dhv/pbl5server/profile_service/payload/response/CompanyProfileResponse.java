@@ -2,36 +2,28 @@ package org.dhv.pbl5server.profile_service.payload.response;
 
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.experimental.SuperBuilder;
+import org.dhv.pbl5server.authentication_service.payload.response.AccountResponse;
 import org.dhv.pbl5server.common_service.annotation.JsonSnakeCaseNaming;
-import org.dhv.pbl5server.constant_service.payload.ConstantResponse;
 import org.dhv.pbl5server.profile_service.model.OtherDescription;
 
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.UUID;
 
-@Data
+@Getter
+@Setter
+@SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
 @JsonSnakeCaseNaming
-public class CompanyProfileResponse {
-    // Account entity data
-    private String email;
-    private Boolean accountStatus;
-    private String address;
-    private String avatar;
-    private String phoneNumber;
-    private ConstantResponse systemRole;
-    private List<ApplicationPositionResponse> applicationPositions;
-    private Timestamp deletedAt;
-    // User entity data
+public class CompanyProfileResponse extends AccountResponse {
     private UUID accountId;
     private String companyName;
     private String companyUrl;
     private Timestamp establishedDate;
     private List<OtherDescription> others;
-    private Timestamp createdAt;
-    private Timestamp updatedAt;
 }

@@ -17,5 +17,4 @@ public interface UserRepository extends JpaRepository<User, UUID> {
 
     @Query("SELECT u FROM User u LEFT JOIN FETCH u.awards WHERE u.accountId = :accountId")
     Optional<User> fetchAllDataAwardById(UUID accountId);
-
 }

@@ -14,6 +14,8 @@ import java.util.List;
 
 @Mapper(config = SpringMapStructConfig.class, uses = {ConstantMapper.class, ApplicationSkillMapper.class})
 public interface ApplicationPositionMapper {
+    public static final String NAMED_ToApplicationPositionResponse = "toApplicationPositionResponse";
+
     @Mapping(source = "skills", target = "skills")
     @Mapping(source = "applyPosition", target = "applyPosition")
     ApplicationPosition toApplicationPosition(ApplicationPositionRequest request);
@@ -29,7 +31,7 @@ public interface ApplicationPositionMapper {
     ApplicationPosition toApplicationPosition(ApplicationPosition applicationPosition, List<ApplicationSkillRequest> request);
 
 
-    @Named("toApplicationPositionResponse")
+    @Named(NAMED_ToApplicationPositionResponse)
     @Mapping(source = "skills", target = "skills")
     @Mapping(source = "applyPosition", target = "applyPosition")
     ApplicationPositionResponse toApplicationPositionResponse(ApplicationPosition applicationPosition);

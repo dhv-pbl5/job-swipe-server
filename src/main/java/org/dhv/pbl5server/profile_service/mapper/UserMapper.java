@@ -11,6 +11,7 @@ import org.dhv.pbl5server.profile_service.payload.request.UserExperienceRequest;
 import org.dhv.pbl5server.profile_service.payload.response.UserProfileResponse;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.Named;
 
 import java.util.List;
 
@@ -26,6 +27,7 @@ import java.util.List;
     }
 )
 public interface UserMapper {
+    public static final String NAMED_ToUserProfileResponseWithBasicInfoOnly = "toUserProfileResponseWithBasicInfoOnly";
 
     @Mapping(source = "user.account.email", target = "email")
     @Mapping(source = "user.account.accountStatus", target = "accountStatus")
@@ -35,13 +37,14 @@ public interface UserMapper {
     @Mapping(source = "user.account.systemRole", target = "systemRole")
     @Mapping(source = "user.account.accountId", target = "accountId")
     @Mapping(source = "user.account.deletedAt", target = "deletedAt")
-    @Mapping(source = "user.account.applicationPositions", target = "applicationPositions", qualifiedByName = "toApplicationPositionResponse")
+    @Mapping(source = "user.account.applicationPositions", target = "applicationPositions", qualifiedByName = ApplicationPositionMapper.NAMED_ToApplicationPositionResponse)
     @Mapping(source = "user.others", target = "others")
     @Mapping(source = "user.educations", target = "educations")
     @Mapping(source = "user.awards", target = "awards")
     @Mapping(source = "user.experiences", target = "experiences")
     UserProfileResponse toUserProfileResponse(User user);
 
+    @Named(NAMED_ToUserProfileResponseWithBasicInfoOnly)
     @Mapping(source = "user.account.email", target = "email")
     @Mapping(source = "user.account.accountStatus", target = "accountStatus")
     @Mapping(source = "user.account.address", target = "address")
