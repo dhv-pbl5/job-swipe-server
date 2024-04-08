@@ -48,3 +48,5 @@ application:
     reset-password-token-expiration-ms: 300000
   s3:
     bucket-name: pbl5-bucket
+  server.socket:
+    port: 8888

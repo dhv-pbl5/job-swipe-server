@@ -64,7 +64,6 @@
             <artifactId>mapstruct-processor</artifactId>
             <version>1.5.5.Final</version>
         </dependency>
-
         <!--     FOR DEVELOPMENT     -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -116,7 +115,7 @@
             <artifactId>jedis</artifactId>
             <version>5.1.2</version>
         </dependency>
-        <!--        FOR SECURITY-->
+        <!--        FOR SECURITY        -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-validation</artifactId>
@@ -133,6 +132,15 @@
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-test</artifactId>
             <scope>test</scope>
+        </dependency>
+        <!--        FOR INTEGRATION        -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-integration</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.integration</groupId>
+            <artifactId>spring-integration-ip</artifactId>
         </dependency>
     </dependencies>
     <build>

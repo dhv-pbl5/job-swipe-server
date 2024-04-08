@@ -7,9 +7,12 @@ import org.dhv.pbl5server.profile_service.payload.request.CompanyProfileRequest;
 import org.dhv.pbl5server.profile_service.payload.response.CompanyProfileResponse;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.Named;
 
 @Mapper(config = SpringMapStructConfig.class, uses = {ConstantMapper.class})
 public interface CompanyMapper {
+    public static final String NAMED_ToCompanyResponseWithBasicInfoOnly = "toCompanyResponseWithBasicInfoOnly";
+
     @Mapping(source = "company.account.email", target = "email")
     @Mapping(source = "company.account.accountStatus", target = "accountStatus")
     @Mapping(source = "company.account.address", target = "address")
@@ -22,6 +25,7 @@ public interface CompanyMapper {
     @Mapping(source = "company.others", target = "others")
     CompanyProfileResponse toCompanyResponse(Company company);
 
+    @Named(NAMED_ToCompanyResponseWithBasicInfoOnly)
     @Mapping(source = "company.account.email", target = "email")
     @Mapping(source = "company.account.accountStatus", target = "accountStatus")
     @Mapping(source = "company.account.address", target = "address")

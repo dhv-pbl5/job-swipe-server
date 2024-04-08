@@ -262,6 +262,7 @@ CREATE TABLE public.notifications
     content character varying(1000) NOT NULL,
     notification_type uuid NOT NULL,
     read_status boolean NOT NULL DEFAULT FALSE,
+    object_id uuid NOT NULL,
     receiver_id uuid NOT NULL,
     sender_id uuid NOT NULL,
     created_at timestamp with time zone NOT NULL,

@@ -17,7 +17,7 @@ import java.util.List;
 @Component
 @Slf4j
 @Order(1)
-public class CreateDefaultSystemRole implements CommandLineRunner {
+public class CreateDefaultConstant implements CommandLineRunner {
     private final ConstantRepository repository;
 
     @Override
@@ -43,17 +43,17 @@ public class CreateDefaultSystemRole implements CommandLineRunner {
         // Admin role
         var adminRole = Constant.builder()
             .constantType(ConstantType.ADMIN.getValue())
-            .constantName(SystemRole.ADMIN.name())
+            .constantName(SystemRole.Admin.name())
             .build();
         // Company role
         var companyRole = Constant.builder()
             .constantType(ConstantType.COMPANY.getValue())
-            .constantName(SystemRole.COMPANY.name())
+            .constantName(SystemRole.Company.name())
             .build();
         // User role
         var userRole = Constant.builder()
             .constantType(ConstantType.USER.getValue())
-            .constantName(SystemRole.USER.name())
+            .constantName(SystemRole.User.name())
             .build();
         try {
             repository.saveAll(List.of(adminRole, companyRole, userRole));

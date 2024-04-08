@@ -13,6 +13,7 @@ public final class ErrorMessageConstant {
     public static final String FORBIDDEN = "forbidden";
     public static final String UNAUTHORIZED = "unauthorized";
     public static final String REQUIRED_BODY_IN_REQUEST = "required_body_in_request";
+    public static final String INVALID_UUID = "invalid_uuid";
 
 
     /*
@@ -136,6 +137,22 @@ public final class ErrorMessageConstant {
        Company profile
     */
     public static final String COMPANY_PROFILE_NOT_FOUND = "company_profile_not_found";
+
+    /*
+       Conversation
+    */
+    public static final String CONVERSATION_NOT_FOUND = "conversation_not_found";
+
+    /*
+       Message
+    */
+    public static final String MESSAGE_NOT_FOUND = "message_not_found";
+    public static final String MESSAGE_MUST_HAVE_CONTENT_OR_FILE = "message_must_have_content_or_file";
+
+    /*
+       Notification
+    */
+    public static final String NOTIFICATION_NOT_FOUND = "notification_not_found";
 
     private ErrorMessageConstant() {
     }

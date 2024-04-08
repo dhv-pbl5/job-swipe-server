@@ -13,17 +13,22 @@ import org.springframework.web.bind.annotation.*;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/v1")
+@RequestMapping("/v1/constants")
 @RequiredArgsConstructor
 public class ConstantController {
     private final ConstantService service;
 
-    @GetMapping("/constant/system-roles")
+    @GetMapping("/system-roles")
     public ResponseEntity<ApiDataResponse> getSystemRoles(@Nullable @RequestParam(name = "constant_id") String constantId) {
         return ResponseEntity.ok(ApiDataResponse.successWithoutMeta(service.getSystemRoles(constantId)));
     }
 
-    @GetMapping("/constant")
+    @GetMapping("/types")
+    public ResponseEntity<ApiDataResponse> getConstantTypes() {
+        return ResponseEntity.ok(ApiDataResponse.successWithoutMeta(service.getConstantTypes()));
+    }
+
+    @GetMapping("")
     public ResponseEntity<ApiDataResponse> getConstantsByType(@NotNull @RequestParam(name = "constant_type") String type) {
         try {
             return ResponseEntity.ok(ApiDataResponse.successWithoutMeta(service.getConstantsByType(type)));
@@ -32,7 +37,7 @@ public class ConstantController {
         }
     }
 
-    @GetMapping("/constant/{constant_id}")
+    @GetMapping("/{constant_id}")
     public ResponseEntity<ApiDataResponse> getConstantById(@PathVariable(name = "constant_id") String constantId) {
         return ResponseEntity.ok(ApiDataResponse.successWithoutMeta(service.getConstantById(UUID.fromString(constantId))));
     }

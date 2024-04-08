@@ -242,3 +242,21 @@ application_skill_id_is_required:
 company_profile_not_found:
   code: ERR_COM0101
   message: Company profile not found!
+
+# Conversation
+conversation_not_found:
+  code: ERR_CON0101
+  message: Conversation not found!
+
+# Message
+message_not_found:
+  code: ERR_MSG0101
+  message: Message not found!
+message_must_have_content_or_file:
+  code: ERR_MSG0102
+  message: Content or files must be provided!
+
+# Notification
+notification_not_found:
+  code: ERR_NOT0101
+  message: Notification not found!

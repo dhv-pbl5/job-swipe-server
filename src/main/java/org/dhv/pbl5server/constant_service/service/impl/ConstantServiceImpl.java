@@ -69,6 +69,11 @@ public class ConstantServiceImpl implements ConstantService {
         return repository.findByConstantType(type).stream().map(mapper::toConstantResponse).toList();
     }
 
+    @Override
+    public List<Object> getConstantTypes() {
+        return repository.getDistinctConstantType();
+    }
+
     private void throwErrorWithConstantType(ConstantType type) {
         switch (type) {
             case APPLY_POSITION ->

@@ -50,9 +50,10 @@ public class RestApiExceptionHandler extends ResponseEntityExceptionHandler {
      * 5. ServerError
      * 6. AccessDeniedException
      * 7. GlobalException
-     * 8. AuthenticationCredentialsNotFoundException
-     * 9. InvalidDataException
-     * 10. InvalidDataAccessApiUsageException
+     * 8. RuntimeException
+     * 9. AuthenticationCredentialsNotFoundException
+     * 10. InvalidDataException
+     * 11. InvalidDataAccessApiUsageException
      */
     @SuppressWarnings("unused")
     @ExceptionHandler(NotFoundObjectException.class)
@@ -119,7 +120,7 @@ public class RestApiExceptionHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity<ApiDataResponse> handleMethodArgumentTypeMismatchException(
         MethodArgumentTypeMismatchException ex, HttpServletRequest request) {
         String msg =
-            STR."\{ex.getName()} should be of type \{Objects.requireNonNull(ex.getRequiredType()).getName()}";
+            "%s should be of type %s".formatted(ex.getName(), Objects.requireNonNull(ex.getRequiredType()).getName());
         ErrorResponse error = new ErrorResponse(ErrorMessageConstant.BAD_REQUEST_ERROR_CODE, msg);
         ApiDataResponse response = ApiDataResponse.error(error);
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
@@ -129,6 +130,17 @@ public class RestApiExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiDataResponse> handleGlobalException(
         Exception ex, HttpServletRequest request
+    ) {
+        ex.printStackTrace();
+        ErrorResponse error = new ErrorResponse(ErrorMessageConstant.INTERNAL_SERVER_ERROR_CODE, ex.getMessage());
+        ApiDataResponse response = ApiDataResponse.error(error);
+        return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @SuppressWarnings("unused")
+    @ExceptionHandler(RuntimeException.class)
+    public ResponseEntity<ApiDataResponse> handleRuntimeException(
+        RuntimeException ex, HttpServletRequest request
     ) {
         ex.printStackTrace();
         ErrorResponse error = new ErrorResponse(ErrorMessageConstant.INTERNAL_SERVER_ERROR_CODE, ex.getMessage());
