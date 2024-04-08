@@ -142,8 +142,17 @@ public final class ErrorMessageConstant {
        Conversation
     */
     public static final String CONVERSATION_NOT_FOUND = "conversation_not_found";
+
+    /*
+       Message
+    */
     public static final String MESSAGE_NOT_FOUND = "message_not_found";
     public static final String MESSAGE_MUST_HAVE_CONTENT_OR_FILE = "message_must_have_content_or_file";
+
+    /*
+       Notification
+    */
+    public static final String NOTIFICATION_NOT_FOUND = "notification_not_found";
 
     private ErrorMessageConstant() {
     }

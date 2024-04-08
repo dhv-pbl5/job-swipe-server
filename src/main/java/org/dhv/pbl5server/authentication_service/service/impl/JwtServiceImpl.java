@@ -63,7 +63,7 @@ public class JwtServiceImpl implements JwtService {
         UUID accountId = UUID.fromString(jwtClaims.getSubject());
         Account account = accountRepository.findById(accountId).orElseThrow(() -> new ForbiddenException(ErrorMessageConstant.FORBIDDEN));
         // Check if the user is an admin
-        if (isAdmin && !account.getSystemRole().getConstantName().equals(SystemRole.ADMIN.name())) {
+        if (isAdmin && !account.getSystemRole().getConstantName().equals(SystemRole.Admin.name())) {
             throw new ForbiddenException(ErrorMessageConstant.FORBIDDEN);
         }
         if (account.getRefreshToken().equals(refreshToken)) {

@@ -72,9 +72,9 @@ public class RealtimeClient extends Thread implements AbstractClient {
     }
 
     @Override
-    public void send(String message) {
+    public void send(String type, String message) {
         handleException(
-            () -> out.writeUTF(message),
+            () -> out.writeUTF(RealtimeModel.toJson(type, message)),
             this::disconnect);
     }
 

@@ -18,4 +18,5 @@ public interface ConstantService {
 
     List<ConstantResponse> getConstantsByType(String type);
 
+    List<Object> getConstantTypes();
 }

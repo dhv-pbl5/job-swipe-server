@@ -20,7 +20,9 @@ public interface MessageRepository extends JpaRepository<Message, UUID> {
 
     Optional<Message> findFirstByConversationId(UUID conversationId, Sort sort);
 
-    Optional<Message> findByIdAndAccount_AccountIdAndConversationId(UUID messageId, UUID accountId, UUID conversationId);
+    @Query("SELECT m FROM Message m WHERE m.account.accountId = :accountId and m.conversation.id = :conversationId and m.id = :messageId")
+    Optional<Message> findByIdAndAccountIdAndConversationId(UUID messageId, UUID accountId, UUID conversationId);
 
-    List<Message> findAllByAccount_AccountIdAndConversationIdAndReadStatus(UUID accountId, UUID conversationId, boolean readStatus);
+    @Query("SELECT m FROM Message m WHERE m.account.accountId = :accountId and m.conversation.id = :conversationId and m.readStatus = :readStatus")
+    List<Message> findAllByAccountIdAndConversationIdAndReadStatus(UUID accountId, UUID conversationId, boolean readStatus);
 }

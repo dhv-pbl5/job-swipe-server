@@ -64,11 +64,11 @@ public class CreateDefaultAccount implements CommandLineRunner {
             .establishedDate(CommonUtils.getCurrentTimestamp())
             .build();
         for (var item : (List<Constant>) constantService.getSystemRoles(null)) {
-            if (item.getConstantName().equalsIgnoreCase(SystemRole.ADMIN.name()))
+            if (item.getConstantName().equalsIgnoreCase(SystemRole.Admin.name()))
                 adminAccount.setSystemRole(item);
-            if (item.getConstantName().equalsIgnoreCase(SystemRole.COMPANY.name()))
+            if (item.getConstantName().equalsIgnoreCase(SystemRole.Company.name()))
                 companyRegisterRequest.setSystemRole(new ConstantSelectionRequest(item.getConstantId().toString()));
-            if (item.getConstantName().equalsIgnoreCase(SystemRole.USER.name()))
+            if (item.getConstantName().equalsIgnoreCase(SystemRole.User.name()))
                 userRegisterRequest.setSystemRole(new ConstantSelectionRequest(item.getConstantId().toString()));
         }
         try {

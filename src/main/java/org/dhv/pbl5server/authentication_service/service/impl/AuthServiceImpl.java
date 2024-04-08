@@ -54,7 +54,7 @@ public class AuthServiceImpl implements AuthService {
             SecurityContextHolder.getContext().setAuthentication(authentication);
             Account account = (Account) authentication.getPrincipal();
             // Check if the user is an admin
-            if (isAdmin && !account.getSystemRole().getConstantName().equals(SystemRole.ADMIN.name())) {
+            if (isAdmin && !account.getSystemRole().getConstantName().equals(SystemRole.Admin.name())) {
                 throw new ForbiddenException(ErrorMessageConstant.FORBIDDEN);
             }
             CredentialResponse response = jwtService.generateToken(account.getAccountId().toString());
@@ -191,7 +191,7 @@ public class AuthServiceImpl implements AuthService {
         if (!ConstantType.isSystemRole(role.getConstantType()))
             throw new BadRequestException(ErrorMessageConstant.SYSTEM_ROLE_NOT_FOUND);
         // Check if the role is admin
-        if (role.getConstantName().equalsIgnoreCase(SystemRole.ADMIN.name()))
+        if (role.getConstantName().equalsIgnoreCase(SystemRole.Admin.name()))
             throw new BadRequestException(ErrorMessageConstant.ROLE_NOT_VALID);
         return role;
     }

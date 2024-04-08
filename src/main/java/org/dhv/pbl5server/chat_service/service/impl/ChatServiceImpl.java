@@ -18,6 +18,7 @@ import org.dhv.pbl5server.common_service.model.ApiDataResponse;
 import org.dhv.pbl5server.common_service.utils.CommonUtils;
 import org.dhv.pbl5server.common_service.utils.PageUtils;
 import org.dhv.pbl5server.constant_service.enums.SystemRole;
+import org.dhv.pbl5server.notification_service.entity.NotificationType;
 import org.dhv.pbl5server.profile_service.entity.Company;
 import org.dhv.pbl5server.profile_service.entity.User;
 import org.dhv.pbl5server.realtime_service.service.RealtimeService;
@@ -43,7 +44,7 @@ public class ChatServiceImpl implements ChatService {
 
     @Override
     public ApiDataResponse getConversations(Account account, Pageable pageRequest) {
-        var page = account.getSystemRole().getConstantName().equals(SystemRole.USER.name())
+        var page = account.getSystemRole().getConstantName().equals(SystemRole.User.name())
             ? conversationRepository.findAllByUserId(account.getAccountId(), pageRequest)
             : conversationRepository.findAllByCompanyId(account.getAccountId(), pageRequest);
         return ApiDataResponse.success(page
@@ -63,7 +64,7 @@ public class ChatServiceImpl implements ChatService {
     @Override
     public ConversationResponse getConversationById(Account account, String conversationId) {
         var conversatinUuid = UUID.fromString(conversationId);
-        var conversationOptional = account.getSystemRole().getConstantName().equals(SystemRole.USER.name())
+        var conversationOptional = account.getSystemRole().getConstantName().equals(SystemRole.User.name())
             ? conversationRepository.findByIdAndUserId(conversatinUuid, account.getAccountId())
             : conversationRepository.findByIdAndCompanyId(conversatinUuid, account.getAccountId());
         var conversation = conversationOptional.orElseThrow(() -> new NotFoundObjectException(ErrorMessageConstant.CONVERSATION_NOT_FOUND));
@@ -79,13 +80,18 @@ public class ChatServiceImpl implements ChatService {
             .build();
         conversation = conversationRepository.save(conversation);
         ConversationResponse response = conversationMapper.toConversationResponse(conversation, null);
-        realtimeService.sendToClientWithPrefix(user.getAccountId().toString(), response);
+        // Realtime
+        realtimeToAccountInConversation(
+            NotificationType.NEW_CONVERSATION,
+            response,
+            user.getAccount(),
+            company.getAccount());
         return response;
     }
 
     @Override
     public int getUnreadMessageCount(Account account, String conversationId) {
-        return messageRepository.findAllByAccount_AccountIdAndConversationIdAndReadStatus(
+        return messageRepository.findAllByAccountIdAndConversationIdAndReadStatus(
                 account.getAccountId(), UUID.fromString(conversationId), false)
             .size();
     }
@@ -103,7 +109,7 @@ public class ChatServiceImpl implements ChatService {
 
     @Override
     public MessageResponse getMessageById(Account account, String conversationId, String messageId) {
-        var message = messageRepository.findByIdAndAccount_AccountIdAndConversationId(UUID.fromString(messageId), account.getAccountId(), UUID.fromString(conversationId))
+        var message = messageRepository.findByIdAndAccountIdAndConversationId(UUID.fromString(messageId), account.getAccountId(), UUID.fromString(conversationId))
             .orElseThrow(() -> new NotFoundObjectException(ErrorMessageConstant.MESSAGE_NOT_FOUND));
         return messageMapper.toMessageResponse(message);
     }
@@ -115,7 +121,7 @@ public class ChatServiceImpl implements ChatService {
             throw new BadRequestException(ErrorMessageConstant.MESSAGE_MUST_HAVE_CONTENT_OR_FILE);
         // Check conversation
         var conversatinUuid = UUID.fromString(conversationId);
-        var conversationOptional = account.getSystemRole().getConstantName().equals(SystemRole.USER.name())
+        var conversationOptional = account.getSystemRole().getConstantName().equals(SystemRole.User.name())
             ? conversationRepository.findByIdAndUserId(conversatinUuid, account.getAccountId())
             : conversationRepository.findByIdAndCompanyId(conversatinUuid, account.getAccountId());
         var conversation = conversationOptional.orElseThrow(() -> new NotFoundObjectException(ErrorMessageConstant.CONVERSATION_NOT_FOUND));
@@ -142,27 +148,85 @@ public class ChatServiceImpl implements ChatService {
                 .build();
             messages.add(message);
         }
-        messageRepository.saveAll(messages);
-        return messages.size() == 1
-            ? messageMapper.toMessageResponse(messages.getFirst())
-            : messages.stream().map(messageMapper::toMessageResponse).toList();
+        var savedMessages = messageRepository.saveAll(messages);
+        // Realtime
+        savedMessages.forEach(
+            e -> realtimeToAccountInConversation(
+                conversation,
+                NotificationType.NEW_MESSAGE,
+                messageMapper.toMessageResponse(e)));
+        return savedMessages.size() == 1
+            ? messageMapper.toMessageResponse(savedMessages.getFirst())
+            : savedMessages.stream().map(messageMapper::toMessageResponse).toList();
     }
 
     @Override
     public void readAllMessages(Account account, String conversationId) {
-        List<Message> unreadMessages = messageRepository.findAllByAccount_AccountIdAndConversationIdAndReadStatus(
+        List<Message> unreadMessages = messageRepository.findAllByAccountIdAndConversationIdAndReadStatus(
                 account.getAccountId(), UUID.fromString(conversationId), false)
             .stream()
             .peek(e -> e.setReadStatus(true))
             .toList();
-        messageRepository.saveAll(unreadMessages);
+        // Realtime
+        messageRepository.saveAll(unreadMessages).forEach(
+            e -> realtimeToAccountInConversation(
+                conversationId,
+                NotificationType.READ_MESSAGE,
+                messageMapper.toMessageResponse(e)));
     }
 
     @Override
     public void readMessage(Account account, String conversationId, String messageId) {
-        var message = messageRepository.findByIdAndAccount_AccountIdAndConversationId(UUID.fromString(messageId), account.getAccountId(), UUID.fromString(conversationId))
+        var unreadMessage = messageRepository.findByIdAndAccountIdAndConversationId(UUID.fromString(messageId), account.getAccountId(), UUID.fromString(conversationId))
             .orElseThrow(() -> new NotFoundObjectException(ErrorMessageConstant.MESSAGE_NOT_FOUND));
-        message.setReadStatus(true);
-        messageRepository.save(message);
+        if (unreadMessage.isReadStatus()) return;
+        unreadMessage.setReadStatus(true);
+        var message = messageRepository.save(unreadMessage);
+        // Realtime
+        realtimeToAccountInConversation(conversationId, NotificationType.READ_MESSAGE, messageMapper.toMessageResponse(message));
+    }
+
+    private void realtimeToAccountInConversation(String conversationId, NotificationType notificationType, Object data) {
+        if (conversationId == null || notificationType == null || data == null) return;
+        var conversation = conversationRepository.findById(UUID.fromString(conversationId))
+            .orElseThrow(() -> new NotFoundObjectException(ErrorMessageConstant.CONVERSATION_NOT_FOUND));
+        if (conversation.getUser() != null) {
+            realtimeService.sendToClientWithPrefix(
+                conversation.getUser().getAccountId().toString(),
+                notificationType.getName(),
+                data);
+        }
+        if (conversation.getCompany() != null) {
+            realtimeService.sendToClientWithPrefix(
+                conversation.getCompany().getAccountId().toString(),
+                notificationType.getName(),
+                data);
+        }
+    }
+
+    private void realtimeToAccountInConversation(Conversation conversation, NotificationType notificationType, Object data) {
+        if (conversation == null || notificationType == null || data == null) return;
+        if (conversation.getUser() != null) {
+            realtimeService.sendToClientWithPrefix(
+                conversation.getUser().getAccountId().toString(),
+                notificationType.getName(),
+                data);
+        }
+        if (conversation.getCompany() != null) {
+            realtimeService.sendToClientWithPrefix(
+                conversation.getCompany().getAccountId().toString(),
+                notificationType.getName(),
+                data);
+        }
+    }
+
+    private void realtimeToAccountInConversation(NotificationType notificationType, Object data, Account... accounts) {
+        if (accounts == null || notificationType == null || data == null) return;
+        for (var account : accounts) {
+            realtimeService.sendToClientWithPrefix(
+                account.getAccountId().toString(),
+                notificationType.getName(),
+                data);
+        }
     }
 }
