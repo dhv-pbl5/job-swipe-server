@@ -6,11 +6,13 @@ import org.dhv.pbl5server.constant_service.entity.Constant;
 import org.dhv.pbl5server.constant_service.enums.ConstantTypePrefix;
 import org.dhv.pbl5server.constant_service.enums.SystemRoleName;
 import org.dhv.pbl5server.constant_service.repository.ConstantRepository;
+import org.dhv.pbl5server.notification_service.entity.NotificationType;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -159,23 +161,15 @@ public class CreateDefaultConstant implements CommandLineRunner {
     private void createNotificationType() {
         if (!repository.findByConstantTypeStartsWith(ConstantTypePrefix.NOTIFICATION_TYPE.getValue()).isEmpty()) return;
         log.info("--------------------- Creating default notification type ---------------------");
-        var notificationName = List.of(
-            "Message", "Match", "Activate", "Deactivate", "Be Matched", "Be Unmatched"
-        );
         try {
             List<Integer> randomList = new ArrayList<>();
             repository.saveAll(
-                notificationName.stream()
-                    .map(name -> {
-                        int randomNum = getRandomNumber(100, 999, randomList);
-                        randomList.add(randomNum);
-                        return Constant
-                            .builder()
-                            .constantType(ConstantTypePrefix.NOTIFICATION_TYPE.getValue() + randomNum)
-                            .constantName(name)
-                            .build();
-                    }).toList()
-            );
+                Arrays.stream(NotificationType.values()).map(type -> Constant
+                        .builder()
+                        .constantType(type.constantType())
+                        .constantName(type.getNotificationName())
+                        .build())
+                    .toList());
             log.info("--------------------- Successfully created default notification type ---------------------");
         } catch (Exception ex) {
             log.error("Error when creating default notification type: ", ex);

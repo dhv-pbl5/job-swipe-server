@@ -193,13 +193,13 @@ public class ChatServiceImpl implements ChatService {
         if (conversation.getUser() != null) {
             realtimeService.sendToClientWithPrefix(
                 conversation.getUser().getAccountId().toString(),
-                notificationType.getEnumName(),
+                notificationType,
                 data);
         }
         if (conversation.getCompany() != null) {
             realtimeService.sendToClientWithPrefix(
                 conversation.getCompany().getAccountId().toString(),
-                notificationType.getEnumName(),
+                notificationType,
                 data);
         }
     }
@@ -209,13 +209,13 @@ public class ChatServiceImpl implements ChatService {
         if (conversation.getUser() != null) {
             realtimeService.sendToClientWithPrefix(
                 conversation.getUser().getAccountId().toString(),
-                notificationType.getEnumName(),
+                notificationType,
                 data);
         }
         if (conversation.getCompany() != null) {
             realtimeService.sendToClientWithPrefix(
                 conversation.getCompany().getAccountId().toString(),
-                notificationType.getEnumName(),
+                notificationType,
                 data);
         }
     }
@@ -225,7 +225,7 @@ public class ChatServiceImpl implements ChatService {
         for (var account : accounts) {
             realtimeService.sendToClientWithPrefix(
                 account.getAccountId().toString(),
-                notificationType.getEnumName(),
+                notificationType,
                 data);
         }
     }
