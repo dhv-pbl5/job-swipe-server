@@ -142,6 +142,7 @@ public final class ErrorMessageConstant {
        Conversation
     */
     public static final String CONVERSATION_NOT_FOUND = "conversation_not_found";
+    public static final String REQUIRED_USER_AND_COMPANY = "user_and_company_are_required";
 
     /*
        Message
@@ -153,6 +154,15 @@ public final class ErrorMessageConstant {
        Notification
     */
     public static final String NOTIFICATION_NOT_FOUND = "notification_not_found";
+    public static final String REQUIRED_SENDER_AND_RECEIVER = "required_sender_and_receiver";
+    public static final String REQUIRED_NOTIFICATION_TYPE = "required_notification_type";
+
+    /*
+       Match
+    */
+    public static final String MATCH_NOT_FOUND = "match_not_found";
+    public static final String MATCH_ID_INVALID = "match_id_is_invalid";
+    public static final String REQUESTED_ACCOUNT_ID_INVALID = "requested_account_id_is_invalid";
 
     private ErrorMessageConstant() {
     }
