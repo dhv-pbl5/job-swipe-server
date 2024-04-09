@@ -250,6 +250,9 @@ company_profile_not_found:
 conversation_not_found:
   code: ERR_CON0101
   message: Conversation not found!
+user_and_company_are_required:
+  code: ERR_CON0102
+  message: User and company are required!
 
 # Message
 message_not_found:
@@ -263,3 +266,20 @@ message_must_have_content_or_file:
 notification_not_found:
   code: ERR_NOT0101
   message: Notification not found!
+required_sender_and_receiver:
+  code: ERR_NOT0102
+  message: Sender and receiver are required!
+required_notification_type:
+  code: ERR_NOT0103
+  message: Notification type is required!
+
+# Match
+match_not_found:
+  code: ERR_MAT0101
+  message: Match not found!
+match_id_is_invalid:
+  code: ERR_MAT0102
+  message: Match id is required and must be a valid UUID!
+requested_account_id_is_invalid:
+  code: ERR_MAT0103
+  message: Requested account id is required and must be a valid UUID!

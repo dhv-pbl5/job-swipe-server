@@ -3,6 +3,7 @@ package org.dhv.pbl5server.notification_service.service.impl;
 import lombok.RequiredArgsConstructor;
 import org.dhv.pbl5server.authentication_service.entity.Account;
 import org.dhv.pbl5server.common_service.constant.ErrorMessageConstant;
+import org.dhv.pbl5server.common_service.exception.BadRequestException;
 import org.dhv.pbl5server.common_service.exception.NotFoundObjectException;
 import org.dhv.pbl5server.common_service.model.ApiDataResponse;
 import org.dhv.pbl5server.common_service.utils.PageUtils;
@@ -76,10 +77,15 @@ public class NotificationServiceImpl implements NotificationService {
 
     @Override
     public NotificationResponse createNotification(UUID objectId, Account sender, Account receiver, NotificationType type) {
+        if (sender == null || receiver == null)
+            throw new BadRequestException(ErrorMessageConstant.REQUIRED_SENDER_AND_RECEIVER);
+        if (type == null)
+            throw new BadRequestException(ErrorMessageConstant.REQUIRED_NOTIFICATION_TYPE);
         var constant = constantService.getConstantByType(type.constantType());
         var notification = Notification.builder()
             .sender(sender)
             .receiver(receiver)
+            .objectId(objectId)
             .readStatus(false)
             .content(constant.getConstantName())
             .type(Constant.builder().constantId(constant.getConstantId()).build())

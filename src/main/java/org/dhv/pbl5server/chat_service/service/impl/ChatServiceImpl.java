@@ -74,6 +74,8 @@ public class ChatServiceImpl implements ChatService {
 
     @Override
     public ConversationResponse createConversation(User user, Company company) {
+        if (user == null || company == null)
+            throw new BadRequestException(ErrorMessageConstant.REQUIRED_USER_AND_COMPANY);
         var conversation = Conversation.builder()
             .user(user)
             .company(company)
