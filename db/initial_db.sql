@@ -2,7 +2,7 @@ CREATE TABLE public.constants
 (
     constant_id uuid NOT NULL,
     constant_name character varying(1000) NOT NULL,
-    constant_type character varying(1000) NOT NULL,
+    constant_type character varying(1000) NOT NULL UNIQUE,
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone,
     PRIMARY KEY (constant_id)

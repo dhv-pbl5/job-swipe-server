@@ -2,6 +2,8 @@ package org.dhv.pbl5server.realtime_service.service;
 
 import lombok.RequiredArgsConstructor;
 import org.dhv.pbl5server.common_service.utils.CommonUtils;
+import org.dhv.pbl5server.constant_service.service.ConstantService;
+import org.dhv.pbl5server.notification_service.entity.NotificationType;
 import org.dhv.pbl5server.realtime_service.socket.AbstractClient;
 import org.dhv.pbl5server.realtime_service.socket.RealtimeServer;
 import org.springframework.stereotype.Service;
@@ -10,32 +12,38 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class RealtimeServiceImpl implements RealtimeService {
     private final RealtimeServer server;
+    private final ConstantService constantService;
 
     @Override
-    public void sendToAllClient(String type, String message) {
-        server.getClients().forEach((_, value) -> value.send(type, message));
+    public void sendToAllClient(NotificationType type, String message) {
+        var typeResponse = constantService.getConstantByType(type.constantType());
+        server.getClients().forEach((_, value) -> value.send(typeResponse, message));
     }
 
     @Override
-    public void sendToAllClient(String type, Object object) {
+    public void sendToAllClient(NotificationType type, Object object) {
         var json = CommonUtils.convertToJson(object);
         if (json == null) return;
-        server.getClients().forEach((_, value) -> value.send(type, json));
+        var typeResponse = constantService.getConstantByType(type.constantType());
+        server.getClients().forEach((_, value) -> value.send(typeResponse, json));
     }
 
     @Override
-    public void sendToClientWithPrefix(String accountId, String type, String message) {
+    public void sendToClientWithPrefix(String accountId, NotificationType type, String message) {
         var client = getClientByPrefixId(accountId);
-        if (client != null)
-            client.send(type, message);
+        if (client != null) {
+            var typeResponse = constantService.getConstantByType(type.constantType());
+            client.send(typeResponse, message);
+        }
     }
 
     @Override
-    public void sendToClientWithPrefix(String accountId, String type, Object object) {
+    public void sendToClientWithPrefix(String accountId, NotificationType type, Object object) {
         var json = CommonUtils.convertToJson(object);
         var client = getClientByPrefixId(accountId);
         if (json == null || client == null) return;
-        client.send(type, json);
+        var typeResponse = constantService.getConstantByType(type.constantType());
+        client.send(typeResponse, json);
     }
 
     @Override

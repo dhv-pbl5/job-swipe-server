@@ -45,15 +45,16 @@ public class RestApiExceptionHandler extends ResponseEntityExceptionHandler {
      * Handle custom exception
      * 1. NotFoundObjectException
      * 2. BadRequestException
-     * 3. ForbiddenException
-     * 4. UnauthorizedException
-     * 5. ServerError
-     * 6. AccessDeniedException
-     * 7. GlobalException
-     * 8. RuntimeException
-     * 9. AuthenticationCredentialsNotFoundException
-     * 10. InvalidDataException
-     * 11. InvalidDataAccessApiUsageException
+     * 3. InternalServerError
+     * 4. ForbiddenException
+     * 5. UnauthorizedException
+     * 6. ServerError
+     * 7. AccessDeniedException
+     * 8. GlobalException
+     * 9. RuntimeException
+     * 10. AuthenticationCredentialsNotFoundException
+     * 11. InvalidDataException
+     * 12. InvalidDataAccessApiUsageException
      */
     @SuppressWarnings("unused")
     @ExceptionHandler(NotFoundObjectException.class)
@@ -73,6 +74,16 @@ public class RestApiExceptionHandler extends ResponseEntityExceptionHandler {
         ErrorResponse error = ErrorUtils.getExceptionError(ex.getMessage());
         ApiDataResponse response = ApiDataResponse.error(error);
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
+
+    @SuppressWarnings("unused")
+    @ExceptionHandler(InternalServerException.class)
+    public ResponseEntity<ApiDataResponse> handleInternalServerException(
+        InternalServerException ex, HttpServletRequest request
+    ) {
+        ErrorResponse error = new ErrorResponse(ErrorMessageConstant.INTERNAL_SERVER_ERROR_CODE, ex.getMessage());
+        ApiDataResponse response = ApiDataResponse.error(error);
+        return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @SuppressWarnings("unused")

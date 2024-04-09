@@ -10,7 +10,7 @@ import org.dhv.pbl5server.common_service.model.ApiDataResponse;
 import org.dhv.pbl5server.common_service.repository.CrudDbJsonArrayRepository;
 import org.dhv.pbl5server.common_service.utils.CommonUtils;
 import org.dhv.pbl5server.common_service.utils.PageUtils;
-import org.dhv.pbl5server.constant_service.enums.ConstantType;
+import org.dhv.pbl5server.constant_service.enums.ConstantTypePrefix;
 import org.dhv.pbl5server.constant_service.service.ConstantService;
 import org.dhv.pbl5server.profile_service.entity.User;
 import org.dhv.pbl5server.profile_service.entity.UserAward;
@@ -153,7 +153,7 @@ public class UserServiceImpl implements UserService {
         constantService.checkConstantWithType(request.stream()
                 .map(e -> UUID.fromString(e.getExperienceType().getConstantId()))
                 .toList(),
-            ConstantType.EXPERIENCE_TYPE
+            ConstantTypePrefix.EXPERIENCE_TYPE
         );
         var user = repository.findById(account.getAccountId())
             .orElseThrow(() -> new NotFoundObjectException(ErrorMessageConstant.USER_NOT_FOUND));
@@ -231,7 +231,7 @@ public class UserServiceImpl implements UserService {
         constantService.checkConstantWithType(request.stream()
                 .map(e -> UUID.fromString(e.getExperienceType().getConstantId()))
                 .toList(),
-            ConstantType.EXPERIENCE_TYPE
+            ConstantTypePrefix.EXPERIENCE_TYPE
         );
         for (var req : request) {
             if (req.getId() == null)

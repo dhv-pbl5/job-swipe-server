@@ -11,6 +11,7 @@ import org.dhv.pbl5server.authentication_service.payload.request.LoginRequest;
 import org.dhv.pbl5server.authentication_service.payload.request.RefreshTokenRequest;
 import org.dhv.pbl5server.authentication_service.service.AuthService;
 import org.dhv.pbl5server.common_service.constant.ErrorMessageConstant;
+import org.dhv.pbl5server.common_service.enums.AbstractEnum;
 import org.dhv.pbl5server.common_service.enums.DataSortOrder;
 import org.dhv.pbl5server.common_service.exception.BadRequestException;
 import org.dhv.pbl5server.common_service.model.ApiDataResponse;
@@ -51,7 +52,7 @@ public class AdminController {
     @PreAuthorizeAdmin
     @GetMapping("")
     public ResponseEntity<ApiDataResponse> getAll(
-        @NotNull @RequestParam GetAllByType type,
+        @NotNull @RequestParam String type,
         @Nullable @RequestParam("page") Integer page,
         @Nullable @RequestParam("paging") Integer paging,
         @Nullable @RequestParam("sort_by") String sortBy,
@@ -59,7 +60,7 @@ public class AdminController {
         @Nullable @RequestParam("account_id") String accountId
     ) {
         var pageRequest = PageUtils.makePageRequest(sortBy, order, page, paging);
-        return switch (type) {
+        return switch (AbstractEnum.fromString(GetAllByType.values(), type)) {
             case COMPANY -> ResponseEntity.ok(service.getAllCompany(pageRequest));
             case USER -> ResponseEntity.ok(service.getAllUser(pageRequest));
             case APPLICATION_POSITION -> {

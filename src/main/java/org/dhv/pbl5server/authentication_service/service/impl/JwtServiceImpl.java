@@ -18,7 +18,7 @@ import org.dhv.pbl5server.common_service.exception.BadRequestException;
 import org.dhv.pbl5server.common_service.exception.ForbiddenException;
 import org.dhv.pbl5server.common_service.exception.UnauthorizedException;
 import org.dhv.pbl5server.common_service.repository.RedisRepository;
-import org.dhv.pbl5server.constant_service.enums.SystemRole;
+import org.dhv.pbl5server.constant_service.enums.SystemRoleName;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -63,7 +63,7 @@ public class JwtServiceImpl implements JwtService {
         UUID accountId = UUID.fromString(jwtClaims.getSubject());
         Account account = accountRepository.findById(accountId).orElseThrow(() -> new ForbiddenException(ErrorMessageConstant.FORBIDDEN));
         // Check if the user is an admin
-        if (isAdmin && !account.getSystemRole().getConstantName().equals(SystemRole.Admin.name())) {
+        if (isAdmin && !account.getSystemRole().getConstantName().equals(SystemRoleName.ADMIN.name())) {
             throw new ForbiddenException(ErrorMessageConstant.FORBIDDEN);
         }
         if (account.getRefreshToken().equals(refreshToken)) {
