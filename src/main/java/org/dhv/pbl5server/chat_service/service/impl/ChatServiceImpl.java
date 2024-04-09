@@ -17,7 +17,7 @@ import org.dhv.pbl5server.common_service.exception.NotFoundObjectException;
 import org.dhv.pbl5server.common_service.model.ApiDataResponse;
 import org.dhv.pbl5server.common_service.utils.CommonUtils;
 import org.dhv.pbl5server.common_service.utils.PageUtils;
-import org.dhv.pbl5server.constant_service.enums.SystemRole;
+import org.dhv.pbl5server.constant_service.enums.SystemRoleName;
 import org.dhv.pbl5server.notification_service.entity.NotificationType;
 import org.dhv.pbl5server.profile_service.entity.Company;
 import org.dhv.pbl5server.profile_service.entity.User;
@@ -44,7 +44,7 @@ public class ChatServiceImpl implements ChatService {
 
     @Override
     public ApiDataResponse getConversations(Account account, Pageable pageRequest) {
-        var page = account.getSystemRole().getConstantName().equals(SystemRole.User.name())
+        var page = account.getSystemRole().getConstantName().equals(SystemRoleName.USER.name())
             ? conversationRepository.findAllByUserId(account.getAccountId(), pageRequest)
             : conversationRepository.findAllByCompanyId(account.getAccountId(), pageRequest);
         return ApiDataResponse.success(page
@@ -64,7 +64,7 @@ public class ChatServiceImpl implements ChatService {
     @Override
     public ConversationResponse getConversationById(Account account, String conversationId) {
         var conversatinUuid = UUID.fromString(conversationId);
-        var conversationOptional = account.getSystemRole().getConstantName().equals(SystemRole.User.name())
+        var conversationOptional = account.getSystemRole().getConstantName().equals(SystemRoleName.USER.name())
             ? conversationRepository.findByIdAndUserId(conversatinUuid, account.getAccountId())
             : conversationRepository.findByIdAndCompanyId(conversatinUuid, account.getAccountId());
         var conversation = conversationOptional.orElseThrow(() -> new NotFoundObjectException(ErrorMessageConstant.CONVERSATION_NOT_FOUND));
@@ -123,7 +123,7 @@ public class ChatServiceImpl implements ChatService {
             throw new BadRequestException(ErrorMessageConstant.MESSAGE_MUST_HAVE_CONTENT_OR_FILE);
         // Check conversation
         var conversatinUuid = UUID.fromString(conversationId);
-        var conversationOptional = account.getSystemRole().getConstantName().equals(SystemRole.User.name())
+        var conversationOptional = account.getSystemRole().getConstantName().equals(SystemRoleName.USER.name())
             ? conversationRepository.findByIdAndUserId(conversatinUuid, account.getAccountId())
             : conversationRepository.findByIdAndCompanyId(conversatinUuid, account.getAccountId());
         var conversation = conversationOptional.orElseThrow(() -> new NotFoundObjectException(ErrorMessageConstant.CONVERSATION_NOT_FOUND));
@@ -195,13 +195,13 @@ public class ChatServiceImpl implements ChatService {
         if (conversation.getUser() != null) {
             realtimeService.sendToClientWithPrefix(
                 conversation.getUser().getAccountId().toString(),
-                notificationType.getName(),
+                notificationType,
                 data);
         }
         if (conversation.getCompany() != null) {
             realtimeService.sendToClientWithPrefix(
                 conversation.getCompany().getAccountId().toString(),
-                notificationType.getName(),
+                notificationType,
                 data);
         }
     }
@@ -211,13 +211,13 @@ public class ChatServiceImpl implements ChatService {
         if (conversation.getUser() != null) {
             realtimeService.sendToClientWithPrefix(
                 conversation.getUser().getAccountId().toString(),
-                notificationType.getName(),
+                notificationType,
                 data);
         }
         if (conversation.getCompany() != null) {
             realtimeService.sendToClientWithPrefix(
                 conversation.getCompany().getAccountId().toString(),
-                notificationType.getName(),
+                notificationType,
                 data);
         }
     }
@@ -227,7 +227,7 @@ public class ChatServiceImpl implements ChatService {
         for (var account : accounts) {
             realtimeService.sendToClientWithPrefix(
                 account.getAccountId().toString(),
-                notificationType.getName(),
+                notificationType,
                 data);
         }
     }

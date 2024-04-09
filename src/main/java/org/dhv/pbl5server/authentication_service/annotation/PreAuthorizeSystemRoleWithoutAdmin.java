@@ -9,6 +9,6 @@ import java.lang.annotation.Target;
 
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
-@PreAuthorize("hasAnyAuthority('USER', 'COMPANY')")
+@PreAuthorize("hasAnyAuthority('User', 'Company')")
 public @interface PreAuthorizeSystemRoleWithoutAdmin {
 }

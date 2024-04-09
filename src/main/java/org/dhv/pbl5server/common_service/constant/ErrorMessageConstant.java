@@ -14,6 +14,7 @@ public final class ErrorMessageConstant {
     public static final String UNAUTHORIZED = "unauthorized";
     public static final String REQUIRED_BODY_IN_REQUEST = "required_body_in_request";
     public static final String INVALID_UUID = "invalid_uuid";
+    public static final String INVALID_ENUM = "invalid_enum";
 
 
     /*

@@ -6,7 +6,6 @@ import org.dhv.pbl5server.common_service.constant.ErrorMessageConstant;
 import org.dhv.pbl5server.common_service.exception.BadRequestException;
 import org.dhv.pbl5server.common_service.exception.NotFoundObjectException;
 import org.dhv.pbl5server.common_service.model.ApiDataResponse;
-import org.dhv.pbl5server.common_service.utils.CommonUtils;
 import org.dhv.pbl5server.common_service.utils.PageUtils;
 import org.dhv.pbl5server.constant_service.entity.Constant;
 import org.dhv.pbl5server.constant_service.service.ConstantService;
@@ -32,7 +31,7 @@ public class NotificationServiceImpl implements NotificationService {
 
     @Override
     public void notifyToAll(String message) {
-        realtimeService.sendToAllClient(NotificationType.TEST.name(), message);
+        realtimeService.sendToAllClient(NotificationType.TEST, message);
     }
 
     @Override
@@ -82,9 +81,7 @@ public class NotificationServiceImpl implements NotificationService {
             throw new BadRequestException(ErrorMessageConstant.REQUIRED_SENDER_AND_RECEIVER);
         if (type == null)
             throw new BadRequestException(ErrorMessageConstant.REQUIRED_NOTIFICATION_TYPE);
-        var constants = constantService.getConstantsByType(type.getValue());
-        if (CommonUtils.isEmptyOrNullList(constants)) return null;
-        var constant = constants.getFirst();
+        var constant = constantService.getConstantByType(type.constantType());
         var notification = Notification.builder()
             .sender(sender)
             .receiver(receiver)
@@ -97,11 +94,11 @@ public class NotificationServiceImpl implements NotificationService {
         // Realtime
         realtimeService.sendToClientWithPrefix(
             sender.getAccountId().toString(),
-            type.getName(),
+            type,
             response);
         realtimeService.sendToClientWithPrefix(
             receiver.getAccountId().toString(),
-            type.getName(),
+            type,
             response);
         return response;
     }

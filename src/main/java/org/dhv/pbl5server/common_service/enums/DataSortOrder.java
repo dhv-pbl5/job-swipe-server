@@ -5,13 +5,10 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public enum DataSortOrder {
+public enum DataSortOrder implements AbstractEnum<DataSortOrder> {
     ASC("asc"),
     DESC("desc");
 
     private final String value;
-
-    public static DataSortOrder fromString(String order) {
-        return order.equalsIgnoreCase(DataSortOrder.ASC.getValue()) ? DataSortOrder.ASC : DataSortOrder.DESC;
-    }
+    private final String enumName = this.name();
 }

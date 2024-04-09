@@ -9,7 +9,7 @@ import org.dhv.pbl5server.authentication_service.repository.AccountRepository;
 import org.dhv.pbl5server.authentication_service.service.AuthService;
 import org.dhv.pbl5server.common_service.utils.CommonUtils;
 import org.dhv.pbl5server.constant_service.entity.Constant;
-import org.dhv.pbl5server.constant_service.enums.SystemRole;
+import org.dhv.pbl5server.constant_service.enums.SystemRoleName;
 import org.dhv.pbl5server.constant_service.payload.ConstantSelectionRequest;
 import org.dhv.pbl5server.constant_service.service.ConstantService;
 import org.springframework.boot.CommandLineRunner;
@@ -64,11 +64,11 @@ public class CreateDefaultAccount implements CommandLineRunner {
             .establishedDate(CommonUtils.getCurrentTimestamp())
             .build();
         for (var item : (List<Constant>) constantService.getSystemRoles(null)) {
-            if (item.getConstantName().equalsIgnoreCase(SystemRole.Admin.name()))
+            if (item.getConstantName().equalsIgnoreCase(SystemRoleName.ADMIN.name()))
                 adminAccount.setSystemRole(item);
-            if (item.getConstantName().equalsIgnoreCase(SystemRole.Company.name()))
+            if (item.getConstantName().equalsIgnoreCase(SystemRoleName.COMPANY.name()))
                 companyRegisterRequest.setSystemRole(new ConstantSelectionRequest(item.getConstantId().toString()));
-            if (item.getConstantName().equalsIgnoreCase(SystemRole.User.name()))
+            if (item.getConstantName().equalsIgnoreCase(SystemRoleName.USER.name()))
                 userRegisterRequest.setSystemRole(new ConstantSelectionRequest(item.getConstantId().toString()));
         }
         try {
