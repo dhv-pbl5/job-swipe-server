@@ -3,9 +3,9 @@ package org.dhv.pbl5server.constant_service.controller;
 import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
-import org.dhv.pbl5server.common_service.constant.ErrorMessageConstant;
-import org.dhv.pbl5server.common_service.exception.BadRequestException;
+import org.dhv.pbl5server.common_service.enums.AbstractEnum;
 import org.dhv.pbl5server.common_service.model.ApiDataResponse;
+import org.dhv.pbl5server.constant_service.enums.ConstantTypePrefix;
 import org.dhv.pbl5server.constant_service.service.ConstantService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -29,12 +29,15 @@ public class ConstantController {
     }
 
     @GetMapping("")
-    public ResponseEntity<ApiDataResponse> getConstantsByType(@NotNull @RequestParam(name = "constant_type") String type) {
-        try {
-            return ResponseEntity.ok(ApiDataResponse.successWithoutMeta(service.getConstantsByType(type)));
-        } catch (NumberFormatException e) {
-            throw new BadRequestException(ErrorMessageConstant.CONSTANT_TYPE_MUST_BE_NUMBER);
+    public ResponseEntity<ApiDataResponse> getConstantsByType(
+        @NotNull @RequestParam(name = "constant_type") String type,
+        @Nullable @RequestParam(name = "is_prefix") Boolean prefix
+    ) {
+        if (prefix != null && prefix && type.length() >= 2) {
+            var typePrefix = AbstractEnum.fromString(ConstantTypePrefix.values(), type.substring(0, 2));
+            return ResponseEntity.ok(ApiDataResponse.successWithoutMeta(service.getConstantsByTypePrefix(typePrefix)));
         }
+        return ResponseEntity.ok(ApiDataResponse.successWithoutMeta(service.getConstantByType(type)));
     }
 
     @GetMapping("/{constant_id}")

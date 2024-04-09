@@ -18,8 +18,8 @@ import org.dhv.pbl5server.common_service.exception.NotFoundObjectException;
 import org.dhv.pbl5server.common_service.repository.RedisRepository;
 import org.dhv.pbl5server.common_service.utils.CommonUtils;
 import org.dhv.pbl5server.constant_service.entity.Constant;
-import org.dhv.pbl5server.constant_service.enums.ConstantType;
-import org.dhv.pbl5server.constant_service.enums.SystemRole;
+import org.dhv.pbl5server.constant_service.enums.ConstantTypePrefix;
+import org.dhv.pbl5server.constant_service.enums.SystemRoleName;
 import org.dhv.pbl5server.constant_service.repository.ConstantRepository;
 import org.dhv.pbl5server.profile_service.entity.Company;
 import org.dhv.pbl5server.profile_service.entity.User;
@@ -54,7 +54,7 @@ public class AuthServiceImpl implements AuthService {
             SecurityContextHolder.getContext().setAuthentication(authentication);
             Account account = (Account) authentication.getPrincipal();
             // Check if the user is an admin
-            if (isAdmin && !account.getSystemRole().getConstantName().equals(SystemRole.Admin.name())) {
+            if (isAdmin && !account.getSystemRole().getConstantName().equals(SystemRoleName.ADMIN.name())) {
                 throw new ForbiddenException(ErrorMessageConstant.FORBIDDEN);
             }
             CredentialResponse response = jwtService.generateToken(account.getAccountId().toString());
@@ -188,10 +188,10 @@ public class AuthServiceImpl implements AuthService {
         Constant role = constantRepository.findById(roleIdUUID).orElseThrow(() ->
             new NotFoundObjectException(ErrorMessageConstant.SYSTEM_ROLE_NOT_FOUND));
         // Check constant is not system role
-        if (!ConstantType.isSystemRole(role.getConstantType()))
+        if (!ConstantTypePrefix.isSystemRole(role.getConstantType()))
             throw new BadRequestException(ErrorMessageConstant.SYSTEM_ROLE_NOT_FOUND);
         // Check if the role is admin
-        if (role.getConstantName().equalsIgnoreCase(SystemRole.Admin.name()))
+        if (role.getConstantName().equalsIgnoreCase(SystemRoleName.ADMIN.name()))
             throw new BadRequestException(ErrorMessageConstant.ROLE_NOT_VALID);
         return role;
     }

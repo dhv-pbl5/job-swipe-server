@@ -2,15 +2,15 @@ package org.dhv.pbl5server.constant_service.config;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.dhv.pbl5server.common_service.constant.CommonConstant;
 import org.dhv.pbl5server.constant_service.entity.Constant;
-import org.dhv.pbl5server.constant_service.enums.ConstantType;
-import org.dhv.pbl5server.constant_service.enums.SystemRole;
+import org.dhv.pbl5server.constant_service.enums.ConstantTypePrefix;
+import org.dhv.pbl5server.constant_service.enums.SystemRoleName;
 import org.dhv.pbl5server.constant_service.repository.ConstantRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -38,22 +38,22 @@ public class CreateDefaultConstant implements CommandLineRunner {
      * Create system role
      */
     private void createSystemRole() {
-        if (!repository.findByConstantTypeStartsWith(CommonConstant.SYSTEM_ROLE_PREFIX).isEmpty()) return;
+        if (!repository.findByConstantTypeStartsWith(ConstantTypePrefix.SYSTEM_ROLE.getValue()).isEmpty()) return;
         log.info("--------------------- Creating default system role ---------------------");
         // Admin role
         var adminRole = Constant.builder()
-            .constantType(ConstantType.ADMIN.getValue())
-            .constantName(SystemRole.Admin.name())
+            .constantType("%s100".formatted(ConstantTypePrefix.SYSTEM_ROLE.getValue()))
+            .constantName(SystemRoleName.ADMIN.getValue())
             .build();
         // Company role
         var companyRole = Constant.builder()
-            .constantType(ConstantType.COMPANY.getValue())
-            .constantName(SystemRole.Company.name())
+            .constantType("%s110".formatted(ConstantTypePrefix.SYSTEM_ROLE.getValue()))
+            .constantName(SystemRoleName.COMPANY.getValue())
             .build();
         // User role
         var userRole = Constant.builder()
-            .constantType(ConstantType.USER.getValue())
-            .constantName(SystemRole.User.name())
+            .constantType("%s120".formatted(ConstantTypePrefix.SYSTEM_ROLE.getValue()))
+            .constantName(SystemRoleName.USER.getValue())
             .build();
         try {
             repository.saveAll(List.of(adminRole, companyRole, userRole));
@@ -67,20 +67,25 @@ public class CreateDefaultConstant implements CommandLineRunner {
      * Create apply position
      */
     private void createApplyPosition() {
-        if (!repository.findByConstantType(ConstantType.APPLY_POSITION.getValue()).isEmpty()) return;
+        if (!repository.findByConstantTypeStartsWith(ConstantTypePrefix.APPLY_POSITION.getValue()).isEmpty()) return;
         log.info("--------------------- Creating default apply position ---------------------");
         var positionName = List.of(
             "HR", "Intern", "Fresher", "Junior", "Senior",
             "Technical Leader", "Project Manager", "Product Owner", "Scrum Master"
         );
         try {
+            List<Integer> randomList = new ArrayList<>();
             repository.saveAll(
                 positionName.stream()
-                    .map(name -> Constant
-                        .builder()
-                        .constantType(ConstantType.APPLY_POSITION.getValue())
-                        .constantName(name)
-                        .build()).toList()
+                    .map(name -> {
+                        int randomNum = getRandomNumber(100, 999, randomList);
+                        randomList.add(randomNum);
+                        return Constant
+                            .builder()
+                            .constantType(ConstantTypePrefix.APPLY_POSITION.getValue() + randomNum)
+                            .constantName(name)
+                            .build();
+                    }).toList()
             );
             log.info("--------------------- Successfully created default apply position ---------------------");
         } catch (Exception ex) {
@@ -92,7 +97,7 @@ public class CreateDefaultConstant implements CommandLineRunner {
      * Create skill
      */
     private void createSkill() {
-        if (!repository.findByConstantType(ConstantType.SKILL.getValue()).isEmpty()) return;
+        if (!repository.findByConstantTypeStartsWith(ConstantTypePrefix.SKILL.getValue()).isEmpty()) return;
         log.info("--------------------- Creating default skill ---------------------");
         var skillName = List.of(
             "Java", "Python", "C++", "C#", "JavaScript",
@@ -100,13 +105,18 @@ public class CreateDefaultConstant implements CommandLineRunner {
             "Spring Boot", "Hibernate", "JPA", "JDBC", "JSP", "Servlet", "Thymeleaf"
         );
         try {
+            List<Integer> randomList = new ArrayList<>();
             repository.saveAll(
                 skillName.stream()
-                    .map(name -> Constant
-                        .builder()
-                        .constantType(ConstantType.SKILL.getValue())
-                        .constantName(name)
-                        .build()).toList()
+                    .map(name -> {
+                        int randomNum = getRandomNumber(100, 999, randomList);
+                        randomList.add(randomNum);
+                        return Constant
+                            .builder()
+                            .constantType(ConstantTypePrefix.SKILL.getValue() + randomNum)
+                            .constantName(name)
+                            .build();
+                    }).toList()
             );
             log.info("--------------------- Successfully created default skill ---------------------");
         } catch (Exception ex) {
@@ -118,19 +128,24 @@ public class CreateDefaultConstant implements CommandLineRunner {
      * Create experience type
      */
     private void createExperienceType() {
-        if (!repository.findByConstantType(ConstantType.EXPERIENCE_TYPE.getValue()).isEmpty()) return;
+        if (!repository.findByConstantTypeStartsWith(ConstantTypePrefix.EXPERIENCE_TYPE.getValue()).isEmpty()) return;
         log.info("--------------------- Creating default experience type ---------------------");
         var experienceName = List.of(
             "Working", "Hobby", "Personal Project", "Open Source Project", "Research"
         );
         try {
+            List<Integer> randomList = new ArrayList<>();
             repository.saveAll(
                 experienceName.stream()
-                    .map(name -> Constant
-                        .builder()
-                        .constantType(ConstantType.EXPERIENCE_TYPE.getValue())
-                        .constantName(name)
-                        .build()).toList()
+                    .map(name -> {
+                        int randomNum = getRandomNumber(100, 999, randomList);
+                        randomList.add(randomNum);
+                        return Constant
+                            .builder()
+                            .constantType(ConstantTypePrefix.EXPERIENCE_TYPE.getValue() + randomNum)
+                            .constantName(name)
+                            .build();
+                    }).toList()
             );
             log.info("--------------------- Successfully created default experience type ---------------------");
         } catch (Exception ex) {
@@ -142,23 +157,36 @@ public class CreateDefaultConstant implements CommandLineRunner {
      * Create notification type
      */
     private void createNotificationType() {
-        if (!repository.findByConstantType(ConstantType.NOTIFICATION_TYPE.getValue()).isEmpty()) return;
+        if (!repository.findByConstantTypeStartsWith(ConstantTypePrefix.NOTIFICATION_TYPE.getValue()).isEmpty()) return;
         log.info("--------------------- Creating default notification type ---------------------");
         var notificationName = List.of(
             "Message", "Match", "Activate", "Deactivate", "Be Matched", "Be Unmatched"
         );
         try {
+            List<Integer> randomList = new ArrayList<>();
             repository.saveAll(
                 notificationName.stream()
-                    .map(name -> Constant
-                        .builder()
-                        .constantType(ConstantType.NOTIFICATION_TYPE.getValue())
-                        .constantName(name)
-                        .build()).toList()
+                    .map(name -> {
+                        int randomNum = getRandomNumber(100, 999, randomList);
+                        randomList.add(randomNum);
+                        return Constant
+                            .builder()
+                            .constantType(ConstantTypePrefix.NOTIFICATION_TYPE.getValue() + randomNum)
+                            .constantName(name)
+                            .build();
+                    }).toList()
             );
             log.info("--------------------- Successfully created default notification type ---------------------");
         } catch (Exception ex) {
             log.error("Error when creating default notification type: ", ex);
         }
+    }
+
+    public int getRandomNumber(int min, int max, List<Integer> randomList) {
+        int randomNum = -1;
+        do {
+            randomNum = (int) (Math.random() * (max - min + 1) + min);
+        } while (randomList.contains(randomNum));
+        return randomNum;
     }
 }

@@ -5,11 +5,8 @@ import org.dhv.pbl5server.authentication_service.entity.Account;
 import org.dhv.pbl5server.common_service.constant.ErrorMessageConstant;
 import org.dhv.pbl5server.common_service.exception.NotFoundObjectException;
 import org.dhv.pbl5server.common_service.model.ApiDataResponse;
-import org.dhv.pbl5server.common_service.utils.CommonUtils;
 import org.dhv.pbl5server.common_service.utils.PageUtils;
-import org.dhv.pbl5server.constant_service.entity.Constant;
 import org.dhv.pbl5server.constant_service.service.ConstantService;
-import org.dhv.pbl5server.notification_service.entity.Notification;
 import org.dhv.pbl5server.notification_service.entity.NotificationType;
 import org.dhv.pbl5server.notification_service.mapper.NotificationMapper;
 import org.dhv.pbl5server.notification_service.payload.NotificationResponse;
@@ -77,26 +74,27 @@ public class NotificationServiceImpl implements NotificationService {
 
     @Override
     public NotificationResponse createNotification(UUID objectId, Account sender, Account receiver, NotificationType type) {
-        var constants = constantService.getConstantsByType(type.getValue());
-        if (CommonUtils.isEmptyOrNullList(constants)) return null;
-        var constant = constants.getFirst();
-        var notification = Notification.builder()
-            .sender(sender)
-            .receiver(receiver)
-            .readStatus(false)
-            .content(constant.getConstantName())
-            .type(Constant.builder().constantId(constant.getConstantId()).build())
-            .build();
-        var response = notificationMapper.toNotificationResponse(notificationRepository.save(notification));
-        // Realtime
-        realtimeService.sendToClientWithPrefix(
-            sender.getAccountId().toString(),
-            type.getName(),
-            response);
-        realtimeService.sendToClientWithPrefix(
-            receiver.getAccountId().toString(),
-            type.getName(),
-            response);
-        return response;
+//        var constants = constantService.getConstantsByType(type.getValue());
+//        if (CommonUtils.isEmptyOrNullList(constants)) return null;
+//        var constant = constants.getFirst();
+//        var notification = Notification.builder()
+//            .sender(sender)
+//            .receiver(receiver)
+//            .readStatus(false)
+//            .content(constant.getConstantName())
+//            .type(Constant.builder().constantId(constant.getConstantId()).build())
+//            .build();
+//        var response = notificationMapper.toNotificationResponse(notificationRepository.save(notification));
+//        // Realtime
+//        realtimeService.sendToClientWithPrefix(
+//            sender.getAccountId().toString(),
+//            type.getEnumName(),
+//            response);
+//        realtimeService.sendToClientWithPrefix(
+//            receiver.getAccountId().toString(),
+//            type.getEnumName(),
+//            response);
+//        return response;
+        return null;
     }
 }

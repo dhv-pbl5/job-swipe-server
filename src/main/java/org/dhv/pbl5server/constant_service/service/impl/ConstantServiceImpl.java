@@ -7,7 +7,7 @@ import org.dhv.pbl5server.common_service.exception.BadRequestException;
 import org.dhv.pbl5server.common_service.exception.NotFoundObjectException;
 import org.dhv.pbl5server.common_service.utils.CommonUtils;
 import org.dhv.pbl5server.constant_service.entity.Constant;
-import org.dhv.pbl5server.constant_service.enums.ConstantType;
+import org.dhv.pbl5server.constant_service.enums.ConstantTypePrefix;
 import org.dhv.pbl5server.constant_service.mapper.ConstantMapper;
 import org.dhv.pbl5server.constant_service.payload.ConstantResponse;
 import org.dhv.pbl5server.constant_service.repository.ConstantRepository;
@@ -24,7 +24,7 @@ public class ConstantServiceImpl implements ConstantService {
     private final ConstantMapper mapper;
 
     @Override
-    public void checkConstantWithType(UUID id, ConstantType type) {
+    public void checkConstantWithType(UUID id, ConstantTypePrefix type) {
         var constant = repository.findById(id).orElseThrow(
             () -> new NotFoundObjectException(ErrorMessageConstant.CONSTANT_NOT_FOUND)
         );
@@ -33,7 +33,7 @@ public class ConstantServiceImpl implements ConstantService {
     }
 
     @Override
-    public void checkConstantWithType(List<UUID> ids, ConstantType type) {
+    public void checkConstantWithType(List<UUID> ids, ConstantTypePrefix type) {
         List<UUID> listIdsByConstantType = repository.findByConstantType(type.getValue()).stream().map(Constant::getConstantId).toList();
         for (var id : ids) {
             if (listIdsByConstantType.contains(id)) continue;
@@ -65,8 +65,14 @@ public class ConstantServiceImpl implements ConstantService {
     }
 
     @Override
-    public List<ConstantResponse> getConstantsByType(String type) {
-        return repository.findByConstantType(type).stream().map(mapper::toConstantResponse).toList();
+    public List<ConstantResponse> getConstantsByTypePrefix(ConstantTypePrefix prefix) {
+        return repository.findByConstantTypeStartsWith(prefix.getValue()).stream().map(mapper::toConstantResponse).toList();
+    }
+
+    @Override
+    public ConstantResponse getConstantByType(String type) {
+        return mapper.toConstantResponse(repository.findByConstantType(type)
+            .orElseThrow(() -> new NotFoundObjectException(ErrorMessageConstant.CONSTANT_NOT_FOUND)));
     }
 
     @Override
@@ -74,7 +80,7 @@ public class ConstantServiceImpl implements ConstantService {
         return repository.getDistinctConstantType();
     }
 
-    private void throwErrorWithConstantType(ConstantType type) {
+    private void throwErrorWithConstantType(ConstantTypePrefix type) {
         switch (type) {
             case APPLY_POSITION ->
                 throw new BadRequestException(ErrorMessageConstant.CONSTANT_TYPE_MUST_BE_APPLY_POSITION);

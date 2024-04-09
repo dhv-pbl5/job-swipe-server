@@ -9,7 +9,7 @@ import org.dhv.pbl5server.common_service.exception.NotFoundObjectException;
 import org.dhv.pbl5server.common_service.model.ApiDataResponse;
 import org.dhv.pbl5server.common_service.utils.CommonUtils;
 import org.dhv.pbl5server.common_service.utils.PageUtils;
-import org.dhv.pbl5server.constant_service.enums.ConstantType;
+import org.dhv.pbl5server.constant_service.enums.ConstantTypePrefix;
 import org.dhv.pbl5server.constant_service.service.ConstantService;
 import org.dhv.pbl5server.profile_service.entity.ApplicationPosition;
 import org.dhv.pbl5server.profile_service.mapper.ApplicationPositionMapper;
@@ -151,9 +151,9 @@ public class ApplicationPositionServiceImpl implements ApplicationPositionServic
                 }).toList());
         }).toList();
         // Check all apply_position constant type
-        constantService.checkConstantWithType(applyPositionIds, ConstantType.APPLY_POSITION);
+        constantService.checkConstantWithType(applyPositionIds, ConstantTypePrefix.APPLY_POSITION);
         // Check all apply_skill constant type
-        constantService.checkConstantWithType(applySkillIds, ConstantType.SKILL);
+        constantService.checkConstantWithType(applySkillIds, ConstantTypePrefix.SKILL);
         return result;
     }
 }
