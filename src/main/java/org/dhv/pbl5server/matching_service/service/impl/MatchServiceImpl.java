@@ -30,7 +30,8 @@ public class MatchServiceImpl implements MatchService {
     @Override
     public MatchResponse getMatchById(Account account, String matchingId) {
         var match = matchRepository.findByIdAndUserIdOrCompanyId(UUID.fromString(matchingId), account.getAccountId())
-            .orElseThrow(() -> new NotFoundObjectException(ErrorMessageConstant.MATCH_NOT_FOUND));
+            .orElseThrow(
+                () -> new NotFoundObjectException(ErrorMessageConstant.MATCH_NOT_FOUND));
         return matchMapper.toMatchResponse(match);
     }
 
