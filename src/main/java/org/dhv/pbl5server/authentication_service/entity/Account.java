@@ -30,7 +30,6 @@ public class Account extends AbstractEntity implements UserDetails {
     private UUID accountId;
     @Column(unique = true)
     private String email;
-    @Column(columnDefinition = "boolean default true")
     private boolean accountStatus = true;
     private String address;
     private String avatar;
@@ -43,7 +42,6 @@ public class Account extends AbstractEntity implements UserDetails {
     private Timestamp deletedAt;
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "account")
     private List<ApplicationPosition> applicationPositions;
-
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -75,6 +73,7 @@ public class Account extends AbstractEntity implements UserDetails {
         return true;
     }
 
+    // Account is active or inactive
     @Override
     public boolean isEnabled() {
         return deletedAt == null;

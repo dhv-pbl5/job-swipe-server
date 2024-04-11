@@ -21,5 +21,5 @@ public interface NotificationService {
 
     int getUnreadCount(Account account);
 
-    NotificationResponse createNotification(UUID objectId, Account sender, Account receiver, NotificationType type);
+    void createNotification(UUID objectId, Account sender, Account receiver, NotificationType type);
 }

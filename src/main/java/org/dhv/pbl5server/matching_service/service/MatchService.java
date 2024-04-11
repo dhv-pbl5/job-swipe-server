@@ -9,6 +9,12 @@ public interface MatchService {
 
     ApiDataResponse getMatches(Account account, Pageable pageRequest);
 
+    ApiDataResponse getAcceptedMatches(Account account, Pageable pageRequest);
+
+    ApiDataResponse getRejectedMatches(Account account, Pageable pageRequest);
+
+    ApiDataResponse getRequestedMatches(Account account, Pageable pageRequest);
+
     MatchResponse getMatchById(Account account, String matchingId);
 
     MatchResponse requestMatch(Account account, String requestedAccountId);

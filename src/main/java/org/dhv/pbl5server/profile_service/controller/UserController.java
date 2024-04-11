@@ -10,7 +10,6 @@ import org.dhv.pbl5server.authentication_service.entity.Account;
 import org.dhv.pbl5server.common_service.constant.CommonConstant;
 import org.dhv.pbl5server.common_service.constant.ErrorMessageConstant;
 import org.dhv.pbl5server.common_service.enums.AbstractEnum;
-import org.dhv.pbl5server.common_service.enums.DataSortOrder;
 import org.dhv.pbl5server.common_service.exception.BadRequestException;
 import org.dhv.pbl5server.common_service.model.ApiDataResponse;
 import org.dhv.pbl5server.common_service.utils.CommonUtils;
@@ -85,7 +84,7 @@ public class UserController {
         @Nullable @RequestParam("page") Integer page,
         @Nullable @RequestParam("paging") Integer paging,
         @Nullable @RequestParam("sort_by") String sortBy,
-        @Nullable @RequestParam("order") DataSortOrder order
+        @Nullable @RequestParam("order") String order
     ) {
         var pageRequest = PageUtils.makePageRequest(sortBy, order, page, paging);
         var typeEnum = AbstractEnum.fromString(UserProfileRequestType.values(), type);

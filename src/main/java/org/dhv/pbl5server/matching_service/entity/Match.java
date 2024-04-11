@@ -28,9 +28,25 @@ public class Match extends AbstractEntity {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
     private User user;
-    private boolean userMatched;
+    private Boolean userMatched;
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "company_id")
     private Company company;
-    private boolean companyMatched;
+    private Boolean companyMatched;
+
+    public boolean isCompleted() {
+        return userMatched != null && userMatched && companyMatched != null && companyMatched;
+    }
+
+    public boolean isInvalidMatch() {
+        return userMatched == null && companyMatched == null;
+    }
+
+    public boolean isUserMatched() {
+        return userMatched != null && userMatched;
+    }
+
+    public boolean isCompanyMatched() {
+        return companyMatched != null && companyMatched;
+    }
 }

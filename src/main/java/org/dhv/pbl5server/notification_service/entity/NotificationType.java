@@ -12,14 +12,15 @@ public enum NotificationType implements AbstractEnum<NotificationType> {
     TEST("001", "Test"),
     // Match
     MATCHING("002", "Matching"),
-    REJECT_MATCHING("003", "Reject Matching"),
+    REQUEST_MATCHING("003", "Request Matching"),
+    REJECT_MATCHING("004", "Reject Matching"),
     // Chat
-    NEW_CONVERSATION("004", "New Conversation"),
-    NEW_MESSAGE("005", "New Message"),
-    READ_MESSAGE("006", "Read Message"),
+    NEW_CONVERSATION("005", "New Conversation"),
+    NEW_MESSAGE("006", "New Message"),
+    READ_MESSAGE("007", "Read Message"),
     // Account
-    ADMIN_DEACTIVATE_ACCOUNT("007", "Admin Deactivate Account"),
-    ADMIN_ACTIVATE_ACCOUNT("008", "Admin Activate Account"),
+    ADMIN_DEACTIVATE_ACCOUNT("008", "Admin Deactivate Account"),
+    ADMIN_ACTIVATE_ACCOUNT("009", "Admin Activate Account"),
     ;
 
     private final String value;
