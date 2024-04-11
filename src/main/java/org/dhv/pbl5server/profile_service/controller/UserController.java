@@ -44,28 +44,36 @@ public class UserController {
     @GetMapping("")
     public ResponseEntity<ApiDataResponse> getUserProfileComponentById(
         @Nullable @RequestParam("user_id") String userId,
-        @Nullable @RequestParam("component_id") String id,
+        @Nullable @RequestParam("componentId") String componentId,
         @Nullable @RequestParam String type,
         @CurrentAccount Account currentAccount
     ) {
-        if (userId == null && id == null && type == null)
-            return ResponseEntity.ok(ApiDataResponse.successWithoutMeta(service.getUserProfile(currentAccount)));
-        if ((type == null || type.equalsIgnoreCase(UserProfileRequestType.BASIC_INFO.getValue())) && userId == null)
-            throw new BadRequestException(ErrorMessageConstant.USER_ID_IS_REQUIRED);
-        if (type == null)
-            return ResponseEntity.ok(ApiDataResponse.successWithoutMeta(service.getUserProfileById(userId)));
+        // Default --> [BASIC_INFO] type when type is null or type is "basic_info"
+        if (type == null || type.equalsIgnoreCase(UserProfileRequestType.BASIC_INFO.getValue())) {
+            if (userId == null) // Get BASIC_INFO by account_token
+                return ResponseEntity.ok(ApiDataResponse.successWithoutMeta(service.getUserProfile(currentAccount)));
+            else // Get BASIC_INFO by user_id
+                return ResponseEntity.ok(ApiDataResponse.successWithoutMeta(service.getUserProfileById(userId)));
+        }
+        /*
+            Get other component by type
+         */
         var typeEnum = AbstractEnum.fromString(UserProfileRequestType.values(), type);
-        if (typeEnum == UserProfileRequestType.OTHER_DESCRIPTION && userId == null)
+        // Throw exception: when type is "other_description" but userId is null
+        if (typeEnum == UserProfileRequestType.OTHER_DESCRIPTION && CommonUtils.isEmptyOrNullString(userId))
             throw new BadRequestException(ErrorMessageConstant.OTHER_DESCRIPTION_USER_ID_IS_REQUIRED);
-        if (typeEnum != UserProfileRequestType.BASIC_INFO && id == null)
-            throw new BadRequestException(ErrorMessageConstant.ID_IS_REQUIRED);
+        // Throw exception: when getting other component info by id but componentId is null
+        if (typeEnum != UserProfileRequestType.BASIC_INFO && CommonUtils.isEmptyOrNullString(componentId))
+            throw new BadRequestException(ErrorMessageConstant.COMPONENT_ID_IS_REQUIRED);
         return switch (typeEnum) {
-            case AWARD -> ResponseEntity.ok(ApiDataResponse.successWithoutMeta(service.getUserAwardById(id)));
-            case EXPERIENCE -> ResponseEntity.ok(ApiDataResponse.successWithoutMeta(service.getUserExperienceById(id)));
-            case EDUCATION -> ResponseEntity.ok(ApiDataResponse.successWithoutMeta(service.getUserEducationById(id)));
+            case AWARD -> ResponseEntity.ok(ApiDataResponse.successWithoutMeta(service.getUserAwardById(componentId)));
+            case EXPERIENCE ->
+                ResponseEntity.ok(ApiDataResponse.successWithoutMeta(service.getUserExperienceById(componentId)));
+            case EDUCATION ->
+                ResponseEntity.ok(ApiDataResponse.successWithoutMeta(service.getUserEducationById(componentId)));
             case OTHER_DESCRIPTION ->
-                ResponseEntity.ok(ApiDataResponse.successWithoutMeta(service.getUserOtherDescriptionById(userId, id)));
-            default -> ResponseEntity.ok(ApiDataResponse.successWithoutMeta(service.getUserProfileById(userId)));
+                ResponseEntity.ok(ApiDataResponse.successWithoutMeta(service.getUserOtherDescriptionById(userId, componentId)));
+            default -> ResponseEntity.ok(ApiDataResponse.successWithoutMetaAndData());
         };
     }
 
@@ -85,6 +93,7 @@ public class UserController {
             case AWARD -> ResponseEntity.ok(service.getListAwardByUserId(userId, pageRequest));
             case EXPERIENCE -> ResponseEntity.ok(service.getListExperienceByUserId(userId, pageRequest));
             case EDUCATION -> ResponseEntity.ok(service.getListEducationByUserId(userId, pageRequest));
+            case OTHER_DESCRIPTION -> ResponseEntity.ok(service.getListOtherDescriptionByUserId(userId));
             default -> ResponseEntity.ok(ApiDataResponse.successWithoutMeta(List.of()));
         };
     }

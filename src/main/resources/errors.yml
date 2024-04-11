@@ -148,11 +148,8 @@ basic_info_request_must_be_object:
 basic_info_request_invalid:
   code: ERR_USE0103
   message: Basic info request is invalid!
-user_id_is_required:
+component_id_is_required:
   code: ERR_USE0104
-  message: With user, user id is required!
-id_is_required:
-  code: ERR_USE0105
   message: With user profile component, component_id is required!
 
 # Education

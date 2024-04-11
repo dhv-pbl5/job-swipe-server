@@ -37,6 +37,8 @@ public interface UserService {
 
     OtherDescription getUserOtherDescriptionById(String userId, String id);
 
+    ApiDataResponse getListOtherDescriptionByUserId(String userId);
+
     UserProfileResponse insertEducations(Account account, List<UserEducationRequest> request);
 
     UserProfileResponse insertExperiences(Account account, List<UserExperienceRequest> request);

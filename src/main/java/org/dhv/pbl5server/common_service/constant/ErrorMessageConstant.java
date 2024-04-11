@@ -83,8 +83,7 @@ public final class ErrorMessageConstant {
     public static final String USER_NOT_FOUND = "user_not_found";
     public static final String BASIC_INFO_REQUEST_MUST_BE_OBJECT = "basic_info_request_must_be_object";
     public static final String BASIC_INFO_REQUEST_INVALID = "basic_info_request_invalid";
-    public static final String USER_ID_IS_REQUIRED = "user_id_is_required";
-    public static final String ID_IS_REQUIRED = "id_is_required";
+    public static final String COMPONENT_ID_IS_REQUIRED = "component_id_is_required";
 
     /*
         Education
