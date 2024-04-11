@@ -76,7 +76,7 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     @Override
-    public NotificationResponse createNotification(UUID objectId, Account sender, Account receiver, NotificationType type) {
+    public void createNotification(UUID objectId, Account sender, Account receiver, NotificationType type) {
         if (sender == null || receiver == null)
             throw new BadRequestException(ErrorMessageConstant.REQUIRED_SENDER_AND_RECEIVER);
         if (type == null)
@@ -91,15 +91,10 @@ public class NotificationServiceImpl implements NotificationService {
             .type(Constant.builder().constantId(constant.getConstantId()).build())
             .build();
         var response = notificationMapper.toNotificationResponse(notificationRepository.save(notification));
-        // Realtime
-        realtimeService.sendToClientWithPrefix(
-            sender.getAccountId().toString(),
-            type,
-            response);
+        // Realtime: send notification to receiver
         realtimeService.sendToClientWithPrefix(
             receiver.getAccountId().toString(),
             type,
             response);
-        return response;
     }
 }

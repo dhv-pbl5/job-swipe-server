@@ -191,10 +191,10 @@ CREATE TABLE public.matches
 (
     id uuid NOT NULL,
     company_id uuid NOT NULL,
-    company_matched boolean NOT NULL DEFAULT FALSE,
+    company_matched boolean,
     matched_time timestamp with time zone NOT NULL,
     user_id uuid NOT NULL,
-    user_matched boolean NOT NULL DEFAULT FALSE,
+    user_matched boolean,
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone,
     PRIMARY KEY (id),

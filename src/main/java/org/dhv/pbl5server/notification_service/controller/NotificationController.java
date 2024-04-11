@@ -7,7 +7,6 @@ import org.dhv.pbl5server.authentication_service.annotation.PreAuthorizeSystemRo
 import org.dhv.pbl5server.authentication_service.annotation.PreAuthorizeSystemRoleWithoutAdmin;
 import org.dhv.pbl5server.authentication_service.entity.Account;
 import org.dhv.pbl5server.common_service.constant.ErrorMessageConstant;
-import org.dhv.pbl5server.common_service.enums.DataSortOrder;
 import org.dhv.pbl5server.common_service.exception.BadRequestException;
 import org.dhv.pbl5server.common_service.model.ApiDataResponse;
 import org.dhv.pbl5server.common_service.utils.CommonUtils;
@@ -41,7 +40,7 @@ public class NotificationController {
         if (CommonUtils.isNotEmptyOrNullString(notificationId))
             return ResponseEntity.ok(ApiDataResponse.successWithoutMeta(service.getNotificationById(account, notificationId)));
         // Get all notifications
-        var pageRequest = PageUtils.makePageRequest("created_at", DataSortOrder.DESC, page, paging);
+        var pageRequest = PageUtils.makePageRequest("created_at", "desc", page, paging);
         return ResponseEntity.ok(service.getNotifications(account, pageRequest));
     }
 

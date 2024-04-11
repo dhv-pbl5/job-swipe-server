@@ -83,8 +83,7 @@ public final class ErrorMessageConstant {
     public static final String USER_NOT_FOUND = "user_not_found";
     public static final String BASIC_INFO_REQUEST_MUST_BE_OBJECT = "basic_info_request_must_be_object";
     public static final String BASIC_INFO_REQUEST_INVALID = "basic_info_request_invalid";
-    public static final String USER_ID_IS_REQUIRED = "user_id_is_required";
-    public static final String ID_IS_REQUIRED = "id_is_required";
+    public static final String COMPONENT_ID_IS_REQUIRED = "component_id_is_required";
 
     /*
         Education
@@ -164,6 +163,15 @@ public final class ErrorMessageConstant {
     public static final String MATCH_NOT_FOUND = "match_not_found";
     public static final String MATCH_ID_INVALID = "match_id_is_invalid";
     public static final String REQUESTED_ACCOUNT_ID_INVALID = "requested_account_id_is_invalid";
+    public static final String REQUESTED_ACCOUNT_NOT_FOUND = "requested_account_not_found";
+    public static final String REQUESTED_ACCOUNT_SAME_ROLE = "requested_account_and_your_account_must_not_same_role";
+    public static final String REQUESTED_ACCOUNT_BANNED = "requested_account_is_banned";
+    public static final String MATCH_ALREADY_ACCEPTED = "already_matched";
+    public static final String MATCH_NOT_ACCEPTED_YOURSELF = "match_not_accepted_by_yourself";
+    public static final String REJECT_NOT_ACCEPTED_MATCH = "reject_not_accepted_match";
+    public static final String MATCH_FEATURE_NOT_FOR_ADMIN = "match_feature_not_for_admin";
+    public static final String MATCH_ALREADY_REQUESTED = "match_already_requested";
+    public static final String MATCH_ALREADY_REJECTED = "match_already_rejected";
 
     private ErrorMessageConstant() {
     }

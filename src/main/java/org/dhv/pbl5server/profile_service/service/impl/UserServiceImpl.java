@@ -132,6 +132,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public ApiDataResponse getListOtherDescriptionByUserId(String userId) {
+        var user = repository.findById(UUID.fromString(userId))
+            .orElseThrow(() -> new NotFoundObjectException(ErrorMessageConstant.USER_NOT_FOUND));
+        return ApiDataResponse.successWithoutMeta(CommonUtils.isEmptyOrNullList(user.getOthers()) ? List.of() : user.getOthers());
+    }
+
+    @Override
     public UserProfileResponse insertEducations(Account account, List<UserEducationRequest> request) {
         var user = repository.findById(account.getAccountId())
             .orElseThrow(() -> new NotFoundObjectException(ErrorMessageConstant.USER_NOT_FOUND));

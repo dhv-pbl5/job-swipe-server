@@ -6,17 +6,18 @@ import org.dhv.pbl5server.authentication_service.annotation.CurrentAccount;
 import org.dhv.pbl5server.authentication_service.annotation.PreAuthorizeSystemRoleWithoutAdmin;
 import org.dhv.pbl5server.authentication_service.entity.Account;
 import org.dhv.pbl5server.common_service.constant.ErrorMessageConstant;
-import org.dhv.pbl5server.common_service.enums.DataSortOrder;
+import org.dhv.pbl5server.common_service.enums.AbstractEnum;
 import org.dhv.pbl5server.common_service.exception.BadRequestException;
 import org.dhv.pbl5server.common_service.model.ApiDataResponse;
 import org.dhv.pbl5server.common_service.utils.CommonUtils;
 import org.dhv.pbl5server.common_service.utils.PageUtils;
+import org.dhv.pbl5server.matching_service.enums.GetMatchType;
 import org.dhv.pbl5server.matching_service.service.MatchService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/v1/matching")
+@RequestMapping("/v1/matched-pairs")
 @RequiredArgsConstructor
 public class MatchController {
     private final MatchService service;
@@ -24,22 +25,24 @@ public class MatchController {
     @PreAuthorizeSystemRoleWithoutAdmin
     @GetMapping("")
     public ResponseEntity<ApiDataResponse> getMatches(
-        @Nullable @RequestParam("matching_id") String matchingId,
+        @Nullable @RequestParam("match_id") String matchingId,
+        @Nullable @RequestParam("type") String type,
         @Nullable @RequestParam("page") Integer page,
         @Nullable @RequestParam("paging") Integer paging,
-        @Nullable @RequestParam("sort_by") String sortBy,
-        @Nullable @RequestParam("order") DataSortOrder order,
         @CurrentAccount Account account
     ) {
         // Get matching by id
         if (CommonUtils.isNotEmptyOrNullString(matchingId))
             return ResponseEntity.ok(ApiDataResponse.successWithoutMeta(service.getMatchById(account, matchingId)));
-        // Get matching by page
-        var pageRequest = PageUtils.makePageRequest(
-            sortBy == null ? "created_at" : sortBy,
-            order == null ? DataSortOrder.DESC : order,
-            page, paging);
-        return ResponseEntity.ok(service.getMatches(account, pageRequest));
+        // Get matching by type
+        var typeEnum = AbstractEnum.fromString(GetMatchType.values(), type);
+        var pageRequest = PageUtils.makePageRequest("created_at", "desc", page, paging);
+        return switch (typeEnum) {
+            case ALL -> ResponseEntity.ok(service.getMatches(account, pageRequest));
+            case ACCEPTED -> ResponseEntity.ok(service.getAcceptedMatches(account, pageRequest));
+            case REJECTED -> ResponseEntity.ok(service.getRejectedMatches(account, pageRequest));
+            case REQUESTED -> ResponseEntity.ok(service.getRequestedMatches(account, pageRequest));
+        };
     }
 
     @PreAuthorizeSystemRoleWithoutAdmin
@@ -56,7 +59,7 @@ public class MatchController {
     @PreAuthorizeSystemRoleWithoutAdmin
     @PostMapping("/accept")
     public ResponseEntity<ApiDataResponse> acceptMatch(
-        @RequestParam("matching_id") String matchingId,
+        @RequestParam("match_id") String matchingId,
         @CurrentAccount Account account
     ) {
         if (!CommonUtils.isValidUuid(matchingId))
@@ -67,11 +70,11 @@ public class MatchController {
     @PreAuthorizeSystemRoleWithoutAdmin
     @PostMapping("/reject")
     public ResponseEntity<ApiDataResponse> rejectMatch(
-        @Nullable @RequestParam("matching_id") String matchingId,
+        @RequestParam("match_id") String matchingId,
         @CurrentAccount Account account
     ) {
         if (!CommonUtils.isValidUuid(matchingId))
             throw new BadRequestException(ErrorMessageConstant.MATCH_ID_INVALID);
-        return ResponseEntity.ok(ApiDataResponse.successWithoutMeta(service.requestMatch(account, matchingId)));
+        return ResponseEntity.ok(ApiDataResponse.successWithoutMeta(service.rejectMatch(account, matchingId)));
     }
 }

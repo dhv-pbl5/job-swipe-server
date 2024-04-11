@@ -12,7 +12,6 @@ import org.dhv.pbl5server.authentication_service.payload.request.RefreshTokenReq
 import org.dhv.pbl5server.authentication_service.service.AuthService;
 import org.dhv.pbl5server.common_service.constant.ErrorMessageConstant;
 import org.dhv.pbl5server.common_service.enums.AbstractEnum;
-import org.dhv.pbl5server.common_service.enums.DataSortOrder;
 import org.dhv.pbl5server.common_service.exception.BadRequestException;
 import org.dhv.pbl5server.common_service.model.ApiDataResponse;
 import org.dhv.pbl5server.common_service.utils.CommonUtils;
@@ -56,7 +55,7 @@ public class AdminController {
         @Nullable @RequestParam("page") Integer page,
         @Nullable @RequestParam("paging") Integer paging,
         @Nullable @RequestParam("sort_by") String sortBy,
-        @Nullable @RequestParam("order") DataSortOrder order,
+        @Nullable @RequestParam("order") String order,
         @Nullable @RequestParam("account_id") String accountId
     ) {
         var pageRequest = PageUtils.makePageRequest(sortBy, order, page, paging);

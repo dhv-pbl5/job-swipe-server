@@ -1,5 +1,6 @@
 package org.dhv.pbl5server.common_service.utils;
 
+import org.dhv.pbl5server.common_service.enums.AbstractEnum;
 import org.dhv.pbl5server.common_service.enums.DataSortOrder;
 import org.dhv.pbl5server.common_service.model.PageInfo;
 import org.springframework.data.domain.Page;
@@ -19,16 +20,17 @@ public class PageUtils {
      * @param paging Page Size
      * @return Pageable
      */
-    public static Pageable makePageRequest(String sortBy, DataSortOrder order, Integer page, Integer paging) {
+    public static Pageable makePageRequest(String sortBy, String order, Integer page, Integer paging) {
         page = (page == null || page <= 0) ? 1 : page;
         paging = paging == null ? 15 : (paging >= 30) ? 30 : paging;
         Sort sort = null;
-        if (order != null && CommonUtils.isNotEmptyOrNullString(sortBy)) {
+        if (CommonUtils.isNotEmptyOrNullString(order) && CommonUtils.isNotEmptyOrNullString(sortBy)) {
             String sortField = CommonUtils.convertToCamelCase(sortBy);
-            sort =
-                DataSortOrder.ASC == order
-                    ? Sort.by(Sort.Direction.ASC, sortField)
-                    : Sort.by(Sort.Direction.DESC, sortField);
+            DataSortOrder dataSortOrder = AbstractEnum.fromString(DataSortOrder.values(), order);
+            sort = switch (dataSortOrder) {
+                case DESC -> Sort.by(Sort.Direction.DESC, sortField);
+                case ASC -> Sort.by(Sort.Direction.ASC, sortField);
+            };
         }
         return sort != null ? PageRequest.of(page - 1, paging, sort) : PageRequest.of(page - 1, paging);
     }

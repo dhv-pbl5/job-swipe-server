@@ -148,11 +148,8 @@ basic_info_request_must_be_object:
 basic_info_request_invalid:
   code: ERR_USE0103
   message: Basic info request is invalid!
-user_id_is_required:
+component_id_is_required:
   code: ERR_USE0104
-  message: With user, user id is required!
-id_is_required:
-  code: ERR_USE0105
   message: With user profile component, component_id is required!
 
 # Education
@@ -276,10 +273,37 @@ required_notification_type:
 # Match
 match_not_found:
   code: ERR_MAT0101
-  message: Match not found!
+  message: Match is not found!
 match_id_is_invalid:
   code: ERR_MAT0102
   message: Match id is required and must be a valid UUID!
 requested_account_id_is_invalid:
   code: ERR_MAT0103
   message: Requested account id is required and must be a valid UUID!
+requested_account_not_found:
+  code: ERR_MAT0104
+  message: Requested account is not found!
+requested_account_and_your_account_must_not_same_role:
+  code: ERR_MAT0105
+  message: Requested account and your account must not have the same role!
+requested_account_is_banned:
+  code: ERR_MAT0106
+  message: Requested account is banned!
+match_already_matched:
+  code: ERR_MAT0107
+  message: You have already matched with this account!
+match_not_accepted_by_yourself:
+  code: ERR_MAT0108
+  message: You can not accept the match by yourself!
+reject_not_accepted_match:
+  code: ERR_MAT0109
+  message: You can not reject the not accepted match!
+match_feature_not_for_admin:
+  code: ERR_MAT0110
+  message: Match feature is not for admin!
+match_already_requested:
+  code: ERR_MAT0111
+  message: You have already requested to match with this account!
+match_already_rejected:
+  code: ERR_MAT0112
+  message: You have already rejected the match with this account!
