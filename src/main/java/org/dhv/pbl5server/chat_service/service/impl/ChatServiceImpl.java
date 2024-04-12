@@ -12,6 +12,7 @@ import org.dhv.pbl5server.chat_service.repository.ConversationRepository;
 import org.dhv.pbl5server.chat_service.repository.MessageRepository;
 import org.dhv.pbl5server.chat_service.service.ChatService;
 import org.dhv.pbl5server.common_service.constant.ErrorMessageConstant;
+import org.dhv.pbl5server.common_service.enums.AbstractEnum;
 import org.dhv.pbl5server.common_service.exception.BadRequestException;
 import org.dhv.pbl5server.common_service.exception.NotFoundObjectException;
 import org.dhv.pbl5server.common_service.model.ApiDataResponse;
@@ -44,7 +45,8 @@ public class ChatServiceImpl implements ChatService {
 
     @Override
     public ApiDataResponse getConversations(Account account, Pageable pageRequest) {
-        var page = account.getSystemRole().getConstantName().equals(SystemRoleName.USER.name())
+        var role = AbstractEnum.fromString(SystemRoleName.values(), account.getSystemRole().getConstantName());
+        var page = role == SystemRoleName.USER
             ? conversationRepository.findAllByUserId(account.getAccountId(), pageRequest)
             : conversationRepository.findAllByCompanyId(account.getAccountId(), pageRequest);
         return ApiDataResponse.success(page
@@ -64,7 +66,8 @@ public class ChatServiceImpl implements ChatService {
     @Override
     public ConversationResponse getConversationById(Account account, String conversationId) {
         var conversatinUuid = UUID.fromString(conversationId);
-        var conversationOptional = account.getSystemRole().getConstantName().equals(SystemRoleName.USER.name())
+        var role = AbstractEnum.fromString(SystemRoleName.values(), account.getSystemRole().getConstantName());
+        var conversationOptional = role == SystemRoleName.USER
             ? conversationRepository.findByIdAndUserId(conversatinUuid, account.getAccountId())
             : conversationRepository.findByIdAndCompanyId(conversatinUuid, account.getAccountId());
         var conversation = conversationOptional.orElseThrow(() -> new NotFoundObjectException(ErrorMessageConstant.CONVERSATION_NOT_FOUND));
@@ -123,7 +126,8 @@ public class ChatServiceImpl implements ChatService {
             throw new BadRequestException(ErrorMessageConstant.MESSAGE_MUST_HAVE_CONTENT_OR_FILE);
         // Check conversation
         var conversatinUuid = UUID.fromString(conversationId);
-        var conversationOptional = account.getSystemRole().getConstantName().equals(SystemRoleName.USER.name())
+        var role = AbstractEnum.fromString(SystemRoleName.values(), account.getSystemRole().getConstantName());
+        var conversationOptional = role == SystemRoleName.USER
             ? conversationRepository.findByIdAndUserId(conversatinUuid, account.getAccountId())
             : conversationRepository.findByIdAndCompanyId(conversatinUuid, account.getAccountId());
         var conversation = conversationOptional.orElseThrow(() -> new NotFoundObjectException(ErrorMessageConstant.CONVERSATION_NOT_FOUND));
@@ -136,7 +140,7 @@ public class ChatServiceImpl implements ChatService {
                     .account(account)
                     .conversation(conversation)
                     .readStatus(false)
-                    .urlFile(url)
+                    .urlFile(CommonUtils.encodeUrlBase64(url)) // Encode url
                     .build();
                 messages.add(message);
             }
@@ -146,7 +150,7 @@ public class ChatServiceImpl implements ChatService {
                 .account(account)
                 .conversation(conversation)
                 .readStatus(false)
-                .content(content)
+                .content(CommonUtils.encodeBase64(content)) // Encode content
                 .build();
             messages.add(message);
         }

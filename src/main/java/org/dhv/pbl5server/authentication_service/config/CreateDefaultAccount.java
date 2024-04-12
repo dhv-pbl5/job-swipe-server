@@ -7,6 +7,7 @@ import org.dhv.pbl5server.authentication_service.payload.request.CompanyRegister
 import org.dhv.pbl5server.authentication_service.payload.request.UserRegisterRequest;
 import org.dhv.pbl5server.authentication_service.repository.AccountRepository;
 import org.dhv.pbl5server.authentication_service.service.AuthService;
+import org.dhv.pbl5server.common_service.enums.AbstractEnum;
 import org.dhv.pbl5server.common_service.utils.CommonUtils;
 import org.dhv.pbl5server.constant_service.entity.Constant;
 import org.dhv.pbl5server.constant_service.enums.SystemRoleName;
@@ -64,11 +65,12 @@ public class CreateDefaultAccount implements CommandLineRunner {
             .establishedDate(CommonUtils.getCurrentTimestamp())
             .build();
         for (var item : (List<Constant>) constantService.getSystemRoles(null)) {
-            if (item.getConstantName().equalsIgnoreCase(SystemRoleName.ADMIN.name()))
+            var role = AbstractEnum.fromString(SystemRoleName.values(), item.getConstantName());
+            if (role == SystemRoleName.ADMIN)
                 adminAccount.setSystemRole(item);
-            if (item.getConstantName().equalsIgnoreCase(SystemRoleName.COMPANY.name()))
+            if (role == SystemRoleName.COMPANY)
                 companyRegisterRequest.setSystemRole(new ConstantSelectionRequest(item.getConstantId().toString()));
-            if (item.getConstantName().equalsIgnoreCase(SystemRoleName.USER.name()))
+            if (role == SystemRoleName.USER)
                 userRegisterRequest.setSystemRole(new ConstantSelectionRequest(item.getConstantId().toString()));
         }
         try {
