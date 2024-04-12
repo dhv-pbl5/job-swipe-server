@@ -17,6 +17,38 @@ import java.util.regex.Pattern;
 @NoArgsConstructor
 public class CommonUtils {
     /*
+     * Encoder and decoder
+     */
+    public static String encodeBase64(String str) {
+        return Base64.getEncoder().encodeToString(str.getBytes());
+    }
+
+    public static String encodeObjectBase64(Object object) {
+        var json = convertToJson(object);
+        if (json == null) return null;
+        return encodeBase64(json);
+    }
+
+    public static String decodeBase64(String encodedStr) {
+        byte[] decodedBytes = Base64.getDecoder().decode(encodedStr);
+        return new String(decodedBytes);
+    }
+
+    public static Object decodeObjectBase64(String encodedObject, Class<?> type) {
+        var json = decodeBase64(encodedObject);
+        return decodeJson(json, type);
+    }
+
+    public static String encodeUrlBase64(String url) {
+        return Base64.getUrlEncoder().encodeToString(url.getBytes());
+    }
+
+    public static String decodeUrlBase64(String encodedUrl) {
+        byte[] decodedBytes = Base64.getUrlDecoder().decode(encodedUrl);
+        return new String(decodedBytes);
+    }
+
+    /*
      * Json util
      */
     public static String convertToJson(Object object) {

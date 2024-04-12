@@ -4,8 +4,10 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import org.dhv.pbl5server.authentication_service.repository.AccountRepository;
-import org.dhv.pbl5server.common_service.constant.ErrorMessageConstant;
+import org.dhv.pbl5server.authentication_service.entity.Account;
+import org.dhv.pbl5server.authentication_service.service.JwtService;
+import org.dhv.pbl5server.common_service.exception.ForbiddenException;
+import org.dhv.pbl5server.common_service.exception.UnauthorizedException;
 import org.dhv.pbl5server.common_service.utils.CommonUtils;
 import org.dhv.pbl5server.common_service.utils.ErrorUtils;
 import org.dhv.pbl5server.realtime_service.call_back.OnClientConnectCallback;
@@ -17,7 +19,6 @@ import java.io.DataOutputStream;
 import java.io.EOFException;
 import java.io.IOException;
 import java.net.Socket;
-import java.util.UUID;
 
 
 @Getter
@@ -25,9 +26,10 @@ import java.util.UUID;
 @Slf4j
 public class RealtimeClient extends Thread implements AbstractClient {
 
+    private final int delayBeforeConnectToClient = 500; // In milliseconds
     private String clientId;
     private final Socket socket;
-    private final AccountRepository accountRepository;
+    private final JwtService jwtService;
     private OnClientConnectCallback onConnect;
     private ValueChange<String> onDisconnect;
 
@@ -37,9 +39,12 @@ public class RealtimeClient extends Thread implements AbstractClient {
     private DataInputStream in;
 
     @lombok.Builder
-    public RealtimeClient(Socket socket, AccountRepository accountRepository, OnClientConnectCallback onConnect, ValueChange<String> onDisconnect) {
+    public RealtimeClient(
+        Socket socket,
+        JwtService jwtService,
+        OnClientConnectCallback onConnect, ValueChange<String> onDisconnect) {
         this.socket = socket;
-        this.accountRepository = accountRepository;
+        this.jwtService = jwtService;
         this.onConnect = onConnect;
         this.onDisconnect = onDisconnect;
         // Set default name for thread
@@ -56,14 +61,15 @@ public class RealtimeClient extends Thread implements AbstractClient {
         // Required account id from client in order to use realtime service
         // Delay 500 milliseconds before receiving value from client
         try {
-            Thread.sleep(500);
             // Initialize streams
             out = new DataOutputStream(socket.getOutputStream());
             in = new DataInputStream(socket.getInputStream());
+            out.writeUTF("Please send your access_token...! (Your connection time out is %d in milliseconds)".formatted(delayBeforeConnectToClient));
+            Thread.sleep(delayBeforeConnectToClient);
             // Get account id
-            String accountId = in.readUTF();
+            String token = in.readUTF();
             // Generate client id
-            this.clientId = generateClientId(accountId);
+            this.clientId = generateClientId(token);
             if (CommonUtils.isNotEmptyOrNullString(clientId)) {
                 this.setName(clientId);
                 log("Connected", false);
@@ -101,23 +107,27 @@ public class RealtimeClient extends Thread implements AbstractClient {
      * @return client id with format: accountId:ipAddress
      * eg: 123e4567-e89b-12d3-a456-426614174000:127.0.0.0
      */
-    private String generateClientId(String accountId) {
+    private String generateClientId(String token) {
         String logMessage = "";
         String socketErrorMessage = "";
         if (socket == null) // Check socket is null
             logMessage = "Socket client is null!";
-        else if (accountRepository == null) // Check account repository is null
-            logMessage = "Account repository is null!";
-        else if (!CommonUtils.isValidUuid(accountId)) { // Check account id is invalid
-            logMessage = "Account's id is invalid!";
-            socketErrorMessage = ErrorUtils.getExceptionError(ErrorMessageConstant.ACCOUNT_ID_IS_REQUIRED).getMessage();
-        } else if (!accountRepository.existsById(UUID.fromString(accountId))) { // Check account id is not existed in database
-            logMessage = "Account is not found!";
-            socketErrorMessage = ErrorUtils.getExceptionError(ErrorMessageConstant.ACCOUNT_NOT_FOUND).getMessage();
-        }
-        if (CommonUtils.isEmptyOrNullString(logMessage) && CommonUtils.isEmptyOrNullString(socketErrorMessage)) {
+        else if (jwtService == null) // Check account repository is null
+            logMessage = "Jwt service is null!";
+        // Get account from token
+        try {
+            assert jwtService != null;
             assert socket != null;
-            return "%s:%s".formatted(accountId, socket.getInetAddress().getHostAddress()).replaceAll(" ", "-");
+            Account account = (Account) jwtService.getAccountFromToken(token);
+            // Generate client id
+            return "%s:%s".formatted(
+                account.getAccountId().toString(),
+                socket.getInetAddress().getHostAddress()
+            ).replaceAll(" ", "-");
+        } catch (UnauthorizedException | ForbiddenException ex) {
+            var error = ErrorUtils.getExceptionError(ex.getMessage());
+            socketErrorMessage = CommonUtils.convertToJson(error);
+            logMessage = error.getMessage();
         }
         // Error message
         log(logMessage, true);

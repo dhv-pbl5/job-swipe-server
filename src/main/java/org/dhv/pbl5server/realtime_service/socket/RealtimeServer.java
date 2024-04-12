@@ -2,7 +2,7 @@ package org.dhv.pbl5server.realtime_service.socket;
 
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import org.dhv.pbl5server.authentication_service.repository.AccountRepository;
+import org.dhv.pbl5server.authentication_service.service.JwtService;
 
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -13,14 +13,14 @@ import java.util.Map;
 @Getter
 public class RealtimeServer implements Runnable {
     private final int port;
-    private final AccountRepository accountRepository;
+    private final JwtService jwtService;
     private boolean isRunning = true;
     private final Map<String, AbstractClient> clients = new Hashtable<>();
     private static final String LOG_PREFIX = "Server socket ===>";
 
-    public RealtimeServer(int port, AccountRepository accountRepository) {
+    public RealtimeServer(int port, JwtService jwtService) {
         this.port = port;
-        this.accountRepository = accountRepository;
+        this.jwtService = jwtService;
     }
 
     @Override
@@ -33,7 +33,7 @@ public class RealtimeServer implements Runnable {
                     Socket socket = server.accept();
                     RealtimeClient.builder()
                         .socket(socket)
-                        .accountRepository(accountRepository)
+                        .jwtService(jwtService)
                         .onConnect(clients::putIfAbsent)
                         .onDisconnect(clients::remove)
                         .build()

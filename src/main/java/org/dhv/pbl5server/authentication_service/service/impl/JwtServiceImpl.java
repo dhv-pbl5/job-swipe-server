@@ -14,6 +14,7 @@ import org.dhv.pbl5server.authentication_service.service.JwtService;
 import org.dhv.pbl5server.common_service.constant.CommonConstant;
 import org.dhv.pbl5server.common_service.constant.ErrorMessageConstant;
 import org.dhv.pbl5server.common_service.constant.RedisCacheConstant;
+import org.dhv.pbl5server.common_service.enums.AbstractEnum;
 import org.dhv.pbl5server.common_service.exception.BadRequestException;
 import org.dhv.pbl5server.common_service.exception.ForbiddenException;
 import org.dhv.pbl5server.common_service.exception.UnauthorizedException;
@@ -63,7 +64,8 @@ public class JwtServiceImpl implements JwtService {
         UUID accountId = UUID.fromString(jwtClaims.getSubject());
         Account account = accountRepository.findById(accountId).orElseThrow(() -> new ForbiddenException(ErrorMessageConstant.FORBIDDEN));
         // Check if the user is an admin
-        if (isAdmin && !account.getSystemRole().getConstantName().equals(SystemRoleName.ADMIN.name())) {
+        var role = AbstractEnum.fromString(SystemRoleName.values(), account.getSystemRole().getConstantName());
+        if (isAdmin && role != SystemRoleName.ADMIN) {
             throw new ForbiddenException(ErrorMessageConstant.FORBIDDEN);
         }
         if (account.getRefreshToken().equals(refreshToken)) {

@@ -12,6 +12,7 @@ import org.dhv.pbl5server.authentication_service.service.AuthService;
 import org.dhv.pbl5server.authentication_service.service.JwtService;
 import org.dhv.pbl5server.common_service.constant.ErrorMessageConstant;
 import org.dhv.pbl5server.common_service.constant.RedisCacheConstant;
+import org.dhv.pbl5server.common_service.enums.AbstractEnum;
 import org.dhv.pbl5server.common_service.exception.BadRequestException;
 import org.dhv.pbl5server.common_service.exception.ForbiddenException;
 import org.dhv.pbl5server.common_service.exception.NotFoundObjectException;
@@ -54,7 +55,8 @@ public class AuthServiceImpl implements AuthService {
             SecurityContextHolder.getContext().setAuthentication(authentication);
             Account account = (Account) authentication.getPrincipal();
             // Check if the user is an admin
-            if (isAdmin && !account.getSystemRole().getConstantName().equals(SystemRoleName.ADMIN.name())) {
+            var role = AbstractEnum.fromString(SystemRoleName.values(), account.getSystemRole().getConstantName());
+            if (isAdmin && role != SystemRoleName.ADMIN) {
                 throw new ForbiddenException(ErrorMessageConstant.FORBIDDEN);
             }
             CredentialResponse response = jwtService.generateToken(account.getAccountId().toString());
@@ -191,7 +193,8 @@ public class AuthServiceImpl implements AuthService {
         if (!ConstantTypePrefix.isSystemRole(role.getConstantType()))
             throw new BadRequestException(ErrorMessageConstant.SYSTEM_ROLE_NOT_FOUND);
         // Check if the role is admin
-        if (role.getConstantName().equalsIgnoreCase(SystemRoleName.ADMIN.name()))
+        var roleEnum = AbstractEnum.fromString(SystemRoleName.values(), role.getConstantName());
+        if (roleEnum == SystemRoleName.ADMIN)
             throw new BadRequestException(ErrorMessageConstant.ROLE_NOT_VALID);
         return role;
     }
