@@ -184,6 +184,7 @@
                         </path>
                     </annotationProcessorPaths>
                     <compilerArgs>--enable-preview</compilerArgs>
+                    <parameters>true</parameters>
                 </configuration>
             </plugin>
         </plugins>
