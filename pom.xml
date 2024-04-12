@@ -155,11 +155,14 @@
                             <artifactId>lombok</artifactId>
                         </exclude>
                     </excludes>
+                    <fork>false</fork> <!-- jvmArguments OR this, but not both -->
+                    <jvmArguments>--enable-preview</jvmArguments>
                 </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.6.1</version>
                 <configuration>
                     <source>21</source>
                     <target>21</target>
