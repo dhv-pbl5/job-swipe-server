@@ -37,6 +37,8 @@ spring:
 logging:
   level:
     org.springframework.security: trace
+  file:
+    name: log/dev.log
 
 application:
   jwt:
