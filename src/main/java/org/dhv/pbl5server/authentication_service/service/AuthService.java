@@ -26,6 +26,4 @@ public interface AuthService {
     void resetPassword(ResetPasswordRequest request, Account currentAccount);
 
     void changePassword(ChangePasswordRequest request, Account currentAccount);
-
-
 }

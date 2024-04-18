@@ -34,7 +34,7 @@ public class ConstantServiceImpl implements ConstantService {
 
     @Override
     public void checkConstantWithType(List<UUID> ids, ConstantTypePrefix type) {
-        List<UUID> listIdsByConstantType = repository.findByConstantType(type.getValue()).stream().map(Constant::getConstantId).toList();
+        List<UUID> listIdsByConstantType = repository.findByConstantTypeStartsWith(type.getValue()).stream().map(Constant::getConstantId).toList();
         for (var id : ids) {
             if (listIdsByConstantType.contains(id)) continue;
             throwErrorWithConstantType(type);

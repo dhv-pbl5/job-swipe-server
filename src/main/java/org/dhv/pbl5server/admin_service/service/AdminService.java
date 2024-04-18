@@ -21,4 +21,6 @@ public interface AdminService {
     AccountResponse activateAccount(String accountId);
 
     AccountResponse deactivateAccount(String accountId);
+
+    void initialDefaultAccount();
 }

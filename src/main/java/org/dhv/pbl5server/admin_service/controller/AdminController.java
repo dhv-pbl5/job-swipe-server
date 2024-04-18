@@ -26,6 +26,12 @@ public class AdminController {
     private final AdminService service;
     private final AuthService authService;
 
+    @PostMapping("/initial-default-account")
+    public ResponseEntity<ApiDataResponse> initialDefaultAccount() {
+        service.initialDefaultAccount();
+        return ResponseEntity.ok(ApiDataResponse.successWithoutMetaAndData());
+    }
+
     @PostMapping("/login")
     public ResponseEntity<ApiDataResponse> loginAdmin(@Valid @RequestBody LoginRequest loginRequest) {
         return ResponseEntity.ok(ApiDataResponse.successWithoutMeta(authService.login(loginRequest, true)));

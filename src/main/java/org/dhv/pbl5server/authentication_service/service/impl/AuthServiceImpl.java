@@ -178,7 +178,7 @@ public class AuthServiceImpl implements AuthService {
         currentAccount.setPassword(passwordEncoder.encode(request.getNewPassword()));
         repository.save(currentAccount);
     }
-
+    
     private Constant checkValidSystemRole(String email, String roleId) {
         var roleIdUUID = UUID.fromString(roleId);
         // Check if the email is already used
