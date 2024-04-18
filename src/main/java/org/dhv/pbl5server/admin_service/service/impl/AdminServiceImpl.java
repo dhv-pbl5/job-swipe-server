@@ -4,15 +4,20 @@ import lombok.RequiredArgsConstructor;
 import org.dhv.pbl5server.admin_service.service.AdminService;
 import org.dhv.pbl5server.authentication_service.entity.Account;
 import org.dhv.pbl5server.authentication_service.mapper.AccountMapper;
+import org.dhv.pbl5server.authentication_service.payload.request.CompanyRegisterRequest;
+import org.dhv.pbl5server.authentication_service.payload.request.UserRegisterRequest;
 import org.dhv.pbl5server.authentication_service.payload.response.AccountResponse;
 import org.dhv.pbl5server.authentication_service.repository.AccountRepository;
+import org.dhv.pbl5server.authentication_service.service.AuthService;
 import org.dhv.pbl5server.common_service.constant.ErrorMessageConstant;
+import org.dhv.pbl5server.common_service.enums.AbstractEnum;
 import org.dhv.pbl5server.common_service.exception.BadRequestException;
 import org.dhv.pbl5server.common_service.exception.NotFoundObjectException;
 import org.dhv.pbl5server.common_service.model.ApiDataResponse;
 import org.dhv.pbl5server.common_service.utils.CommonUtils;
 import org.dhv.pbl5server.constant_service.entity.Constant;
 import org.dhv.pbl5server.constant_service.enums.SystemRoleName;
+import org.dhv.pbl5server.constant_service.payload.ConstantSelectionRequest;
 import org.dhv.pbl5server.constant_service.service.ConstantService;
 import org.dhv.pbl5server.profile_service.service.ApplicationPositionService;
 import org.dhv.pbl5server.profile_service.service.CompanyService;
@@ -31,6 +36,7 @@ public class AdminServiceImpl implements AdminService {
     private final ConstantService constantService;
     private final UserService userService;
     private final CompanyService companyService;
+    private final AuthService authService;
     private final ApplicationPositionService applicationPositionService;
     private final AccountMapper accountMapper;
     private final PasswordEncoder passwordEncoder;
@@ -68,7 +74,7 @@ public class AdminServiceImpl implements AdminService {
     @Override
     public AccountResponse activateAccount(String accountId) {
         Account account = repository.findById(UUID.fromString(accountId))
-            .orElseThrow(() -> new NotFoundObjectException(ErrorMessageConstant.ACCOUNT_NOT_FOUND));
+                .orElseThrow(() -> new NotFoundObjectException(ErrorMessageConstant.ACCOUNT_NOT_FOUND));
         if (account.getDeletedAt() == null)
             throw new BadRequestException(ErrorMessageConstant.ACCOUNT_IS_ACTIVE);
         account.setDeletedAt(null);
@@ -79,7 +85,7 @@ public class AdminServiceImpl implements AdminService {
     @Override
     public AccountResponse deactivateAccount(String accountId) {
         Account account = repository.findById(UUID.fromString(accountId))
-            .orElseThrow(() -> new NotFoundObjectException(ErrorMessageConstant.ACCOUNT_NOT_FOUND));
+                .orElseThrow(() -> new NotFoundObjectException(ErrorMessageConstant.ACCOUNT_NOT_FOUND));
         if (account.getDeletedAt() != null)
             throw new BadRequestException(ErrorMessageConstant.ACCOUNT_IS_NOT_ACTIVE);
         account.setDeletedAt(CommonUtils.getCurrentTimestamp());
@@ -89,21 +95,50 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     @SuppressWarnings("unchecked")
-    public AccountResponse initialAdminAccount() {
-        var roles = (List<Constant>) constantService.getSystemRoles(null);
-        for (var role : roles) {
-            if (role.getConstantName().equalsIgnoreCase(SystemRoleName.ADMIN.getValue())) {
-                var admin = Account.builder()
-                    .address("Da Nang")
-                    .email("admin@gmail.com")
-                    .password(passwordEncoder.encode("123456Aa"))
-                    .systemRole(Constant.builder().constantId(role.getConstantId()).build())
-                    .phoneNumber("0348219257")
-                    .build();
-                repository.save(admin);
-                return accountMapper.toAccountResponse(admin);
-            }
+    public void initialDefaultAccount() {
+        // Admin account
+        var adminAccount = Account.builder()
+                .email("admin@gmail.com")
+                .password(passwordEncoder.encode("123456Aa"))
+                .address("54 Nguyen Luong Bang, Hoa Khanh Bac, Lien Chieu, Da Nang")
+                .phoneNumber("0348219257")
+                .build();
+        // User account
+        var userRegisterRequest = UserRegisterRequest.builder()
+                .email("user@gmail.com")
+                .password("123456Aa")
+                .address("54 Nguyen Luong Bang, Hoa Khanh Bac, Lien Chieu, Da Nang")
+                .phoneNumber("0348219257")
+                .dateOfBirth(CommonUtils.getCurrentTimestamp())
+                .lastName("Pham Thanh")
+                .firstName("Vinh")
+                .gender(true)
+                .build();
+        // Company account
+        var companyRegisterRequest = CompanyRegisterRequest.builder()
+                .email("company@gmail.com")
+                .password("123456Aa")
+                .address("54 Nguyen Luong Bang, Hoa Khanh Bac, Lien Chieu, Da Nang")
+                .phoneNumber("0348219257")
+                .companyName("DHV job swipe")
+                .companyUrl("https://github.com/dhv-pbl5")
+                .establishedDate(CommonUtils.getCurrentTimestamp())
+                .build();
+        for (var item : (List<Constant>) constantService.getSystemRoles(null)) {
+            var role = AbstractEnum.fromString(SystemRoleName.values(), item.getConstantName());
+            if (role == SystemRoleName.ADMIN)
+                adminAccount.setSystemRole(item);
+            if (role == SystemRoleName.COMPANY)
+                companyRegisterRequest.setSystemRole(new ConstantSelectionRequest(item.getConstantId().toString()));
+            if (role == SystemRoleName.USER)
+                userRegisterRequest.setSystemRole(new ConstantSelectionRequest(item.getConstantId().toString()));
         }
-        return null;
+        try {
+            repository.save(adminAccount);
+            authService.register(userRegisterRequest);
+            authService.register(companyRegisterRequest);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 }
