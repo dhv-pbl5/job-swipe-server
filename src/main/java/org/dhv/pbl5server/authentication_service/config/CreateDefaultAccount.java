@@ -14,16 +14,14 @@ import org.dhv.pbl5server.constant_service.enums.SystemRoleName;
 import org.dhv.pbl5server.constant_service.payload.ConstantSelectionRequest;
 import org.dhv.pbl5server.constant_service.service.ConstantService;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.core.annotation.Order;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-@Component
 @RequiredArgsConstructor
 @Slf4j
-@Order(2)
+//@Component
+//@Order(2)
 public class CreateDefaultAccount implements CommandLineRunner {
     private final AccountRepository repository;
     private final AuthService authService;

@@ -8,17 +8,15 @@ import org.dhv.pbl5server.constant_service.enums.SystemRoleName;
 import org.dhv.pbl5server.constant_service.repository.ConstantRepository;
 import org.dhv.pbl5server.notification_service.entity.NotificationType;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.core.annotation.Order;
-import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 @RequiredArgsConstructor
-@Component
 @Slf4j
-@Order(1)
+//@Component
+//@Order(1)
 public class CreateDefaultConstant implements CommandLineRunner {
     private final ConstantRepository repository;
 

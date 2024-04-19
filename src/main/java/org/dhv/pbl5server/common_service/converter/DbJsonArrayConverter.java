@@ -40,10 +40,10 @@ public abstract class DbJsonArrayConverter<T> implements AttributeConverter<List
                     }
                     ans.append(character);
                 }
-                return STR."\"{\{ans}}\"";
+                return "\"{%s}\"".formatted(ans);
             })
             .toList();
-        return STR."{\{String.join(",", jsonEncode)}}";
+        return "{%s}".formatted(String.join(",", jsonEncode));
     }
 
     /**

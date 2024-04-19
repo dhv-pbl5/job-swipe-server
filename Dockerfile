@@ -1,8 +1,12 @@
-FROM jelastic/maven:3.9.5-openjdk-21 AS build
-COPY ..
-RUN mvn clean package -DshipTests
+FROM maven:3.8.5-openjdk-17 AS build
+COPY . .
+USER root
+RUN chmod +x scripts/s3.sh
+CMD ["scripts/s3.sh"]
+RUN mvn clean
+RUN mvn package -DskipTests
 
-FROM openjdk:21-jdk-slim
+FROM openjdk:17.0.1-jdk-slim
 COPY --from=build /target/pbl5-server-0.0.1-SNAPSHOT.jar pbl5-server.jar
-EXPOSE 8080
-ENTRYPOINT ["java", "-jar", "pbl5-server.jar"]
+EXPOSE 8080 8888
+ENTRYPOINT ["java", "-Dspring.profiles.active=prod", "-jar", "pbl5-server.jar"]

@@ -208,7 +208,7 @@ public class RestApiExceptionHandler extends ResponseEntityExceptionHandler {
         @Nonnull WebRequest request
     ) {
         List<ObjectError> listError = ex.getBindingResult().getAllErrors();
-        ObjectError objectError = listError.getLast();
+        ObjectError objectError = listError.get(listError.size() - 1);
         String error = CommonUtils.convertToSnakeCase(Objects.requireNonNull(objectError.getCode()));
         String fieldName = CommonUtils.convertToSnakeCase(((FieldError) objectError).getField());
         String resource = CommonUtils.convertToSnakeCase(objectError.getObjectName());

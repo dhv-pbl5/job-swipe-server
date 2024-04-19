@@ -27,7 +27,7 @@ public class S3ServiceImpl implements S3Service {
         try {
             var fileName = generateFileName(file);
             s3.putObject(s3Config.putObjectRequest(fileName), RequestBody.fromBytes(file.getBytes()));
-            return STR."\{BUCKET_URL}\{fileName}";
+            return "%s%s".formatted(BUCKET_URL, fileName);
         } catch (Exception ex) {
             throw new BadRequestException(ErrorMessageConstant.UPLOAD_FILE_FAILED);
         }
@@ -40,7 +40,7 @@ public class S3ServiceImpl implements S3Service {
                 throw new BadRequestException(ErrorMessageConstant.DELETE_FILE_FAILED);
             var fileName = generateFileName(replacedFile);
             s3.putObject(s3Config.putObjectRequest(fileName), RequestBody.fromBytes(replacedFile.getBytes()));
-            return STR."\{BUCKET_URL}\{fileName}";
+            return "%s%s".formatted(BUCKET_URL, fileName);
         } catch (Exception ex) {
             throw new BadRequestException(ErrorMessageConstant.UPLOAD_FILE_FAILED);
         }
@@ -93,7 +93,8 @@ public class S3ServiceImpl implements S3Service {
     }
 
     private String generateFileName(MultipartFile file) {
-        var fileName = STR."\{CommonUtils.getCurrentTimestamp().toString()}-\{file.getOriginalFilename()}"
+        var fileName = "%s-%s"
+            .formatted(CommonUtils.getCurrentTimestamp().toString(), file.getOriginalFilename())
             .replaceAll(" ", "_");
         log.info("Generated file name: {}", fileName);
         return fileName;

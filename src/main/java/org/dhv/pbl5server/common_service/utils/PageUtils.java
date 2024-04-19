@@ -41,7 +41,7 @@ public class PageUtils {
     public static PageInfo makePageInfo(int currentPage, int paging, long totalCount) {
         return PageInfo.builder()
             .currentPage(currentPage)
-            .totalPage(Math.ceilMod(totalCount, paging))
+            .totalPage((int) Math.ceil(totalCount % paging))
             .totalCount(totalCount)
             .build();
     }

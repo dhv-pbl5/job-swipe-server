@@ -53,7 +53,7 @@ public class ApplicationPositionServiceImpl implements ApplicationPositionServic
             .orElseThrow(() -> new NotFoundObjectException(ErrorMessageConstant.APPLICATION_POSITION_NOT_FOUND));
         ap = mapper.toApplicationPosition(ap, request);
         // Check constant type of apply_position and apply_skill and set dependency
-        ap = checkConstantType(account, List.of(ap), false).getFirst();
+        ap = checkConstantType(account, List.of(ap), false).get(0);
         repository.save(ap);
         return mapper.toApplicationPositionResponse(repository.fetchAllDataApplicationSkillById(ap.getId()).orElseThrow());
     }
@@ -66,7 +66,7 @@ public class ApplicationPositionServiceImpl implements ApplicationPositionServic
             .orElseThrow(() -> new NotFoundObjectException(ErrorMessageConstant.APPLICATION_POSITION_NOT_FOUND));
         ap = mapper.toApplicationPosition(ap, request);
         // Check constant type of apply_position and apply_skill and set dependency
-        ap = checkConstantType(account, List.of(ap), false).getFirst();
+        ap = checkConstantType(account, List.of(ap), false).get(0);
         repository.save(ap);
         return mapper.toApplicationPositionResponse(repository.fetchAllDataApplicationSkillById(ap.getId()).orElseThrow());
     }

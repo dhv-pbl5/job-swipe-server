@@ -173,7 +173,7 @@ public class CommonUtils {
      * Log util
      */
     public static void logError(String method, String uri, String error) {
-        String content = STR."\{method}/\{uri} - Error: \{error}";
+        String content = "%s/%s - Error: %s".formatted(method, uri, error);
         log.error(content);
     }
 

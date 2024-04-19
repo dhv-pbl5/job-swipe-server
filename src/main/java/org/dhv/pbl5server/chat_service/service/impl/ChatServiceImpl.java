@@ -162,7 +162,7 @@ public class ChatServiceImpl implements ChatService {
                 NotificationType.NEW_MESSAGE,
                 messageMapper.toMessageResponse(e)));
         return savedMessages.size() == 1
-            ? messageMapper.toMessageResponse(savedMessages.getFirst())
+            ? messageMapper.toMessageResponse(savedMessages.get(0))
             : savedMessages.stream().map(messageMapper::toMessageResponse).toList();
     }
 
