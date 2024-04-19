@@ -17,7 +17,7 @@ public class RealtimeServiceImpl implements RealtimeService {
     @Override
     public void sendToAllClient(NotificationType type, String message) {
         var typeResponse = constantService.getConstantByType(type.constantType());
-        server.getClients().forEach((_, value) -> value.send(typeResponse, message));
+        server.getClients().forEach((ignore, value) -> value.send(typeResponse, message));
     }
 
     @Override
@@ -25,7 +25,7 @@ public class RealtimeServiceImpl implements RealtimeService {
         var json = CommonUtils.convertToJson(object);
         if (json == null) return;
         var typeResponse = constantService.getConstantByType(type.constantType());
-        server.getClients().forEach((_, value) -> value.send(typeResponse, json));
+        server.getClients().forEach((ignore, value) -> value.send(typeResponse, json));
     }
 
     @Override
@@ -55,7 +55,7 @@ public class RealtimeServiceImpl implements RealtimeService {
 
     @Override
     public void disconnectAllClient() {
-        server.getClients().forEach((_, value) -> value.disconnect());
+        server.getClients().forEach((ignore, value) -> value.disconnect());
     }
 
     private AbstractClient getClientByPrefixId(String prefix) {

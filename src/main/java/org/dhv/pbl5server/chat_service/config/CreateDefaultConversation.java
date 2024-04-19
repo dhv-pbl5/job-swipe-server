@@ -7,13 +7,11 @@ import org.dhv.pbl5server.chat_service.repository.ConversationRepository;
 import org.dhv.pbl5server.profile_service.repository.CompanyRepository;
 import org.dhv.pbl5server.profile_service.repository.UserRepository;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.core.annotation.Order;
-import org.springframework.stereotype.Component;
 
-@Component
 @RequiredArgsConstructor
 @Slf4j
-@Order(3)
+//@Component
+//@Order(3)
 public class CreateDefaultConversation implements CommandLineRunner {
     private final ConversationRepository repository;
     private final UserRepository userRepository;
@@ -24,8 +22,8 @@ public class CreateDefaultConversation implements CommandLineRunner {
         if (repository.count() != 0) return;
         try {
             log.info("--------------------- Creating default conversation ---------------------");
-            var user = userRepository.findAll().getFirst();
-            var company = companyRepository.findAll().getFirst();
+            var user = userRepository.findAll().get(0);
+            var company = companyRepository.findAll().get(0);
             var conversation = Conversation.builder()
                 .user(user)
                 .company(company)

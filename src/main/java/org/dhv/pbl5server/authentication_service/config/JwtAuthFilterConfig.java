@@ -44,7 +44,7 @@ public class JwtAuthFilterConfig extends OncePerRequestFilter {
             }
 
             // Get the token from the header
-            String token = authorizationHeader.replaceFirst(STR."\{CommonConstant.JWT_TYPE} ", "");
+            String token = authorizationHeader.replaceFirst("%s ".formatted(CommonConstant.JWT_TYPE), "");
 
             // Set new authentication object to the SecurityContextHolder
             UserDetails userDetails = jwtService.getAccountFromToken(token);
