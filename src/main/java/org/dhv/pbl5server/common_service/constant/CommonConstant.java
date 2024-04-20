@@ -4,6 +4,8 @@ public class CommonConstant {
 
     public static final String SUCCESS = "success";
     public static final String FAILURE = "failure";
+    public static final String PROD_PROFILE = "prod";
+    public static final String DEV_PROFILE = "dev";
     public static final String SYSTEM_ROLE_PREFIX = "01";
     public static final String JWT_TYPE = "Bearer";
     public static final String UUID_REGEX_PATTERN = "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$";
