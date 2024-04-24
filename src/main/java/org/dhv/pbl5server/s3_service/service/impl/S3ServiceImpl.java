@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.dhv.pbl5server.common_service.constant.ErrorMessageConstant;
 import org.dhv.pbl5server.common_service.exception.BadRequestException;
 import org.dhv.pbl5server.common_service.utils.CommonUtils;
+import org.dhv.pbl5server.common_service.utils.LogUtils;
 import org.dhv.pbl5server.s3_service.config.S3ApplicationProperty;
 import org.dhv.pbl5server.s3_service.service.S3Service;
 import org.springframework.stereotype.Service;
@@ -22,13 +23,15 @@ public class S3ServiceImpl implements S3Service {
     private final S3ApplicationProperty s3Config;
     private final S3Client s3;
     private final String BUCKET_URL = "https://pbl5-bucket.s3.ap-southeast-1.amazonaws.com/";
+    private final String S3_DEBUG_PREFIX = "S3";
 
     public String uploadFile(MultipartFile file) {
         try {
             var fileName = generateFileName(file);
             s3.putObject(s3Config.putObjectRequest(fileName), RequestBody.fromBytes(file.getBytes()));
             return "%s%s".formatted(BUCKET_URL, fileName);
-        } catch (Exception ex) {
+        } catch (Exception e) {
+            LogUtils.error(S3_DEBUG_PREFIX, "Error occurred while uploading file:", e);
             throw new BadRequestException(ErrorMessageConstant.UPLOAD_FILE_FAILED);
         }
     }
@@ -41,7 +44,8 @@ public class S3ServiceImpl implements S3Service {
             var fileName = generateFileName(replacedFile);
             s3.putObject(s3Config.putObjectRequest(fileName), RequestBody.fromBytes(replacedFile.getBytes()));
             return "%s%s".formatted(BUCKET_URL, fileName);
-        } catch (Exception ex) {
+        } catch (Exception e) {
+            LogUtils.error(S3_DEBUG_PREFIX, "Error occurred while uploading file:", e);
             throw new BadRequestException(ErrorMessageConstant.UPLOAD_FILE_FAILED);
         }
     }
@@ -51,7 +55,7 @@ public class S3ServiceImpl implements S3Service {
             try {
                 return uploadFile(file);
             } catch (Exception e) {
-                log.error("Error occurred while uploading file");
+                LogUtils.error(S3_DEBUG_PREFIX, "Error occurred while uploading file:", e);
                 throw new BadRequestException(ErrorMessageConstant.UPLOAD_FILE_FAILED);
             }
         }).toList();
@@ -64,7 +68,7 @@ public class S3ServiceImpl implements S3Service {
             try {
                 return uploadFile(file);
             } catch (Exception e) {
-                log.error("Error occurred while uploading file");
+                LogUtils.error(S3_DEBUG_PREFIX, "Error occurred while uploading file:", e);
                 throw new BadRequestException(ErrorMessageConstant.UPLOAD_FILE_FAILED);
             }
         }).toList();
@@ -72,7 +76,8 @@ public class S3ServiceImpl implements S3Service {
 
     @Override
     public String getFileName(String fileUrl) {
-        if (CommonUtils.isEmptyOrNullString(fileUrl)) return null;
+        if (CommonUtils.isEmptyOrNullString(fileUrl))
+            return null;
         var arr = fileUrl.split("/");
         return arr[arr.length - 1];
     }
@@ -81,14 +86,15 @@ public class S3ServiceImpl implements S3Service {
         try {
             URL url = s3.utilities().getUrl(s3Config.getUrlRequest(fileName));
             return url.toString();
-        } catch (Exception ex) {
+        } catch (Exception e) {
+            LogUtils.error(S3_DEBUG_PREFIX, "Getting file url:", e);
             throw new BadRequestException(ErrorMessageConstant.FILE_NOT_FOUND);
         }
     }
 
     private boolean deleteFile(String fileName) {
         s3.deleteObject(s3Config.deleteObjectRequest(fileName));
-        log.info("Deleted file: {}", fileName);
+        LogUtils.info(S3_DEBUG_PREFIX, "Deleted file:", fileName);
         return true;
     }
 
@@ -96,7 +102,7 @@ public class S3ServiceImpl implements S3Service {
         var fileName = "%s-%s"
             .formatted(CommonUtils.getCurrentTimestamp().toString(), file.getOriginalFilename())
             .replaceAll(" ", "_");
-        log.info("Generated file name: {}", fileName);
+        LogUtils.info(S3_DEBUG_PREFIX, "Generated file name:", fileName);
         return fileName;
     }
 }

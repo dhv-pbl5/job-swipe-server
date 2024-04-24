@@ -68,7 +68,7 @@ public class JwtAuthFilterConfig extends OncePerRequestFilter {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             response.setContentType("application/json");
             response.setCharacterEncoding("UTF-8");
-            ErrorResponse error = ErrorUtils.getExceptionError(ErrorMessageConstant.INTERNAL_SERVER_ERROR);
+            ErrorResponse error = new ErrorResponse(ErrorMessageConstant.INTERNAL_SERVER_ERROR, ex.getMessage());
             ApiDataResponse apiDataResponse = ApiDataResponse.error(error);
             response
                 .getWriter()

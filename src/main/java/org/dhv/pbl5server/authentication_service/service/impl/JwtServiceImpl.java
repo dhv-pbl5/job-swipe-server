@@ -19,6 +19,7 @@ import org.dhv.pbl5server.common_service.exception.BadRequestException;
 import org.dhv.pbl5server.common_service.exception.ForbiddenException;
 import org.dhv.pbl5server.common_service.exception.UnauthorizedException;
 import org.dhv.pbl5server.common_service.repository.RedisRepository;
+import org.dhv.pbl5server.common_service.utils.LogUtils;
 import org.dhv.pbl5server.constant_service.enums.SystemRoleName;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
@@ -35,17 +36,20 @@ public class JwtServiceImpl implements JwtService {
     private final AccountRepository accountRepository;
     private final RedisRepository redisRepository;
 
-
     public UserDetails getAccountFromToken(String token) {
         Claims jwtClaims = getJwtClaims(token, TokenType.ACCESS_TOKEN);
         UUID accountId = UUID.fromString(jwtClaims.getSubject());
-        if (redisRepository.findAllByHashKeyPrefix(
-            RedisCacheConstant.AUTH_KEY,
-            RedisCacheConstant.REVOKE_ACCESS_TOKEN_HASH(accountId.toString(), false)
-        ).contains(token)) {
-            throw new UnauthorizedException(ErrorMessageConstant.REVOKED_TOKEN);
+        try {
+            if (redisRepository.findAllByHashKeyPrefix(
+                RedisCacheConstant.AUTH_KEY,
+                RedisCacheConstant.REVOKE_ACCESS_TOKEN_HASH(accountId.toString(), false)).contains(token)) {
+                throw new UnauthorizedException(ErrorMessageConstant.REVOKED_TOKEN);
+            }
+        } catch (Exception ex) {
+            LogUtils.error("JWT_SERVICE_IMPL", ex);
         }
-        return accountRepository.findById(accountId).orElseThrow(() -> new ForbiddenException(ErrorMessageConstant.FORBIDDEN));
+        return accountRepository.findById(accountId)
+            .orElseThrow(() -> new ForbiddenException(ErrorMessageConstant.FORBIDDEN));
     }
 
     public CredentialResponse generateToken(String accountId) {
@@ -62,7 +66,8 @@ public class JwtServiceImpl implements JwtService {
     public CredentialResponse refreshToken(String refreshToken, boolean isAdmin) {
         Claims jwtClaims = getJwtClaims(refreshToken, TokenType.REFRESH_TOKEN);
         UUID accountId = UUID.fromString(jwtClaims.getSubject());
-        Account account = accountRepository.findById(accountId).orElseThrow(() -> new ForbiddenException(ErrorMessageConstant.FORBIDDEN));
+        Account account = accountRepository.findById(accountId)
+            .orElseThrow(() -> new ForbiddenException(ErrorMessageConstant.FORBIDDEN));
         // Check if the user is an admin
         var role = AbstractEnum.fromString(SystemRoleName.values(), account.getSystemRole().getConstantName());
         if (isAdmin && role != SystemRoleName.ADMIN) {
@@ -74,7 +79,8 @@ public class JwtServiceImpl implements JwtService {
                 .accessToken(accessToken)
                 .type(CommonConstant.JWT_TYPE)
                 .refreshToken(account.getRefreshToken())
-                .expiredAt(new Timestamp(getJwtClaims(accessToken, TokenType.ACCESS_TOKEN).getExpiration().getTime()))
+                .expiredAt(
+                    new Timestamp(getJwtClaims(accessToken, TokenType.ACCESS_TOKEN).getExpiration().getTime()))
                 .build();
         }
         throw new ForbiddenException(ErrorMessageConstant.FORBIDDEN);
@@ -163,4 +169,6 @@ public class JwtServiceImpl implements JwtService {
     }
 }
 
-enum TokenType {ACCESS_TOKEN, REFRESH_TOKEN, RESET_PASSWORD_TOKEN}
+enum TokenType {
+    ACCESS_TOKEN, REFRESH_TOKEN, RESET_PASSWORD_TOKEN
+}
