@@ -155,7 +155,7 @@
                             <artifactId>lombok</artifactId>
                         </exclude>
                     </excludes>
-                    <jvmArguments>--enable-preview</jvmArguments>
+                    <!--                    <jvmArguments>&#45;&#45;enable-preview</jvmArguments>-->
                 </configuration>
             </plugin>
             <plugin>
@@ -167,7 +167,7 @@
                     <target>17</target>
                     <fork>false</fork> <!-- jvmArguments OR this, but not both -->
                     <compilerArgs>
-                        <arg>--enable-preview</arg>
+                        <!--                        <arg>&#45;&#45;enable-preview</arg>-->
                         <arg>-parameters</arg>
                     </compilerArgs>
                     <annotationProcessorPaths>

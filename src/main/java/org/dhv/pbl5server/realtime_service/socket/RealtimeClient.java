@@ -10,6 +10,7 @@ import org.dhv.pbl5server.common_service.exception.ForbiddenException;
 import org.dhv.pbl5server.common_service.exception.UnauthorizedException;
 import org.dhv.pbl5server.common_service.utils.CommonUtils;
 import org.dhv.pbl5server.common_service.utils.ErrorUtils;
+import org.dhv.pbl5server.common_service.utils.LogUtils;
 import org.dhv.pbl5server.realtime_service.call_back.OnClientConnectCallback;
 import org.dhv.pbl5server.realtime_service.call_back.ValueChange;
 import org.dhv.pbl5server.realtime_service.call_back.VoidCallback;
@@ -55,11 +56,11 @@ public class RealtimeClient extends Thread implements AbstractClient {
     public synchronized void run() {
         // Check socket is null
         if (socket == null) {
-            log("Socket client is null!", true);
+            LogUtils.error(getDebugPrefix(), "Socket client is null!");
             return;
         }
         // Required account id from client in order to use realtime service
-        // Delay 500 milliseconds before receiving value from client
+        // Delay ... milliseconds before receiving value from client
         try {
             // Initialize streams
             out = new DataOutputStream(socket.getOutputStream());
@@ -67,17 +68,19 @@ public class RealtimeClient extends Thread implements AbstractClient {
             out.writeUTF("Please send your access_token...! (Your connection time out is %d in milliseconds)".formatted(delayBeforeConnectToClient));
             Thread.sleep(delayBeforeConnectToClient);
             // Get account id
+            if (in.available() == 0) throw new EOFException("Required account id");
             String token = in.readUTF();
             // Generate client id
             this.clientId = generateClientId(token);
             if (CommonUtils.isNotEmptyOrNullString(clientId)) {
                 this.setName(clientId);
-                log("Connected", false);
+                LogUtils.info(getDebugPrefix(), "Connected");
                 // Call onConnect callback
                 onConnect.call(clientId, this);
             }
         } catch (InterruptedException | IOException e) {
-            log(e instanceof EOFException ? "Required account id" : e.getMessage(), true);
+            if (e instanceof EOFException) LogUtils.error(getDebugPrefix(), "Required account id");
+            else LogUtils.error(getDebugPrefix(), e);
             disconnect();
         }
     }
@@ -92,14 +95,14 @@ public class RealtimeClient extends Thread implements AbstractClient {
     @Override
     public void disconnect() {
         handleException(() -> {
+            socket.close();
             out.close();
             in.close();
-            socket.close();
         }, null);
         // Call onDisconnect callback
         if (CommonUtils.isNotEmptyOrNullString(clientId))
             onDisconnect.call(clientId);
-        log("Disconnected", false);
+        LogUtils.info(getDebugPrefix(), "Disconnected");
         this.interrupt();
     }
 
@@ -130,7 +133,7 @@ public class RealtimeClient extends Thread implements AbstractClient {
             logMessage = error.getMessage();
         }
         // Error message
-        log(logMessage, true);
+        LogUtils.error(getDebugPrefix(), logMessage);
         if (CommonUtils.isNotEmptyOrNullString(socketErrorMessage) && out != null) {
             String tmp = socketErrorMessage;
             handleException(() -> out.writeUTF(tmp), null);
@@ -147,20 +150,14 @@ public class RealtimeClient extends Thread implements AbstractClient {
                 try {
                     onError.call();
                 } catch (Exception ex) {
-                    log(ex.getMessage(), true);
+                    LogUtils.error(getDebugPrefix(), ex);
                 }
             }
-            log(e.getMessage(), true);
+            LogUtils.error(getDebugPrefix(), e);
         }
     }
 
-    private void log(String msg, boolean isError) {
-        if (CommonUtils.isEmptyOrNullString(msg)) return;
-        String prefix = "Client socket: %s ===>".formatted(this.clientId == null ? this.getName() : this.clientId);
-        if (isError) {
-            log.error("{} {}", prefix, msg);
-        } else {
-            log.info("{} {}", prefix, msg);
-        }
+    private String getDebugPrefix() {
+        return "Client socket: %s".formatted(this.clientId == null ? this.getName() : this.clientId);
     }
 }
