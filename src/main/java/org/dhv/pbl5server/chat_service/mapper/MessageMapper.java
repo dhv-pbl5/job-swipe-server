@@ -14,7 +14,7 @@ public interface MessageMapper {
     public static String NAMED_DecodeContent = "decodeContent";
     public static String NAMED_DecodeUrl = "decodeUrl";
 
-    @Mapping(source = "account", target = "account", qualifiedByName = AccountMapper.NAMED_ToAccountResponse)
+    @Mapping(source = "account.accountId", target = "senderId")
     @Mapping(source = "conversation.id", target = "conversationId")
     @Mapping(source = "content", target = "content", qualifiedByName = NAMED_DecodeContent)
     @Mapping(source = "urlFile", target = "urlFile", qualifiedByName = NAMED_DecodeUrl)

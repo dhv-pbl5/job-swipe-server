@@ -9,19 +9,18 @@ import org.dhv.pbl5server.constant_service.enums.ConstantTypePrefix;
 @Getter
 @AllArgsConstructor
 public enum NotificationType implements AbstractEnum<NotificationType> {
-    TEST("001", "Test"),
+    TEST("00000", "Test"),
     // Match
-    MATCHING("002", "Matching"),
-    REQUEST_MATCHING("003", "Request Matching"),
-    REJECT_MATCHING("004", "Reject Matching"),
+    MATCHING("00001", "Matching"),
+    REQUEST_MATCHING("00002", "Request Matching"),
+    REJECT_MATCHING("00003", "Reject Matching"),
     // Chat
-    NEW_CONVERSATION("005", "New Conversation"),
-    NEW_MESSAGE("006", "New Message"),
-    READ_MESSAGE("007", "Read Message"),
+    NEW_CONVERSATION("00004", "New Conversation"),
+    NEW_MESSAGE("00005", "New Message"),
+    READ_MESSAGE("00006", "Read Message"),
     // Account
-    ADMIN_DEACTIVATE_ACCOUNT("008", "Admin Deactivate Account"),
-    ADMIN_ACTIVATE_ACCOUNT("009", "Admin Activate Account"),
-    ;
+    ADMIN_DEACTIVATE_ACCOUNT("00007", "Admin Deactivate Account"),
+    ADMIN_ACTIVATE_ACCOUNT("00008", "Admin Activate Account");
 
     private final String value;
     private final String notificationName;

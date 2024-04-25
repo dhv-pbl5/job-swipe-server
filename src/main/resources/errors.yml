@@ -43,6 +43,9 @@ expired_refresh_token:
 revoked_refresh_token:
   code: ERR_TOK0203
   message: Revoked refresh token!
+refresh_token_not_found:
+  code: ERR_TOK0204
+  message: Refresh token is not found!
 invalid_reset_password:
   code: ERR_TOK0301
   message: Invalid reset password token!

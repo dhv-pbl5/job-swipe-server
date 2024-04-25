@@ -24,7 +24,7 @@ public class NotificationController {
     @PreAuthorizeSystemRole
     @PostMapping("/test/notify-to-all")
     public ResponseEntity<ApiDataResponse> testNotification() {
-        service.notifyToAll("From Server ===> Test notification");
+        service.notifyToAll("Test notification to all clients");
         return ResponseEntity.ok(ApiDataResponse.successWithoutMetaAndData());
     }
 

@@ -12,6 +12,9 @@ public class CommonConstant {
     public static final String PASSWORD_REGEXP_PATTERN = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=\\S+$).{8,32}$"; // For special character: (?=.*[@#$%^&+=])
     public static final String EMAIL_REGEXP_PATTERN = "^(?=.{1,64}@)[\\p{L}0-9_-]+(\\.[\\p{L}0-9_-]+)*@"
         + "[^-][\\p{L}0-9-]+(\\.[\\p{L}0-9-]+)*(\\.[\\p{L}]{2,})$"; // (?=.*[@#$%])
+    public static final String NOTIFICATION_SENDER_PATTERN = "{sender}";
+    public static final String NOTIFICATION_RECEIVER_PATTERN = "{receiver}";
+    public static final String NOTIFICATION_DATA_END_SYMBOL = "$";
 
     private CommonConstant() {
     }

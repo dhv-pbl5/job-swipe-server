@@ -184,4 +184,5 @@ public class CommonUtils {
         Date date = new Date();
         return new Timestamp(date.getTime());
     }
+
 }

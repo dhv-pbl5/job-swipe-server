@@ -43,4 +43,8 @@ public class User extends AbstractEntity {
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @PrimaryKeyJoinColumn(name = "account_id", referencedColumnName = "account_id")
     private Account account;
+
+    public String getFullName() {
+        return lastName + " " + firstName;
+    }
 }
