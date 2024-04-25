@@ -83,7 +83,7 @@ public class JwtServiceImpl implements JwtService {
                     new Timestamp(getJwtClaims(accessToken, TokenType.ACCESS_TOKEN).getExpiration().getTime()))
                 .build();
         }
-        throw new ForbiddenException(ErrorMessageConstant.FORBIDDEN);
+        throw new BadRequestException(ErrorMessageConstant.REFRESH_TOKEN_NOT_FOUND);
     }
 
     public String generateTokenForResetPassword(String accountId) {

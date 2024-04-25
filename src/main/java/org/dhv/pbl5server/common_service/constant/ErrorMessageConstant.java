@@ -26,6 +26,7 @@ public final class ErrorMessageConstant {
     public static final String INVALID_REFRESH_TOKEN = "invalid_refresh_token";
     public static final String EXPIRED_REFRESH_TOKEN = "expired_refresh_token";
     public static final String REVOKED_REFRESH_TOKEN = "revoked_refresh_token";
+    public static final String REFRESH_TOKEN_NOT_FOUND = "refresh_token_not_found";
     public static final String INVALID_RESET_PASSWORD_TOKEN = "invalid_reset_password";
     public static final String EXPIRED_RESET_PASSWORD_TOKEN = "expired_reset_password";
     public static final String ACCOUNT_IS_ACTIVE = "account_is_active";

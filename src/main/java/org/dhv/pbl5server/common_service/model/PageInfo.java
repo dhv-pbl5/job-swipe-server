@@ -21,7 +21,7 @@ public class PageInfo {
         this.nextPage = (currentPage >= totalPage) ? totalPage : currentPage + 1;
         this.previousPage = (currentPage <= 1)
             ? currentPage
-            : (currentPage >= totalPage)
+            : (currentPage > totalPage)
             ? totalPage
             : currentPage - 1;
         this.totalPage = totalPage;

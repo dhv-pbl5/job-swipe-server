@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.dhv.pbl5server.authentication_service.payload.response.AccountResponse;
 import org.dhv.pbl5server.common_service.annotation.JsonSnakeCaseNaming;
 
 import java.sql.Timestamp;
@@ -18,7 +17,7 @@ import java.util.UUID;
 public class MessageResponse {
     private UUID id;
     private String content;
-    private AccountResponse account;
+    private UUID senderId;
     private UUID conversationId;
     private boolean readStatus;
     private String urlFile;

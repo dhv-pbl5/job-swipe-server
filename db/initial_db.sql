@@ -3,6 +3,7 @@ CREATE TABLE public.constants
     constant_id uuid NOT NULL,
     constant_name character varying(1000) NOT NULL,
     constant_type character varying(1000) NOT NULL UNIQUE,
+    note jsonb,
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone,
     PRIMARY KEY (constant_id)
@@ -130,6 +131,7 @@ CREATE TABLE public.user_educations
     study_end_time timestamp with time zone,
     study_place character varying(1000) NOT NULL,
     study_start_time timestamp with time zone NOT NULL,
+    is_university boolean NOT NULL DEFAULT true,
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone,
     PRIMARY KEY (id),
@@ -150,7 +152,7 @@ CREATE TABLE public.user_experiences
     experience_start_time timestamp with time zone NOT NULL,
     experience_type uuid NOT NULL,
     note character varying(1000),
-    "position" character varying(1000) NOT NULL,
+    position character varying(1000) NOT NULL,
     work_place character varying(1000) NOT NULL,
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone,
@@ -283,4 +285,22 @@ CREATE TABLE public.notifications
 );
 
 ALTER TABLE IF EXISTS public.notifications
+    OWNER to "qh47Qsmu19JJRuMq";
+
+CREATE TABLE public.languages
+(
+    id uuid NOT NULL,
+    language_id uuid NOT NULL,
+    language_score character varying(1000) NOT NULL,
+    language_certificate_date timestamp with time zone,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone,
+    PRIMARY KEY (id),
+    FOREIGN KEY (language_id)
+        REFERENCES public.constants (constant_id) MATCH FULL
+        ON UPDATE NO ACTION
+        ON DELETE CASCADE
+);
+
+ALTER TABLE IF EXISTS public.languages
     OWNER to "qh47Qsmu19JJRuMq";
