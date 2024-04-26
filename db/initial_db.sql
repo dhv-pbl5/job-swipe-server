@@ -290,6 +290,7 @@ ALTER TABLE IF EXISTS public.notifications
 CREATE TABLE public.languages
 (
     id uuid NOT NULL,
+    account_id uuid NOT NULL,
     language_id uuid NOT NULL,
     language_score character varying(1000) NOT NULL,
     language_certificate_date timestamp with time zone,
@@ -298,6 +299,10 @@ CREATE TABLE public.languages
     PRIMARY KEY (id),
     FOREIGN KEY (language_id)
         REFERENCES public.constants (constant_id) MATCH FULL
+        ON UPDATE NO ACTION
+        ON DELETE CASCADE,
+    FOREIGN KEY (account_id)
+        REFERENCES public.accounts (account_id) MATCH FULL
         ON UPDATE NO ACTION
         ON DELETE CASCADE
 );
