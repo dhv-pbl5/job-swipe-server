@@ -7,6 +7,7 @@ import lombok.experimental.SuperBuilder;
 import org.dhv.pbl5server.common_service.annotation.JsonSnakeCaseNaming;
 import org.dhv.pbl5server.constant_service.payload.ConstantResponse;
 import org.dhv.pbl5server.profile_service.payload.response.ApplicationPositionResponse;
+import org.dhv.pbl5server.profile_service.payload.response.LanguageResponse;
 
 import java.sql.Timestamp;
 import java.util.List;
@@ -29,4 +30,5 @@ public class AccountResponse {
     private Timestamp updatedAt;
     private Timestamp deletedAt;
     private List<ApplicationPositionResponse> applicationPositions;
+    private List<LanguageResponse> languages;
 }

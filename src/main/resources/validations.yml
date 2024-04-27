@@ -309,3 +309,17 @@ company_request:
       code: VAL_COM0103
       message: Established date cannot be null
 
+# LanguageRequest
+language_request:
+  language:
+    not_null:
+      code: VAL_LAN0101
+      message: Language cannot be null
+  language.constant_id:
+    uuid_validation:
+      code: VAL_LAN0102
+      message: Language constant ID must be a valid UUID
+  score:
+    not_blank_string_validation:
+      code: VAL_LAN0103
+      message: Score cannot be null

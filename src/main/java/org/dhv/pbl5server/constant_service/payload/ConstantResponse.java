@@ -13,4 +13,5 @@ public class ConstantResponse {
     private UUID constantId;
     private String constantType;
     private String constantName;
+    private Object note;
 }

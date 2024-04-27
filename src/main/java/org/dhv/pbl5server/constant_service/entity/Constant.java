@@ -23,5 +23,5 @@ public class Constant extends AbstractEntity {
     private String constantType;
     private String constantName;
     @Type(JsonBinaryType.class)
-    private ConstantNote note;
+    private Object note;
 }

@@ -9,7 +9,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
 
-@Mapper(config = SpringMapStructConfig.class, uses = {ConstantMapper.class})
+@Mapper(config = SpringMapStructConfig.class, uses = {ConstantMapper.class, LanguageMapper.class, ApplicationPositionMapper.class})
 public interface CompanyMapper {
     public static final String NAMED_ToCompanyResponseWithBasicInfoOnly = "toCompanyResponseWithBasicInfoOnly";
 
@@ -21,7 +21,8 @@ public interface CompanyMapper {
     @Mapping(source = "company.account.systemRole", target = "systemRole")
     @Mapping(source = "company.account.accountId", target = "accountId")
     @Mapping(source = "company.account.deletedAt", target = "deletedAt")
-    @Mapping(source = "company.account.applicationPositions", target = "applicationPositions")
+    @Mapping(source = "company.account.applicationPositions", target = "applicationPositions", qualifiedByName = ApplicationPositionMapper.NAMED_ToApplicationPositionResponse)
+    @Mapping(source = "company.account.languages", target = "languages", qualifiedByName = LanguageMapper.NAMED_ToLanguageResponse)
     @Mapping(source = "company.others", target = "others")
     CompanyProfileResponse toCompanyResponse(Company company);
 
@@ -35,6 +36,7 @@ public interface CompanyMapper {
     @Mapping(source = "company.account.accountId", target = "accountId")
     @Mapping(source = "company.account.deletedAt", target = "deletedAt")
     @Mapping(source = "company.account.applicationPositions", target = "applicationPositions", ignore = true)
+    @Mapping(source = "company.account.languages", target = "languages", ignore = true)
     @Mapping(source = "company.others", target = "others")
     CompanyProfileResponse toCompanyResponseWithBasicInfoOnly(Company company);
 

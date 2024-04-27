@@ -8,6 +8,7 @@ import org.dhv.pbl5server.common_service.config.SpringMapStructConfig;
 import org.dhv.pbl5server.constant_service.mapper.ConstantMapper;
 import org.dhv.pbl5server.profile_service.mapper.ApplicationPositionMapper;
 import org.dhv.pbl5server.profile_service.mapper.ApplicationSkillMapper;
+import org.dhv.pbl5server.profile_service.mapper.LanguageMapper;
 import org.dhv.pbl5server.profile_service.payload.request.ApplicationPositionRequest;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -20,7 +21,8 @@ import java.util.List;
     uses = {
         ConstantMapper.class,
         ApplicationPositionMapper.class,
-        ApplicationSkillMapper.class
+        ApplicationSkillMapper.class,
+        LanguageMapper.class
     }
 )
 public interface AccountMapper {
@@ -35,6 +37,7 @@ public interface AccountMapper {
     @Named(NAMED_ToAccountResponse)
     @Mapping(source = "systemRole", target = "systemRole")
     @Mapping(source = "applicationPositions", target = "applicationPositions", ignore = true)
+    @Mapping(source = "languages", target = "languages", ignore = true)
     AccountResponse toAccountResponse(Account account);
 
     @Mapping(source = "systemRole", target = "systemRole")

@@ -23,7 +23,8 @@ import java.util.List;
         AwardMapper.class,
         ExperienceMapper.class,
         ApplicationPositionMapper.class,
-        ApplicationSkillMapper.class
+        ApplicationSkillMapper.class,
+        LanguageMapper.class
     }
 )
 public interface UserMapper {
@@ -38,6 +39,7 @@ public interface UserMapper {
     @Mapping(source = "user.account.accountId", target = "accountId")
     @Mapping(source = "user.account.deletedAt", target = "deletedAt")
     @Mapping(source = "user.account.applicationPositions", target = "applicationPositions", qualifiedByName = ApplicationPositionMapper.NAMED_ToApplicationPositionResponse)
+    @Mapping(source = "user.account.languages", target = "languages", qualifiedByName = LanguageMapper.NAMED_ToLanguageResponse)
     @Mapping(source = "user.others", target = "others")
     @Mapping(source = "user.educations", target = "educations")
     @Mapping(source = "user.awards", target = "awards")
@@ -54,6 +56,7 @@ public interface UserMapper {
     @Mapping(source = "user.account.accountId", target = "accountId")
     @Mapping(source = "user.account.deletedAt", target = "deletedAt")
     @Mapping(source = "user.account.applicationPositions", target = "applicationPositions", ignore = true)
+    @Mapping(source = "user.account.languages", target = "languages", ignore = true)
     @Mapping(source = "user.others", target = "others")
     @Mapping(source = "user.educations", target = "educations", ignore = true)
     @Mapping(source = "user.awards", target = "awards", ignore = true)
@@ -99,5 +102,6 @@ public interface UserMapper {
     @Mapping(source = "request.address", target = "address")
     @Mapping(source = "request.phoneNumber", target = "phoneNumber")
     @Mapping(source = "account.applicationPositions", target = "applicationPositions", ignore = true)
+    @Mapping(source = "account.languages", target = "languages", ignore = true)
     Account toAccount(Account account, UserBasicInfoRequest request);
 }

@@ -30,5 +30,4 @@ public interface ApplicationPositionService {
     void deleteApplicationSkills(Account account, String applicationPositionId, List<String> ids);
 
     Account getAccountWithAllApplicationPositions(UUID id);
-
 }

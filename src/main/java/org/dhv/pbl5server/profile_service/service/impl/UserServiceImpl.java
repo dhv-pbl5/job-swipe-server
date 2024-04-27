@@ -29,10 +29,7 @@ import org.dhv.pbl5server.profile_service.payload.response.UserAwardResponse;
 import org.dhv.pbl5server.profile_service.payload.response.UserEducationResponse;
 import org.dhv.pbl5server.profile_service.payload.response.UserExperienceResponse;
 import org.dhv.pbl5server.profile_service.payload.response.UserProfileResponse;
-import org.dhv.pbl5server.profile_service.repository.UserAwardRepository;
-import org.dhv.pbl5server.profile_service.repository.UserEducationRepository;
-import org.dhv.pbl5server.profile_service.repository.UserExperienceRepository;
-import org.dhv.pbl5server.profile_service.repository.UserRepository;
+import org.dhv.pbl5server.profile_service.repository.*;
 import org.dhv.pbl5server.profile_service.service.ApplicationPositionService;
 import org.dhv.pbl5server.profile_service.service.UserService;
 import org.dhv.pbl5server.s3_service.service.S3Service;
@@ -53,13 +50,14 @@ public class UserServiceImpl implements UserService {
     private final UserEducationRepository educationRepository;
     private final UserAwardRepository awardRepository;
     private final UserExperienceRepository experienceRepository;
+    private final LanguageRepository languageRepository;
     private final UserMapper userMapper;
     private final EducationMapper educationMapper;
     private final AwardMapper awardMapper;
     private final ExperienceMapper experienceMapper;
     private final S3Service s3Service;
-    private final ApplicationPositionService applicationPositionService;
     private final ConstantService constantService;
+    private final ApplicationPositionService applicationPositionService;
 
     @Override
     public UserProfileResponse getUserProfile(Account account) {
@@ -346,19 +344,23 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User getAllDataByAccountId(UUID accountId) {
-        // Education
+        // Educations
         User user = repository.fetchAllDataEducationById(accountId)
             .orElseThrow(() -> new NotFoundObjectException(ErrorMessageConstant.USER_NOT_FOUND));
-        // Experience
+        // Experiences
         user.setExperiences(repository.fetchAllDataExperienceById(accountId)
             .orElseThrow(() -> new NotFoundObjectException(ErrorMessageConstant.USER_NOT_FOUND))
             .getExperiences());
-        // Award
+        // Awards
         user.setAwards(repository.fetchAllDataAwardById(accountId)
             .orElseThrow(() -> new NotFoundObjectException(ErrorMessageConstant.USER_NOT_FOUND))
             .getAwards());
-        // Account with application position
-        user.setAccount(applicationPositionService.getAccountWithAllApplicationPositions(accountId));
+        // Account with application positions
+        var account = user.getAccount();
+        account = applicationPositionService.getAccountWithAllApplicationPositions(user.getAccountId());
+        // Account with languages
+        account.setLanguages(languageRepository.findAllByAccountId(accountId));
+        user.setAccount(account);
         return user;
     }
 

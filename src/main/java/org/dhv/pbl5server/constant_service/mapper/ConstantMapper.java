@@ -11,6 +11,8 @@ import java.util.UUID;
 
 @Mapper(config = SpringMapStructConfig.class)
 public interface ConstantMapper {
+
+    @Mapping(source = "note", target = "note")
     ConstantResponse toConstantResponse(Constant constant);
 
     @Mapping(target = "constantId", expression = "java(convertStringToUUID(request.getConstantId()))")

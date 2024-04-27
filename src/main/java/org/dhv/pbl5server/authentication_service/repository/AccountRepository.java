@@ -14,4 +14,7 @@ public interface AccountRepository extends JpaRepository<Account, UUID> {
 
     @Query("SELECT a FROM Account a LEFT JOIN FETCH a.applicationPositions WHERE a.accountId = :accountId")
     Optional<Account> fetchAllDataApplicationPositionByAccountId(UUID accountId);
+
+    @Query("SELECT a FROM Account a LEFT JOIN FETCH a.applicationPositions WHERE a.accountId = :accountId")
+    Optional<Account> fetchAllDataLanguagesByAccountId(UUID accountId);
 }

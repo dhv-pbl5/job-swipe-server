@@ -310,3 +310,14 @@ match_already_requested:
 match_already_rejected:
   code: ERR_MAT0112
   message: You have already rejected the match with this account!
+
+# Language
+language_not_found:
+  code: ERR_LAN0101
+  message: Language not found!
+language_score_invalid:
+  code: ERR_LAN0102
+  message: Language score is invalid!
+language_id_is_required:
+  code: ERR_LAN0103
+  message: Language id is required!
