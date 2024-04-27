@@ -29,4 +29,5 @@ public class Conversation extends AbstractEntity {
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.DETACH)
     @JoinColumn(name = "company_id")
     private Company company;
+    private boolean activeStatus;
 }

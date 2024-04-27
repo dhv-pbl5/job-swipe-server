@@ -21,4 +21,7 @@ public interface ConversationRepository extends JpaRepository<Conversation, UUID
 
     @Query("SELECT c FROM Conversation c JOIN FETCH c.company WHERE c.id=:id and c.company.accountId = :companyId")
     Optional<Conversation> findByIdAndCompanyId(UUID id, UUID companyId);
+
+    @Query("SELECT c FROM Conversation c WHERE c.user.accountId=:userId and c.company.accountId = :companyId")
+    Optional<Conversation> findByUserIdAndCompanyId(UUID userId, UUID companyId);
 }

@@ -167,7 +167,7 @@ public final class ErrorMessageConstant {
     public static final String REQUESTED_ACCOUNT_NOT_FOUND = "requested_account_not_found";
     public static final String REQUESTED_ACCOUNT_SAME_ROLE = "requested_account_and_your_account_must_not_same_role";
     public static final String REQUESTED_ACCOUNT_BANNED = "requested_account_is_banned";
-    public static final String MATCH_ALREADY_ACCEPTED = "already_matched";
+    public static final String MATCH_ALREADY_ACCEPTED = "match_already_matched";
     public static final String MATCH_NOT_ACCEPTED_YOURSELF = "match_not_accepted_by_yourself";
     public static final String REJECT_NOT_ACCEPTED_MATCH = "reject_not_accepted_match";
     public static final String MATCH_FEATURE_NOT_FOR_ADMIN = "match_feature_not_for_admin";

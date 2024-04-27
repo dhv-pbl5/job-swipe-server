@@ -21,6 +21,7 @@ public interface ConversationMapper {
     @Mapping(source = "conversation.company", target = "company", qualifiedByName = CompanyMapper.NAMED_ToCompanyResponseWithBasicInfoOnly)
     @Mapping(source = "lastMessage", target = "lastMessage")
     @Mapping(source = "conversation.id", target = "id")
+    @Mapping(source = "conversation.activeStatus", target = "activeStatus")
     @Mapping(source = "conversation.createdAt", target = "createdAt")
     @Mapping(source = "conversation.updatedAt", target = "updatedAt")
     ConversationResponse toConversationResponse(Conversation conversation, Message lastMessage);
