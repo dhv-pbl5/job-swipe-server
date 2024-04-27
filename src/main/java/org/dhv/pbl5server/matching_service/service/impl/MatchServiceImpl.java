@@ -3,6 +3,7 @@ package org.dhv.pbl5server.matching_service.service.impl;
 import lombok.RequiredArgsConstructor;
 import org.dhv.pbl5server.authentication_service.entity.Account;
 import org.dhv.pbl5server.authentication_service.repository.AccountRepository;
+import org.dhv.pbl5server.chat_service.service.ChatService;
 import org.dhv.pbl5server.common_service.constant.ErrorMessageConstant;
 import org.dhv.pbl5server.common_service.enums.AbstractEnum;
 import org.dhv.pbl5server.common_service.exception.BadRequestException;
@@ -32,6 +33,7 @@ public class MatchServiceImpl implements MatchService {
     private final MatchRepository repository;
     private final AccountRepository accountRepository;
     private final NotificationService notificationService;
+    private final ChatService chatService;
     private final MatchMapper matchMapper;
 
     @Override
@@ -174,7 +176,10 @@ public class MatchServiceImpl implements MatchService {
             receiverAccount,
             NotificationType.REJECT_MATCHING
         );
+
         repository.save(match);
+        // Change conversation's active status
+        chatService.changeConversationStatus(match.getUser(), match.getCompany(), false);
         return matchMapper.toMatchResponse(match);
     }
 
@@ -211,6 +216,8 @@ public class MatchServiceImpl implements MatchService {
             receiverAccount,
             NotificationType.MATCHING
         );
+        // Create conversation
+        chatService.createConversation(match.getUser(), match.getCompany());
         result.setUser(match.getUser());
         result.setCompany(match.getCompany());
         return result;

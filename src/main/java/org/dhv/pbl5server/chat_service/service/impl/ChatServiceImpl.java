@@ -76,12 +76,13 @@ public class ChatServiceImpl implements ChatService {
     }
 
     @Override
-    public ConversationResponse createConversation(User user, Company company) {
+    public void createConversation(User user, Company company) {
         if (user == null || company == null)
             throw new BadRequestException(ErrorMessageConstant.REQUIRED_USER_AND_COMPANY);
         var conversation = Conversation.builder()
             .user(user)
             .company(company)
+            .activeStatus(true)
             .build();
         conversation = conversationRepository.save(conversation);
         ConversationResponse response = conversationMapper.toConversationResponse(conversation, null);
@@ -91,7 +92,15 @@ public class ChatServiceImpl implements ChatService {
             response,
             user.getAccount(),
             company.getAccount());
-        return response;
+    }
+
+    @Override
+    public void changeConversationStatus(User user, Company company, boolean status) {
+        var conversation = conversationRepository.findByUserIdAndCompanyId(user.getAccountId(), company.getAccountId())
+            .orElse(null);
+        if (conversation == null) return;
+        conversation.setActiveStatus(status);
+        conversationRepository.save(conversation);
     }
 
     @Override

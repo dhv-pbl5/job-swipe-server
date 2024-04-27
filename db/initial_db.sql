@@ -218,6 +218,7 @@ CREATE TABLE public.conversations
     id uuid NOT NULL,
     company_id uuid NOT NULL,
     user_id uuid NOT NULL,
+    active_status boolean NOT NULL DEFAULT TRUE,
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone,
     PRIMARY KEY (id),

@@ -16,7 +16,9 @@ public interface ChatService {
 
     ConversationResponse getConversationById(Account account, String conversationId);
 
-    ConversationResponse createConversation(User user, Company company);
+    void createConversation(User user, Company company);
+
+    void changeConversationStatus(User user, Company company, boolean status);
 
     int getUnreadMessageCount(Account account, String conversationId);
 

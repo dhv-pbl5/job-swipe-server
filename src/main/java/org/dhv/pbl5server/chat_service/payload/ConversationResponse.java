@@ -21,6 +21,7 @@ public class ConversationResponse {
     private UserProfileResponse user;
     private CompanyProfileResponse company;
     private MessageResponse lastMessage;
+    private boolean activeStatus;
     private Timestamp createdAt;
     private Timestamp updatedAt;
 }
