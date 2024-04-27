@@ -8,6 +8,7 @@ import lombok.experimental.SuperBuilder;
 import org.dhv.pbl5server.common_service.model.AbstractEntity;
 import org.dhv.pbl5server.constant_service.entity.Constant;
 import org.dhv.pbl5server.profile_service.entity.ApplicationPosition;
+import org.dhv.pbl5server.profile_service.entity.Language;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -42,6 +43,8 @@ public class Account extends AbstractEntity implements UserDetails {
     private Timestamp deletedAt;
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "account")
     private List<ApplicationPosition> applicationPositions;
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "account")
+    private List<Language> languages;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

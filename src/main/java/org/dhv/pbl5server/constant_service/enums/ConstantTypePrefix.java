@@ -12,7 +12,8 @@ public enum ConstantTypePrefix implements AbstractEnum<ConstantTypePrefix> {
     APPLY_POSITION("02"),
     SKILL("03"),
     EXPERIENCE_TYPE("04"),
-    NOTIFICATION_TYPE("05");
+    NOTIFICATION_TYPE("05"),
+    LANGUAGE("06");
 
     private final String value;
     private final String enumName = this.name();

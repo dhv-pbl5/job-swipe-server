@@ -14,6 +14,7 @@ import org.dhv.pbl5server.profile_service.model.OtherDescription;
 import org.dhv.pbl5server.profile_service.payload.request.CompanyProfileRequest;
 import org.dhv.pbl5server.profile_service.payload.response.CompanyProfileResponse;
 import org.dhv.pbl5server.profile_service.repository.CompanyRepository;
+import org.dhv.pbl5server.profile_service.repository.LanguageRepository;
 import org.dhv.pbl5server.profile_service.service.ApplicationPositionService;
 import org.dhv.pbl5server.profile_service.service.CompanyService;
 import org.springframework.data.domain.Page;
@@ -28,6 +29,7 @@ import java.util.UUID;
 public class CompanyServiceImpl implements CompanyService {
     private final CompanyRepository repository;
     private final CrudDbJsonArrayRepository<OtherDescription, UUID> otherRepository;
+    private final LanguageRepository languageRepository;
     private final ApplicationPositionService applicationPositionService;
     private final CompanyMapper mapper;
 
@@ -100,7 +102,10 @@ public class CompanyServiceImpl implements CompanyService {
     @Override
     public Company getAllDataByAccountId(UUID accountId) {
         var company = repository.findById(accountId).orElseThrow(() -> new NotFoundObjectException(ErrorMessageConstant.COMPANY_PROFILE_NOT_FOUND));
-        company.setAccount(applicationPositionService.getAccountWithAllApplicationPositions(accountId));
+        var account = company.getAccount();
+        account = applicationPositionService.getAccountWithAllApplicationPositions(accountId);
+        account.setLanguages(languageRepository.findAllByAccountId(accountId));
+        company.setAccount(account);
         return company;
     }
 

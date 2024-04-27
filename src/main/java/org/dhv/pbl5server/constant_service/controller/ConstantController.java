@@ -33,9 +33,14 @@ public class ConstantController {
         @NotNull @RequestParam(name = "constant_type") String type,
         @Nullable @RequestParam(name = "is_prefix") Boolean prefix
     ) {
-        if (prefix != null && prefix && type.length() >= 2) {
-            var typePrefix = AbstractEnum.fromString(ConstantTypePrefix.values(), type.substring(0, 2));
-            return ResponseEntity.ok(ApiDataResponse.successWithoutMeta(service.getConstantsByTypePrefix(typePrefix)));
+        if (prefix != null && prefix) {
+            if (!Character.isDigit(type.charAt(0))) {
+                var typePrefix = ConstantTypePrefix.valueOf(type.toUpperCase());
+                return ResponseEntity.ok(ApiDataResponse.successWithoutMeta(service.getConstantsByTypePrefix(typePrefix)));
+            } else if (type.length() >= 2) {
+                var typePrefix = AbstractEnum.fromString(ConstantTypePrefix.values(), type.substring(0, 2));
+                return ResponseEntity.ok(ApiDataResponse.successWithoutMeta(service.getConstantsByTypePrefix(typePrefix)));
+            }
         }
         return ResponseEntity.ok(ApiDataResponse.successWithoutMeta(service.getConstantByType(type)));
     }

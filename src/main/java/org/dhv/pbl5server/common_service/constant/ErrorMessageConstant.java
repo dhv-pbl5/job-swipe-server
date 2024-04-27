@@ -174,6 +174,14 @@ public final class ErrorMessageConstant {
     public static final String MATCH_ALREADY_REQUESTED = "match_already_requested";
     public static final String MATCH_ALREADY_REJECTED = "match_already_rejected";
 
+    /*
+       Language
+    */
+    public static final String LANGUAGE_NOT_FOUND = "language_not_found";
+    public static final String LANGUAGE_SCORE_INVALID = "language_score_invalid";
+    public static final String LANGUAGE_ID_REQUIRED = "language_id_is_required";
+
+
     private ErrorMessageConstant() {
     }
 }
