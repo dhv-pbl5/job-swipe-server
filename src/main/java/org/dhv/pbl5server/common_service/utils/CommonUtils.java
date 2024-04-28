@@ -188,25 +188,25 @@ public class CommonUtils {
     /*
      * Generate OTP
      */
-    public static Integer generateOTP4Digits() {
+    public static String generateOTP4Digits() {
         return generateDigitOTP(4);
     }
 
-    public static Integer generate6DigitsOTP() {
+    public static String generate6DigitsOTP() {
         return generateDigitOTP(6);
     }
 
-    public static Integer generate8DigitsOTP() {
+    public static String generate8DigitsOTP() {
         return generateDigitOTP(8);
     }
 
-    public static Integer generateDigitOTP(int length) {
+    public static String generateDigitOTP(int length) {
         Random random = new Random();
         StringBuilder otp = new StringBuilder();
         for (int i = 1; i <= length; i++) {
             int randomNumber = random.nextInt(10);
             otp.append(randomNumber);
         }
-        return Integer.parseInt(otp.toString().trim());
+        return otp.toString();
     }
 }
