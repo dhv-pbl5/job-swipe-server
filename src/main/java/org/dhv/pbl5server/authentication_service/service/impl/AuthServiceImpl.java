@@ -164,7 +164,7 @@ public class AuthServiceImpl implements AuthService {
         if (role == SystemRoleName.ADMIN || !account.isEnabled())
             throw new ForbiddenException(ErrorMessageConstant.FORBIDDEN);
         // Generate reset password code
-        Integer resetPasswordCode = CommonUtils.generate6DigitsOTP();
+        String resetPasswordCode = CommonUtils.generate6DigitsOTP();
         Map<String, Object> resetPasswordCodeMap = Map.of(
             "reset_password_code", resetPasswordCode,
             "expiration_time", System.currentTimeMillis() + resetPasswordTokenExpirationTime
@@ -176,11 +176,10 @@ public class AuthServiceImpl implements AuthService {
             resetPasswordCodeMap
         );
         // Send email to user
-        mailTrapService.sendForgotPasswordEmail(account.getEmail(), resetPasswordCode.toString());
+        mailTrapService.sendForgotPasswordEmail(account.getEmail(), resetPasswordCode);
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public void resetPassword(ResetPasswordRequest request) {
         // Check email
         Account account = repository.findByEmail(request.getEmail())
@@ -190,12 +189,11 @@ public class AuthServiceImpl implements AuthService {
         if (role == SystemRoleName.ADMIN || !account.isEnabled())
             throw new ForbiddenException(ErrorMessageConstant.FORBIDDEN);
         // Check reset password code
-        Integer resetPasswordCode = Integer.parseInt(request.getResetPasswordCode());
         var object = CommonUtils.decodeJson(redisRepository.findByHashKey(
             RedisCacheConstant.OTP_KEY,
             RedisCacheConstant.FORGOT_PASSWORD_HASH(account.getAccountId().toString())
         ).toString(), Map.class);
-        if (object == null || !resetPasswordCode.equals(object.get("reset_password_code")))
+        if (object == null || !request.getResetPasswordCode().equals(object.get("reset_password_code")))
             throw new BadRequestException(ErrorMessageConstant.RESET_PASSWORD_CODE_INVALID);
         if (System.currentTimeMillis() > (long) object.get("expiration_time"))
             throw new BadRequestException(ErrorMessageConstant.RESET_PASSWORD_CODE_EXPIRED);
