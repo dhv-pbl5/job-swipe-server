@@ -45,8 +45,10 @@ public class JwtServiceImpl implements JwtService {
                 RedisCacheConstant.REVOKE_ACCESS_TOKEN_HASH(accountId.toString(), false)).contains(token)) {
                 throw new UnauthorizedException(ErrorMessageConstant.REVOKED_TOKEN);
             }
+        } catch (UnauthorizedException ex) {
+            throw ex;
         } catch (Exception ex) {
-            LogUtils.error("JWT_SERVICE_IMPL", ex);
+            LogUtils.error("JWT SERVICE IMPL", ex);
         }
         return accountRepository.findById(accountId)
             .orElseThrow(() -> new ForbiddenException(ErrorMessageConstant.FORBIDDEN));
