@@ -86,22 +86,6 @@ public class JwtServiceImpl implements JwtService {
         throw new BadRequestException(ErrorMessageConstant.REFRESH_TOKEN_NOT_FOUND);
     }
 
-    public String generateTokenForResetPassword(String accountId) {
-        return Jwts.builder()
-            .subject(accountId)
-            .issuedAt(new Date())
-            .expiration(new Date(System.currentTimeMillis() + jwtAppProperty.getForgotPasswordExpirationMs()))
-            .signWith(getSignInKey(jwtAppProperty.getForgotPasswordTokenSecret()))
-            .compact();
-    }
-
-    public Account getAccountFromResetPasswordToken(String token) {
-        Claims jwt = getJwtClaims(token, TokenType.RESET_PASSWORD_TOKEN);
-        UUID accountId = UUID.fromString(jwt.getSubject());
-        return accountRepository.findById(accountId)
-            .orElseThrow(() -> new BadRequestException(ErrorMessageConstant.INVALID_RESET_PASSWORD_TOKEN));
-    }
-
     private String generateAccessToken(String accountId) {
         return Jwts.builder()
             .subject(accountId)
@@ -146,18 +130,6 @@ public class JwtServiceImpl implements JwtService {
                 } catch (Exception ex) {
                     throw new UnauthorizedException(ErrorMessageConstant.INVALID_REFRESH_TOKEN);
                 }
-            case RESET_PASSWORD_TOKEN:
-                try {
-                    return Jwts.parser()
-                        .verifyWith(getSignInKey(jwtAppProperty.getForgotPasswordTokenSecret()))
-                        .build()
-                        .parseSignedClaims(token)
-                        .getPayload();
-                } catch (ExpiredJwtException ex) {
-                    throw new UnauthorizedException(ErrorMessageConstant.EXPIRED_RESET_PASSWORD_TOKEN);
-                } catch (Exception ex) {
-                    throw new UnauthorizedException(ErrorMessageConstant.INVALID_RESET_PASSWORD_TOKEN);
-                }
             default:
                 throw new UnauthorizedException(ErrorMessageConstant.INVALID_TOKEN);
         }
@@ -170,5 +142,5 @@ public class JwtServiceImpl implements JwtService {
 }
 
 enum TokenType {
-    ACCESS_TOKEN, REFRESH_TOKEN, RESET_PASSWORD_TOKEN
+    ACCESS_TOKEN, REFRESH_TOKEN
 }

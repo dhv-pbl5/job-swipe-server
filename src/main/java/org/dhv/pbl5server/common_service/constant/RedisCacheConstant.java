@@ -8,6 +8,7 @@ public class RedisCacheConstant {
      * Key storing in Redis
      */
     public static final String AUTH_KEY = "Authentication";
+    public static final String OTP_KEY = "OTP";
 
     /*
      * Hash key storing in Redis
@@ -22,6 +23,10 @@ public class RedisCacheConstant {
         if (!isGenerate)
             return "revoke_refresh_token:%s".formatted(uuid);
         return "revoke_refresh_token:%s:%s".formatted(uuid, getCurrentTimestamp());
+    }
+
+    public static String FORGOT_PASSWORD_HASH(String uuid) {
+        return "forgot_password:%s".formatted(uuid);
     }
 
     private static String getCurrentTimestamp() {

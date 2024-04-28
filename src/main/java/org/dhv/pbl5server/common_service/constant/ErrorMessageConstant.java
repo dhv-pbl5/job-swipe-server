@@ -27,10 +27,10 @@ public final class ErrorMessageConstant {
     public static final String EXPIRED_REFRESH_TOKEN = "expired_refresh_token";
     public static final String REVOKED_REFRESH_TOKEN = "revoked_refresh_token";
     public static final String REFRESH_TOKEN_NOT_FOUND = "refresh_token_not_found";
-    public static final String INVALID_RESET_PASSWORD_TOKEN = "invalid_reset_password";
-    public static final String EXPIRED_RESET_PASSWORD_TOKEN = "expired_reset_password";
     public static final String ACCOUNT_IS_ACTIVE = "account_is_active";
     public static final String ACCOUNT_IS_NOT_ACTIVE = "account_is_not_active";
+    public static final String RESET_PASSWORD_CODE_INVALID = "reset_password_code_invalid";
+    public static final String RESET_PASSWORD_CODE_EXPIRED = "reset_password_code_expired";
 
     /*
         Permission

@@ -22,22 +22,27 @@ import org.dhv.pbl5server.constant_service.entity.Constant;
 import org.dhv.pbl5server.constant_service.enums.ConstantTypePrefix;
 import org.dhv.pbl5server.constant_service.enums.SystemRoleName;
 import org.dhv.pbl5server.constant_service.repository.ConstantRepository;
+import org.dhv.pbl5server.mail_trap_service.service.MailTrapService;
 import org.dhv.pbl5server.profile_service.entity.Company;
 import org.dhv.pbl5server.profile_service.entity.User;
 import org.dhv.pbl5server.profile_service.repository.CompanyRepository;
 import org.dhv.pbl5server.profile_service.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.*;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Map;
 import java.util.UUID;
 
 @RequiredArgsConstructor
 @Service
 @Slf4j
 public class AuthServiceImpl implements AuthService {
+    @Value("${application.reset-password-code-expiration-ms}")
+    private Long resetPasswordTokenExpirationTime;
     private final RedisRepository redisRepository;
     private final AccountRepository repository;
     private final UserRepository userRepository;
@@ -47,6 +52,7 @@ public class AuthServiceImpl implements AuthService {
     private final AccountMapper mapper;
     private final ConstantRepository constantRepository;
     private final PasswordEncoder passwordEncoder;
+    private final MailTrapService mailTrapService;
 
     public CredentialResponse login(LoginRequest loginRequest, boolean isAdmin) {
         try {
@@ -150,21 +156,59 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public String forgotPassword(ForgotPasswordRequest request) {
+    public void forgotPassword(ForgotPasswordRequest request) {
         Account account = repository.findByEmail(request.getEmail())
             .orElseThrow(() -> new NotFoundObjectException(ErrorMessageConstant.ACCOUNT_NOT_FOUND));
-        return jwtService.generateTokenForResetPassword(account.getAccountId().toString());
+        // Check if the account is disabled or admin
+        var role = AbstractEnum.fromString(SystemRoleName.values(), account.getSystemRole().getConstantName());
+        if (role == SystemRoleName.ADMIN || !account.isEnabled())
+            throw new ForbiddenException(ErrorMessageConstant.FORBIDDEN);
+        // Generate reset password code
+        Integer resetPasswordCode = CommonUtils.generate6DigitsOTP();
+        Map<String, Object> resetPasswordCodeMap = Map.of(
+            "reset_password_code", resetPasswordCode,
+            "expiration_time", System.currentTimeMillis() + resetPasswordTokenExpirationTime
+        );
+        // Save reset password code to redis
+        redisRepository.save(
+            RedisCacheConstant.OTP_KEY,
+            RedisCacheConstant.FORGOT_PASSWORD_HASH(account.getAccountId().toString()),
+            resetPasswordCodeMap
+        );
+        // Send email to user
+        mailTrapService.sendForgotPasswordEmail(account.getEmail(), resetPasswordCode.toString());
     }
 
     @Override
-    public void resetPassword(ResetPasswordRequest request, Account currentAccount) {
+    @SuppressWarnings("unchecked")
+    public void resetPassword(ResetPasswordRequest request) {
+        // Check email
+        Account account = repository.findByEmail(request.getEmail())
+            .orElseThrow(() -> new NotFoundObjectException(ErrorMessageConstant.ACCOUNT_NOT_FOUND));
+        // Check if the account is disabled or admin
+        var role = AbstractEnum.fromString(SystemRoleName.values(), account.getSystemRole().getConstantName());
+        if (role == SystemRoleName.ADMIN || !account.isEnabled())
+            throw new ForbiddenException(ErrorMessageConstant.FORBIDDEN);
+        // Check reset password code
+        Integer resetPasswordCode = Integer.parseInt(request.getResetPasswordCode());
+        var object = CommonUtils.decodeJson(redisRepository.findByHashKey(
+            RedisCacheConstant.OTP_KEY,
+            RedisCacheConstant.FORGOT_PASSWORD_HASH(account.getAccountId().toString())
+        ).toString(), Map.class);
+        if (object == null || !resetPasswordCode.equals(object.get("reset_password_code")))
+            throw new BadRequestException(ErrorMessageConstant.RESET_PASSWORD_CODE_INVALID);
+        if (System.currentTimeMillis() > (long) object.get("expiration_time"))
+            throw new BadRequestException(ErrorMessageConstant.RESET_PASSWORD_CODE_EXPIRED);
+        // Check new password
         if (!request.getNewPassword().equals(request.getNewPasswordConfirmation()))
             throw new BadRequestException(ErrorMessageConstant.NEW_PASSWORD_CONFIRMATION_NOT_MATCH);
-        Account accountFromResetPwdToken = jwtService.getAccountFromResetPasswordToken(request.getResetPasswordToken());
-        if (accountFromResetPwdToken.getAccountId().compareTo(currentAccount.getAccountId()) != 0)
-            throw new BadRequestException(ErrorMessageConstant.INVALID_RESET_PASSWORD_TOKEN);
-        accountFromResetPwdToken.setPassword(passwordEncoder.encode(request.getNewPassword()));
-        repository.save(accountFromResetPwdToken);
+        account.setPassword(passwordEncoder.encode(request.getNewPassword()));
+        repository.save(account);
+        // Remove reset password code from redis
+        redisRepository.delete(
+            RedisCacheConstant.OTP_KEY,
+            RedisCacheConstant.FORGOT_PASSWORD_HASH(account.getAccountId().toString())
+        );
     }
 
     @Override
@@ -178,7 +222,7 @@ public class AuthServiceImpl implements AuthService {
         currentAccount.setPassword(passwordEncoder.encode(request.getNewPassword()));
         repository.save(currentAccount);
     }
-    
+
     private Constant checkValidSystemRole(String email, String roleId) {
         var roleIdUUID = UUID.fromString(roleId);
         // Check if the email is already used
