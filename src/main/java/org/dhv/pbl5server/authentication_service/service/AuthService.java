@@ -21,9 +21,9 @@ public interface AuthService {
 
     AccountResponse register(CompanyRegisterRequest request);
 
-    String forgotPassword(ForgotPasswordRequest request);
+    void forgotPassword(ForgotPasswordRequest request);
 
-    void resetPassword(ResetPasswordRequest request, Account currentAccount);
+    void resetPassword(ResetPasswordRequest request);
 
     void changePassword(ChangePasswordRequest request, Account currentAccount);
 }

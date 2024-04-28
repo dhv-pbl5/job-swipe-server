@@ -1,11 +1,14 @@
 package org.dhv.pbl5server.common_service.repository;
 
 import lombok.extern.log4j.Log4j2;
+import org.dhv.pbl5server.common_service.utils.CommonUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Repository;
+import org.springframework.util.ClassUtils;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -38,8 +41,23 @@ public class RedisRepositoryImpl implements RedisRepository {
 
     @Override
     public void save(String key, String hashKey, Object value) {
-        hashOperations.put(key, hashKey, value);
-        log.info("%s Saved key: %s hashKey: %s value: %s".formatted(DEBUG_PREFIX, key, hashKey, String.valueOf(value)));
+        // Check value is a java class
+        Class<?> clazz = value.getClass();
+        var isSimpleValueType = ClassUtils.isSimpleValueType(clazz);
+        var isPrimitiveOrWrapper = ClassUtils.isPrimitiveOrWrapper(clazz);
+        var isPrimitiveArray = ClassUtils.isPrimitiveArray(clazz) || ClassUtils.isPrimitiveWrapperArray(clazz);
+        var isCollection = Collection.class.isAssignableFrom(clazz);
+        if (isSimpleValueType || isPrimitiveOrWrapper || isPrimitiveArray || isCollection) {
+            hashOperations.put(key, hashKey, value);
+            log.info("%s Saved key: %s hashKey: %s value: %s".formatted(DEBUG_PREFIX, key, hashKey, value));
+        } else {
+            var jsonValue = CommonUtils.convertToJson(value);
+            if (jsonValue != null) {
+                hashOperations.put(key, hashKey, jsonValue);
+                log.info("%s Saved key: %s hashKey: %s value: %s".formatted(DEBUG_PREFIX, key, hashKey, jsonValue));
+            }
+        }
+
     }
 
     @Override

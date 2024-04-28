@@ -126,17 +126,27 @@ forgot_password_request:
 
 # ResetPasswordRequest
 reset_password_request:
-  reset_password_token:
-    not_blank_string_validation:
+  reset_password_code:
+    not_null:
       code: VAL_RES0101
-      message: Reset password token cannot be blank
+      message: Reset password code cannot be null
+    pattern:
+      code: VAL_RES0102
+      message: Reset password code must be numeric with 6 digits
+  email:
+    not_null:
+      code: VAL_RES0103
+      message: Email cannot be null
+    email:
+      code: VAL_RES0104
+      message: Email must be a well-formed email address
   new_password:
     password_validation:
-      code: VAL_RES0102
+      code: VAL_RES0105
       message: New password is required. It must be between 8 and 32 characters, containing at least 1 uppercase letter, 1 lowercase letter, 1 numeric character.
   new_password_confirmation:
     password_validation:
-      code: VAL_RES0103
+      code: VAL_RES0106
       message: New password confirmation is required. It must be between 8 and 32 characters, containing at least 1 uppercase letter, 1 lowercase letter, 1 numeric character.
 
 # ChangePasswordRequest

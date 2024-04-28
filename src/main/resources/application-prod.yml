@@ -38,7 +38,6 @@ spring:
       ssl:
         enabled: true
 
-
 logging:
   level:
     org.springframework.security: trace
@@ -51,9 +50,14 @@ application:
     access-token-expiration-ms: 7200000
     refresh-token-secret-key: DHVmGqqMFI2T2SJdIw7dV1h+V5miq9zSvuF6f/kBB1x55Y3AwWdTCLxLaxwKsRg
     refresh-token-expiration-ms: 2592000000
-    reset-password-token-secret-key: nPVrZzzZCx3G5VFwKb3Df5y+U0fiM2jT6kP1v/rZTzs33MzZtZvPVfJXgXZ3mRnD
-    reset-password-token-expiration-ms: 300000
+  reset-password-code-expiration-ms: 3600000
   s3:
     bucket-name: pbl5-bucket
   server.socket:
     port: 8888
+  mail-trap:
+    url: https://send.api.mailtrap.io/api/send
+    api-key: b0af10cf775e3af21e7c8200312db25f
+    from-email: mailtrap@demomailtrap.com
+    from-email-name: Job Swipe
+    forgot-password-email-template-id: 58cc4e51-3dcd-44d9-b0f3-8d87551fc735

@@ -12,8 +12,6 @@ import org.dhv.pbl5server.common_service.model.ApiDataResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Map;
-
 @RestController
 @RequestMapping("/v1/auth")
 @RequiredArgsConstructor
@@ -59,21 +57,15 @@ public class AuthController {
         return ResponseEntity.ok(ApiDataResponse.successWithoutMeta(authService.register(request)));
     }
 
-    @PreAuthorizeSystemRoleWithoutAdmin
     @PostMapping("/forgot-password")
     public ResponseEntity<ApiDataResponse> forgotPassword(@Valid @RequestBody ForgotPasswordRequest request) {
-        String resetPasswordToken = authService.forgotPassword(request);
-        Map<String, String> data = Map.of("reset_password_token", resetPasswordToken);
-        return ResponseEntity.ok(ApiDataResponse.successWithoutMeta(data));
+        authService.forgotPassword(request);
+        return ResponseEntity.ok(ApiDataResponse.successWithoutMetaAndData());
     }
 
-    @PreAuthorizeSystemRoleWithoutAdmin
     @PostMapping("/reset-password")
-    public ResponseEntity<ApiDataResponse> resetPassword(
-        @Valid @RequestBody ResetPasswordRequest request,
-        @CurrentAccount Account currentAccount
-    ) {
-        authService.resetPassword(request, currentAccount);
+    public ResponseEntity<ApiDataResponse> resetPassword(@Valid @RequestBody ResetPasswordRequest request) {
+        authService.resetPassword(request);
         return ResponseEntity.ok(ApiDataResponse.successWithoutMetaAndData());
     }
 

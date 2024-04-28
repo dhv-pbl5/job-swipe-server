@@ -185,4 +185,28 @@ public class CommonUtils {
         return new Timestamp(date.getTime());
     }
 
+    /*
+     * Generate OTP
+     */
+    public static Integer generateOTP4Digits() {
+        return generateDigitOTP(4);
+    }
+
+    public static Integer generate6DigitsOTP() {
+        return generateDigitOTP(6);
+    }
+
+    public static Integer generate8DigitsOTP() {
+        return generateDigitOTP(8);
+    }
+
+    public static Integer generateDigitOTP(int length) {
+        Random random = new Random();
+        StringBuilder otp = new StringBuilder();
+        for (int i = 1; i <= length; i++) {
+            int randomNumber = random.nextInt(10);
+            otp.append(randomNumber);
+        }
+        return Integer.parseInt(otp.toString().trim());
+    }
 }

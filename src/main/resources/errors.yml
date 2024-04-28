@@ -46,12 +46,12 @@ revoked_refresh_token:
 refresh_token_not_found:
   code: ERR_TOK0204
   message: Refresh token is not found!
-invalid_reset_password:
-  code: ERR_TOK0301
-  message: Invalid reset password token!
-expired_reset_password:
-  code: ERR_TOK0302
-  message: Expired reset password token!
+reset_password_code_invalid:
+  code: ERR_FOR0101
+  message: Reset password code is invalid!
+reset_password_code_expired:
+  code: ERR_FOR0102
+  message: Reset password code is expired!
 
 # Permission
 permission_not_found:
