@@ -4,10 +4,12 @@ import lombok.RequiredArgsConstructor;
 import org.dhv.pbl5server.authentication_service.entity.Account;
 import org.dhv.pbl5server.authentication_service.repository.AccountRepository;
 import org.dhv.pbl5server.common_service.constant.ErrorMessageConstant;
+import org.dhv.pbl5server.common_service.constant.RedisCacheConstant;
 import org.dhv.pbl5server.common_service.exception.BadRequestException;
 import org.dhv.pbl5server.common_service.exception.NotFoundObjectException;
 import org.dhv.pbl5server.common_service.model.ApiDataResponse;
 import org.dhv.pbl5server.common_service.repository.CrudDbJsonArrayRepository;
+import org.dhv.pbl5server.common_service.repository.RedisRepository;
 import org.dhv.pbl5server.common_service.utils.CommonUtils;
 import org.dhv.pbl5server.common_service.utils.PageUtils;
 import org.dhv.pbl5server.constant_service.enums.ConstantTypePrefix;
@@ -51,6 +53,7 @@ public class UserServiceImpl implements UserService {
     private final UserAwardRepository awardRepository;
     private final UserExperienceRepository experienceRepository;
     private final LanguageRepository languageRepository;
+    private final RedisRepository redisRepository;
     private final UserMapper userMapper;
     private final EducationMapper educationMapper;
     private final AwardMapper awardMapper;
@@ -61,13 +64,22 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserProfileResponse getUserProfile(Account account) {
-        User user = getAllDataByAccountId(account.getAccountId());
+        // Redis
+        var userProfileInRedis = getUserProfileFromRedis(account.getAccountId().toString());
+        if (userProfileInRedis != null) return userProfileInRedis;
+        // Database
+        var user = getAllDataByAccountId(account.getAccountId());
         return userMapper.toUserProfileResponse(user);
     }
 
     @Override
     public UserProfileResponse getUserProfileById(String id) {
-        return userMapper.toUserProfileResponse(getAllDataByAccountId(UUID.fromString(id)));
+        // Redis
+        var userProfileInRedis = getUserProfileFromRedis(id);
+        if (userProfileInRedis != null) return userProfileInRedis;
+        // Database
+        var user = getAllDataByAccountId(UUID.fromString(id));
+        return userMapper.toUserProfileResponse(user);
     }
 
     @Override
@@ -148,8 +160,10 @@ public class UserServiceImpl implements UserService {
             // Remove id if exist
             education.setId(null);
         }
-        repository.save(updatedUser);
-        return userMapper.toUserProfileResponse(getAllDataByAccountId(account.getAccountId()));
+        user = repository.save(updatedUser);
+        // Save to redis
+        user = getAllDataByAccountId(user, account.getAccountId());
+        return userMapper.toUserProfileResponse(user);
     }
 
     @Override
@@ -170,8 +184,10 @@ public class UserServiceImpl implements UserService {
             // Remove id if exist
             experience.setId(null);
         }
-        repository.save(updatedUser);
-        return userMapper.toUserProfileResponse(getAllDataByAccountId(account.getAccountId()));
+        user = repository.save(updatedUser);
+        // Save to redis
+        user = getAllDataByAccountId(user, account.getAccountId());
+        return userMapper.toUserProfileResponse(user);
     }
 
     @Override
@@ -181,8 +197,10 @@ public class UserServiceImpl implements UserService {
         var user = repository.findById(account.getAccountId())
             .orElseThrow(() -> new NotFoundObjectException(ErrorMessageConstant.USER_NOT_FOUND));
         user.setOthers(otherDescriptionRepository.saveAll(user.getOthers(), request));
-        repository.save(user);
-        return userMapper.toUserProfileResponse(getAllDataByAccountId(account.getAccountId()));
+        user = repository.save(user);
+        // Save to redis
+        user = getAllDataByAccountId(user, account.getAccountId());
+        return userMapper.toUserProfileResponse(user);
     }
 
     @Override
@@ -195,8 +213,10 @@ public class UserServiceImpl implements UserService {
             // Remove id if exist
             award.setId(null);
         }
-        repository.save(updatedUser);
-        return userMapper.toUserProfileResponse(getAllDataByAccountId(account.getAccountId()));
+        user = repository.save(updatedUser);
+        // Save to redis
+        user = getAllDataByAccountId(user, account.getAccountId());
+        return userMapper.toUserProfileResponse(user);
     }
 
     @Override
@@ -206,8 +226,10 @@ public class UserServiceImpl implements UserService {
         var updatedUser = userMapper.toUser(user, request);
         var updatedAccount = userMapper.toAccount(account, request);
         updatedUser.setAccount(updatedAccount);
-        repository.save(updatedUser);
-        return userMapper.toUserProfileResponse(getAllDataByAccountId(account.getAccountId()));
+        user = repository.save(updatedUser);
+        // Save to redis
+        user = getAllDataByAccountId(user, account.getAccountId());
+        return userMapper.toUserProfileResponse(user);
     }
 
     @Override
@@ -226,8 +248,10 @@ public class UserServiceImpl implements UserService {
                 throw new NotFoundObjectException(ErrorMessageConstant.EDUCATION_TIME_INVALID);
             education.setUser(user);
         }
-        repository.save(updatedUser);
-        return userMapper.toUserProfileResponse(getAllDataByAccountId(account.getAccountId()));
+        user = repository.save(updatedUser);
+        // Save to redis
+        user = getAllDataByAccountId(user, account.getAccountId());
+        return userMapper.toUserProfileResponse(user);
     }
 
     @Override
@@ -252,8 +276,10 @@ public class UserServiceImpl implements UserService {
                 throw new NotFoundObjectException(ErrorMessageConstant.EXPERIENCE_TIME_INVALID);
             experience.setUser(user);
         }
-        repository.save(updatedUser);
-        return userMapper.toUserProfileResponse(getAllDataByAccountId(account.getAccountId()));
+        user = repository.save(updatedUser);
+        // Save to redis
+        user = getAllDataByAccountId(user, account.getAccountId());
+        return userMapper.toUserProfileResponse(user);
     }
 
     @Override
@@ -267,8 +293,10 @@ public class UserServiceImpl implements UserService {
                 throw new NotFoundObjectException(ErrorMessageConstant.OTHER_DESCRIPTION_NOT_FOUND);
         }
         user.setOthers(otherDescriptionRepository.saveAll(user.getOthers(), request));
-        repository.save(user);
-        return userMapper.toUserProfileResponse(getAllDataByAccountId(account.getAccountId()));
+        user = repository.save(user);
+        // Save to redis
+        user = getAllDataByAccountId(user, account.getAccountId());
+        return userMapper.toUserProfileResponse(user);
     }
 
     @Override
@@ -285,8 +313,10 @@ public class UserServiceImpl implements UserService {
         for (var award : updatedUser.getAwards()) {
             award.setUser(user);
         }
-        repository.save(updatedUser);
-        return userMapper.toUserProfileResponse(getAllDataByAccountId(account.getAccountId()));
+        user = repository.save(updatedUser);
+        // Save to redis
+        user = getAllDataByAccountId(user, account.getAccountId());
+        return userMapper.toUserProfileResponse(user);
     }
 
     @Override
@@ -296,41 +326,95 @@ public class UserServiceImpl implements UserService {
             : s3Service.uploadFile(file, account.getAvatar());
         account.setAvatar(url);
         accountRepository.save(account);
+        // Save to redis
+        var userProfile = getUserProfileFromRedis(account.getAccountId().toString());
+        if (userProfile != null) {
+            userProfile.setAvatar(url);
+            redisRepository.save(
+                RedisCacheConstant.PROFILE,
+                RedisCacheConstant.USER_PROFILE_HASH(account.getAccountId().toString()),
+                userProfile
+            );
+        }
         return url;
     }
 
     @Override
     public void deleteEducations(Account account, List<String> ids) {
+        var userProfile = getUserProfileFromRedis(account.getAccountId().toString());
+        List<UserEducationResponse> educations = userProfile != null ? userProfile.getEducations() : List.of();
         var user = repository.fetchAllDataEducationById(account.getAccountId()).orElseThrow(
             () -> new NotFoundObjectException(ErrorMessageConstant.USER_NOT_FOUND)
         );
         if (checkDeleteIdsRequest(user.getEducations().stream().map(UserEducation::getId).toList(), ids)) {
-            ids.forEach(id -> educationRepository.deleteById(UUID.fromString(id)));
+            ids.forEach(id -> {
+                educationRepository.deleteById(UUID.fromString(id));
+                if (!educations.isEmpty())
+                    educations.removeIf(e -> e.getId().toString().compareTo(id) == 0);
+            });
+        }
+        // Save to redis
+        if (userProfile != null) {
+            userProfile.setEducations(educations);
+            redisRepository.save(
+                RedisCacheConstant.PROFILE,
+                RedisCacheConstant.USER_PROFILE_HASH(account.getAccountId().toString()),
+                userProfile
+            );
         }
     }
 
     @Override
     public void deleteAwards(Account account, List<String> ids) {
+        var userProfile = getUserProfileFromRedis(account.getAccountId().toString());
+        List<UserAwardResponse> awards = userProfile != null ? userProfile.getAwards() : List.of();
         var user = repository.fetchAllDataAwardById(account.getAccountId()).orElseThrow(
             () -> new NotFoundObjectException(ErrorMessageConstant.USER_NOT_FOUND)
         );
         if (checkDeleteIdsRequest(user.getAwards().stream().map(UserAward::getId).toList(), ids)) {
-            ids.forEach(id -> awardRepository.deleteById(UUID.fromString(id)));
+            ids.forEach(id -> {
+                awardRepository.deleteById(UUID.fromString(id));
+                awards.removeIf(e -> e.getId().toString().compareTo(id) == 0);
+            });
+        }
+        // Save to redis
+        if (userProfile != null) {
+            userProfile.setAwards(awards);
+            redisRepository.save(
+                RedisCacheConstant.PROFILE,
+                RedisCacheConstant.USER_PROFILE_HASH(account.getAccountId().toString()),
+                userProfile
+            );
         }
     }
 
     @Override
     public void deleteExperiences(Account account, List<String> ids) {
+        var userProfile = getUserProfileFromRedis(account.getAccountId().toString());
+        List<UserExperienceResponse> experiences = userProfile != null ? userProfile.getExperiences() : List.of();
         var user = repository.fetchAllDataExperienceById(account.getAccountId()).orElseThrow(
             () -> new NotFoundObjectException(ErrorMessageConstant.USER_NOT_FOUND)
         );
         if (checkDeleteIdsRequest(user.getExperiences().stream().map(UserExperience::getId).toList(), ids)) {
-            ids.forEach(id -> experienceRepository.deleteById(UUID.fromString(id)));
+            ids.forEach(id -> {
+                experienceRepository.deleteById(UUID.fromString(id));
+                experiences.removeIf(e -> e.getId().toString().compareTo(id) == 0);
+            });
+        }
+        // Save to redis
+        if (userProfile != null) {
+            userProfile.setExperiences(experiences);
+            redisRepository.save(
+                RedisCacheConstant.PROFILE,
+                RedisCacheConstant.USER_PROFILE_HASH(account.getAccountId().toString()),
+                userProfile
+            );
         }
     }
 
     @Override
     public void deleteOtherDescriptions(Account account, List<String> ids) {
+        var userProfile = getUserProfileFromRedis(account.getAccountId().toString());
         var user = repository.findById(account.getAccountId()).orElseThrow(
             () -> new NotFoundObjectException(ErrorMessageConstant.USER_NOT_FOUND)
         );
@@ -338,9 +422,18 @@ public class UserServiceImpl implements UserService {
             var result = otherDescriptionRepository.deleteAllById(user.getOthers(), ids.stream().map(UUID::fromString).toList());
             user.setOthers(result);
             repository.save(user);
+            // Save to redis
+            if (userProfile != null) {
+                userProfile.setOthers(result);
+                redisRepository.save(
+                    RedisCacheConstant.PROFILE,
+                    RedisCacheConstant.USER_PROFILE_HASH(account.getAccountId().toString()),
+                    userProfile
+                );
+            }
         }
-    }
 
+    }
 
     @Override
     public User getAllDataByAccountId(UUID accountId) {
@@ -361,6 +454,41 @@ public class UserServiceImpl implements UserService {
         // Account with languages
         account.setLanguages(languageRepository.findAllByAccountId(accountId));
         user.setAccount(account);
+        // Save to redis
+        redisRepository.save(
+            RedisCacheConstant.PROFILE,
+            RedisCacheConstant.USER_PROFILE_HASH(accountId.toString()),
+            userMapper.toUserProfileResponse(user)
+        );
+        return user;
+    }
+
+    @Override
+    public User getAllDataByAccountId(User user, UUID accountId) {
+        // Educations
+        user.setEducations(repository.fetchAllDataEducationById(accountId)
+            .orElseThrow(() -> new NotFoundObjectException(ErrorMessageConstant.USER_NOT_FOUND))
+            .getEducations());
+        // Experiences
+        user.setExperiences(repository.fetchAllDataExperienceById(accountId)
+            .orElseThrow(() -> new NotFoundObjectException(ErrorMessageConstant.USER_NOT_FOUND))
+            .getExperiences());
+        // Awards
+        user.setAwards(repository.fetchAllDataAwardById(accountId)
+            .orElseThrow(() -> new NotFoundObjectException(ErrorMessageConstant.USER_NOT_FOUND))
+            .getAwards());
+        // Account with application positions
+        var account = user.getAccount();
+        account = applicationPositionService.getAccountWithAllApplicationPositions(user.getAccountId());
+        // Account with languages
+        account.setLanguages(languageRepository.findAllByAccountId(accountId));
+        user.setAccount(account);
+        // Save to redis
+        redisRepository.save(
+            RedisCacheConstant.PROFILE,
+            RedisCacheConstant.USER_PROFILE_HASH(accountId.toString()),
+            userMapper.toUserProfileResponse(user)
+        );
         return user;
     }
 
@@ -381,5 +509,13 @@ public class UserServiceImpl implements UserService {
                 throw new BadRequestException(ErrorMessageConstant.DELETE_IDS_REQUEST_HAVE_ONE_NOT_FOUND);
         }
         return true;
+    }
+
+    private UserProfileResponse getUserProfileFromRedis(String accountId) {
+        var profile = redisRepository.findByHashKey(
+            RedisCacheConstant.PROFILE,
+            RedisCacheConstant.USER_PROFILE_HASH(accountId));
+        if (profile == null) return null;
+        return CommonUtils.decodeJson(profile.toString(), UserProfileResponse.class);
     }
 }

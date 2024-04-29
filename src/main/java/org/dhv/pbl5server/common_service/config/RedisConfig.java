@@ -1,6 +1,7 @@
 package org.dhv.pbl5server.common_service.config;
 
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
 import org.dhv.pbl5server.common_service.constant.CommonConstant;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.EnableCaching;
@@ -14,6 +15,8 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
+import java.time.Duration;
+
 @EnableCaching
 @Configuration
 @RequiredArgsConstructor
@@ -23,6 +26,14 @@ public class RedisConfig {
     private String redisHost;
     @Value("${spring.data.redis.port}")
     private int redisPort;
+    @Value("${spring.data.redis.jedis.pool.max-active}")
+    private int maxConnection;
+    @Value("${spring.data.redis.jedis.pool.max-idle}")
+    private int maxConnectionIdle;
+    @Value("${spring.data.redis.jedis.pool.min-idle}")
+    private int minConnectionIdle;
+    @Value("${spring.data.redis.jedis.pool.max-wait}")
+    private int maxConnectionWait;
     @Value("${spring.profiles.active}")
     private String profile;
 
@@ -36,10 +47,10 @@ public class RedisConfig {
             configuration.setUsername(env.getProperty("spring.data.redis.username"));
             return new JedisConnectionFactory(
                 configuration,
-                JedisClientConfiguration.builder().useSsl().build()
+                getJedisClientConfiguration(true)
             );
         }
-        return new JedisConnectionFactory(configuration);
+        return new JedisConnectionFactory(configuration, getJedisClientConfiguration(false));
     }
 
     @Bean
@@ -54,5 +65,17 @@ public class RedisConfig {
         template.setValueSerializer(new GenericJackson2JsonRedisSerializer());
         template.afterPropertiesSet();
         return template;
+    }
+
+    private JedisClientConfiguration getJedisClientConfiguration(boolean useSsl) {
+        JedisClientConfiguration.JedisClientConfigurationBuilder builder = JedisClientConfiguration.builder();
+        GenericObjectPoolConfig<?> genericObjectPoolConfig = new GenericObjectPoolConfig<>();
+        genericObjectPoolConfig.setMaxTotal(maxConnection);
+        genericObjectPoolConfig.setMaxIdle(maxConnectionIdle);
+        genericObjectPoolConfig.setMinIdle(minConnectionIdle);
+        genericObjectPoolConfig.setMaxWait(Duration.ofSeconds(maxConnectionWait));
+        return useSsl
+            ? builder.usePooling().poolConfig(genericObjectPoolConfig).and().useSsl().build()
+            : builder.usePooling().poolConfig(genericObjectPoolConfig).build();
     }
 }

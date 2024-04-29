@@ -3,10 +3,13 @@ package org.dhv.pbl5server.profile_service.service.impl;
 import lombok.RequiredArgsConstructor;
 import org.dhv.pbl5server.authentication_service.entity.Account;
 import org.dhv.pbl5server.common_service.constant.ErrorMessageConstant;
+import org.dhv.pbl5server.common_service.constant.RedisCacheConstant;
 import org.dhv.pbl5server.common_service.exception.BadRequestException;
 import org.dhv.pbl5server.common_service.exception.NotFoundObjectException;
 import org.dhv.pbl5server.common_service.model.ApiDataResponse;
 import org.dhv.pbl5server.common_service.repository.CrudDbJsonArrayRepository;
+import org.dhv.pbl5server.common_service.repository.RedisRepository;
+import org.dhv.pbl5server.common_service.utils.CommonUtils;
 import org.dhv.pbl5server.common_service.utils.PageUtils;
 import org.dhv.pbl5server.profile_service.entity.Company;
 import org.dhv.pbl5server.profile_service.mapper.CompanyMapper;
@@ -30,17 +33,26 @@ public class CompanyServiceImpl implements CompanyService {
     private final CompanyRepository repository;
     private final CrudDbJsonArrayRepository<OtherDescription, UUID> otherRepository;
     private final LanguageRepository languageRepository;
+    private final RedisRepository redisRepository;
     private final ApplicationPositionService applicationPositionService;
     private final CompanyMapper mapper;
 
     @Override
     public CompanyProfileResponse getCompanyProfile(Account account) {
+        // Redis
+        var companyProfileInRedis = getCompanyProfileFromRedis(account.getAccountId().toString());
+        if (companyProfileInRedis != null) return companyProfileInRedis;
+        // Database
         var company = getAllDataByAccountId(account.getAccountId());
         return mapper.toCompanyResponse(company);
     }
 
     @Override
     public CompanyProfileResponse getCompanyProfileById(String accountId) {
+        // Redis
+        var companyProfileInRedis = getCompanyProfileFromRedis(accountId);
+        if (companyProfileInRedis != null) return companyProfileInRedis;
+        // Database
         var company = getAllDataByAccountId(UUID.fromString(accountId));
         return mapper.toCompanyResponse(company);
     }
@@ -50,8 +62,11 @@ public class CompanyServiceImpl implements CompanyService {
         var company = repository.findById(account.getAccountId())
             .orElseThrow(() -> new NotFoundObjectException(ErrorMessageConstant.COMPANY_PROFILE_NOT_FOUND));
         company = mapper.toCompany(company, request);
-        repository.save(company);
-        return mapper.toCompanyResponse(getAllDataByAccountId(account.getAccountId()));
+        company.setAccount(mapper.toAccount(account, request));
+        company = repository.save(company);
+        // Save to redis
+        company = getAllDataByAccountId(company, account.getAccountId());
+        return mapper.toCompanyResponse(company);
     }
 
     @Override
@@ -61,8 +76,10 @@ public class CompanyServiceImpl implements CompanyService {
         var company = repository.findById(account.getAccountId())
             .orElseThrow(() -> new NotFoundObjectException(ErrorMessageConstant.COMPANY_PROFILE_NOT_FOUND));
         company.setOthers(otherRepository.saveAll(company.getOthers(), request));
-        repository.save(company);
-        return mapper.toCompanyResponse(getAllDataByAccountId(account.getAccountId()));
+        company = repository.save(company);
+        // Save to redis
+        company = getAllDataByAccountId(company, account.getAccountId());
+        return mapper.toCompanyResponse(company);
     }
 
     @Override
@@ -76,18 +93,30 @@ public class CompanyServiceImpl implements CompanyService {
                 throw new NotFoundObjectException(ErrorMessageConstant.OTHER_DESCRIPTION_NOT_FOUND);
         }
         company.setOthers(otherRepository.saveAll(company.getOthers(), request));
-        repository.save(company);
-        return mapper.toCompanyResponse(getAllDataByAccountId(account.getAccountId()));
+        company = repository.save(company);
+        // Save to redis
+        company = getAllDataByAccountId(company, account.getAccountId());
+        return mapper.toCompanyResponse(company);
     }
 
     @Override
     public void deleteOtherDescriptions(Account account, List<String> ids) {
+        var companyProfile = getCompanyProfileFromRedis(account.getAccountId().toString());
         var company = repository.findById(account.getAccountId())
             .orElseThrow(() -> new NotFoundObjectException(ErrorMessageConstant.COMPANY_PROFILE_NOT_FOUND));
         if (checkDeleteIdsRequest(company.getOthers().stream().map(OtherDescription::getId).toList(), ids)) {
             var result = otherRepository.deleteAllById(company.getOthers(), ids.stream().map(UUID::fromString).toList());
             company.setOthers(result);
             repository.save(company);
+            // Save to redis
+            if (companyProfile != null) {
+                companyProfile.setOthers(result);
+                redisRepository.save(
+                    RedisCacheConstant.PROFILE,
+                    RedisCacheConstant.COMPANY_PROFILE_HASH(account.getAccountId().toString()),
+                    companyProfile
+                );
+            }
         }
     }
 
@@ -106,6 +135,27 @@ public class CompanyServiceImpl implements CompanyService {
         account = applicationPositionService.getAccountWithAllApplicationPositions(accountId);
         account.setLanguages(languageRepository.findAllByAccountId(accountId));
         company.setAccount(account);
+        // Save to redis
+        redisRepository.save(
+            RedisCacheConstant.PROFILE,
+            RedisCacheConstant.COMPANY_PROFILE_HASH(company.getAccountId().toString()),
+            mapper.toCompanyResponse(company)
+        );
+        return company;
+    }
+
+    @Override
+    public Company getAllDataByAccountId(Company company, UUID accountId) {
+        var account = company.getAccount();
+        account = applicationPositionService.getAccountWithAllApplicationPositions(accountId);
+        account.setLanguages(languageRepository.findAllByAccountId(accountId));
+        company.setAccount(account);
+        // Save to redis
+        redisRepository.save(
+            RedisCacheConstant.PROFILE,
+            RedisCacheConstant.COMPANY_PROFILE_HASH(company.getAccountId().toString()),
+            mapper.toCompanyResponse(company)
+        );
         return company;
     }
 
@@ -126,5 +176,13 @@ public class CompanyServiceImpl implements CompanyService {
                 throw new BadRequestException(ErrorMessageConstant.DELETE_IDS_REQUEST_HAVE_ONE_NOT_FOUND);
         }
         return true;
+    }
+
+    private CompanyProfileResponse getCompanyProfileFromRedis(String accountId) {
+        var profile = redisRepository.findByHashKey(
+            RedisCacheConstant.PROFILE,
+            RedisCacheConstant.COMPANY_PROFILE_HASH(accountId));
+        if (profile == null) return null;
+        return CommonUtils.decodeJson(profile.toString(), CompanyProfileResponse.class);
     }
 }

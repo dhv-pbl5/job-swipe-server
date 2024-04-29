@@ -109,6 +109,9 @@ constant_type_must_be_experience:
 constant_type_must_be_notification:
   code: ERR_CON0108
   message: Constant type must be a notification!
+constant_type_must_be_language:
+  code: ERR_CON0109
+  message: Constant type must be a language!
 
 
 # Register
