@@ -19,7 +19,6 @@ import org.dhv.pbl5server.common_service.exception.BadRequestException;
 import org.dhv.pbl5server.common_service.exception.ForbiddenException;
 import org.dhv.pbl5server.common_service.exception.UnauthorizedException;
 import org.dhv.pbl5server.common_service.repository.RedisRepository;
-import org.dhv.pbl5server.common_service.utils.LogUtils;
 import org.dhv.pbl5server.constant_service.enums.SystemRoleName;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
@@ -39,16 +38,10 @@ public class JwtServiceImpl implements JwtService {
     public UserDetails getAccountFromToken(String token) {
         Claims jwtClaims = getJwtClaims(token, TokenType.ACCESS_TOKEN);
         UUID accountId = UUID.fromString(jwtClaims.getSubject());
-        try {
-            if (redisRepository.findAllByHashKeyPrefix(
-                RedisCacheConstant.AUTH_KEY,
-                RedisCacheConstant.REVOKE_ACCESS_TOKEN_HASH(accountId.toString(), false)).contains(token)) {
-                throw new UnauthorizedException(ErrorMessageConstant.REVOKED_TOKEN);
-            }
-        } catch (UnauthorizedException ex) {
-            throw ex;
-        } catch (Exception ex) {
-            LogUtils.error("JWT SERVICE IMPL", ex);
+        if (redisRepository.findAllByHashKeyPrefix(
+            RedisCacheConstant.AUTH_KEY,
+            RedisCacheConstant.REVOKE_ACCESS_TOKEN_HASH(accountId.toString(), false)).contains(token)) {
+            throw new UnauthorizedException(ErrorMessageConstant.REVOKED_TOKEN);
         }
         return accountRepository.findById(accountId)
             .orElseThrow(() -> new ForbiddenException(ErrorMessageConstant.FORBIDDEN));

@@ -28,5 +28,7 @@ public interface CompanyService {
 
     Company getAllDataByAccountId(UUID accountId);
 
+    Company getAllDataByAccountId(Company company, UUID accountId);
+
     ApiDataResponse getAllData(Pageable pageable);
 }

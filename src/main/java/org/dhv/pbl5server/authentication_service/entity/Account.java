@@ -41,9 +41,9 @@ public class Account extends AbstractEntity implements UserDetails {
     private Constant systemRole;
     private String refreshToken;
     private Timestamp deletedAt;
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "account")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "account")
     private List<ApplicationPosition> applicationPositions;
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "account")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "account")
     private List<Language> languages;
 
     @Override

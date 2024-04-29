@@ -57,6 +57,7 @@ public final class ErrorMessageConstant {
     public static final String CONSTANT_TYPE_MUST_BE_APPLY_SKILL = "constant_type_must_be_apply_skill";
     public static final String CONSTANT_TYPE_MUST_BE_EXPERIENCE = "constant_type_must_be_experience";
     public static final String CONSTANT_TYPE_MUST_BE_NOTIFICATION = "constant_type_must_be_notification";
+    public static final String CONSTANT_TYPE_MUST_BE_LANGUAGE = "constant_type_must_be_language";
 
     /*
         Register

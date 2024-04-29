@@ -1,5 +1,6 @@
 package org.dhv.pbl5server.profile_service.mapper;
 
+import org.dhv.pbl5server.authentication_service.entity.Account;
 import org.dhv.pbl5server.common_service.config.SpringMapStructConfig;
 import org.dhv.pbl5server.constant_service.mapper.ConstantMapper;
 import org.dhv.pbl5server.profile_service.entity.Company;
@@ -41,11 +42,17 @@ public interface CompanyMapper {
     CompanyProfileResponse toCompanyResponseWithBasicInfoOnly(Company company);
 
 
-    @Mapping(source = "request.accountId", target = "accountId")
     @Mapping(source = "request.companyName", target = "companyName")
     @Mapping(source = "request.companyUrl", target = "companyUrl")
     @Mapping(source = "request.establishedDate", target = "establishedDate")
     @Mapping(source = "request.others", target = "others")
     @Mapping(source = "company.account", target = "account")
     Company toCompany(Company company, CompanyProfileRequest request);
+
+    @Mapping(source = "request.accountStatus", target = "accountStatus")
+    @Mapping(source = "request.address", target = "address")
+    @Mapping(source = "request.phoneNumber", target = "phoneNumber")
+    @Mapping(source = "account.applicationPositions", target = "applicationPositions", ignore = true)
+    @Mapping(source = "account.languages", target = "languages", ignore = true)
+    Account toAccount(Account account, CompanyProfileRequest request);
 }

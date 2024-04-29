@@ -67,8 +67,9 @@ public interface UserService {
 
     void deleteOtherDescriptions(Account account, List<String> ids);
 
-
     User getAllDataByAccountId(UUID accountId);
+
+    User getAllDataByAccountId(User user, UUID accountId);
 
     ApiDataResponse getAllData(Pageable pageable);
 }

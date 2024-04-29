@@ -2,6 +2,7 @@ package org.dhv.pbl5server.common_service.repository;
 
 import lombok.extern.log4j.Log4j2;
 import org.dhv.pbl5server.common_service.utils.CommonUtils;
+import org.dhv.pbl5server.common_service.utils.LogUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -29,93 +30,146 @@ public class RedisRepositoryImpl implements RedisRepository {
 
     @Override
     public void save(String key, String value) {
-        redisTemplate.opsForValue().set(key, value);
-        log.info("%s Saved key: %s value: %s".formatted(DEBUG_PREFIX, key, value));
+        try {
+            redisTemplate.opsForValue().set(key, value);
+            log.info("%s Saved key: %s value: %s".formatted(DEBUG_PREFIX, key, value));
+        } catch (Exception e) {
+            LogUtils.error(DEBUG_PREFIX, e);
+        }
     }
 
     @Override
     public void expire(String key, long timeToLiveInDay) {
-        redisTemplate.expire(key, timeToLiveInDay, TimeUnit.DAYS);
-        log.info("%s Set expiration for key: %s in %s days".formatted(DEBUG_PREFIX, key, String.valueOf(timeToLiveInDay)));
+        try {
+            redisTemplate.expire(key, timeToLiveInDay, TimeUnit.DAYS);
+            log.info("%s Set expiration for key: %s in %s days".formatted(DEBUG_PREFIX, key, String.valueOf(timeToLiveInDay)));
+        } catch (Exception e) {
+            LogUtils.error(DEBUG_PREFIX, e);
+        }
     }
 
     @Override
     public void save(String key, String hashKey, Object value) {
-        // Check value is a java class
-        Class<?> clazz = value.getClass();
-        var isSimpleValueType = ClassUtils.isSimpleValueType(clazz);
-        var isPrimitiveOrWrapper = ClassUtils.isPrimitiveOrWrapper(clazz);
-        var isPrimitiveArray = ClassUtils.isPrimitiveArray(clazz) || ClassUtils.isPrimitiveWrapperArray(clazz);
-        var isCollection = Collection.class.isAssignableFrom(clazz);
-        if (isSimpleValueType || isPrimitiveOrWrapper || isPrimitiveArray || isCollection) {
-            hashOperations.put(key, hashKey, value);
-            log.info("%s Saved key: %s hashKey: %s value: %s".formatted(DEBUG_PREFIX, key, hashKey, value));
-        } else {
-            var jsonValue = CommonUtils.convertToJson(value);
-            if (jsonValue != null) {
-                hashOperations.put(key, hashKey, jsonValue);
-                log.info("%s Saved key: %s hashKey: %s value: %s".formatted(DEBUG_PREFIX, key, hashKey, jsonValue));
+        try {
+            // Check value is a java class
+            Class<?> clazz = value.getClass();
+            var isSimpleValueType = ClassUtils.isSimpleValueType(clazz);
+            var isPrimitiveOrWrapper = ClassUtils.isPrimitiveOrWrapper(clazz);
+            var isPrimitiveArray = ClassUtils.isPrimitiveArray(clazz) || ClassUtils.isPrimitiveWrapperArray(clazz);
+            var isCollection = Collection.class.isAssignableFrom(clazz);
+            if (isSimpleValueType || isPrimitiveOrWrapper || isPrimitiveArray || isCollection) {
+                hashOperations.put(key, hashKey, value);
+                log.info("%s Saved key: %s hashKey: %s value: %s".formatted(DEBUG_PREFIX, key, hashKey, value));
+            } else {
+                var jsonValue = CommonUtils.convertToJson(value);
+                if (jsonValue != null) {
+                    hashOperations.put(key, hashKey, jsonValue);
+                    log.info("%s Saved key: %s hashKey: %s value: %s".formatted(DEBUG_PREFIX, key, hashKey, jsonValue));
+                }
             }
+        } catch (Exception e) {
+            LogUtils.error(DEBUG_PREFIX, e);
         }
-
     }
 
     @Override
     public boolean hashExist(String key, String hashKey) {
-        log.info("%s Check if hashKey: %s exists in key: %s".formatted(DEBUG_PREFIX, hashKey, key));
-        return hashOperations.hasKey(key, hashKey);
+        try {
+            log.info("%s Check if hashKey: %s exists in key: %s".formatted(DEBUG_PREFIX, hashKey, key));
+            return hashOperations.hasKey(key, hashKey);
+        } catch (Exception e) {
+            LogUtils.error(DEBUG_PREFIX, e);
+            return false;
+        }
     }
 
     @Override
     public Object findByKey(String key) {
-        log.info("%s Find value by key: %s".formatted(DEBUG_PREFIX, key));
-        return redisTemplate.opsForValue().get(key);
+        try {
+            log.info("%s Find value by key: %s".formatted(DEBUG_PREFIX, key));
+            return redisTemplate.opsForValue().get(key);
+        } catch (Exception e) {
+            LogUtils.error(DEBUG_PREFIX, e);
+            return null;
+        }
     }
 
     @Override
     public Map<String, Object> findHashFieldByKey(String key) {
-        log.info("%s Find all hash fields by key: %s".formatted(DEBUG_PREFIX, key));
-        return hashOperations.entries(key);
+        try {
+            log.info("%s Find all hash fields by key: %s".formatted(DEBUG_PREFIX, key));
+            return hashOperations.entries(key);
+        } catch (Exception e) {
+            LogUtils.error(DEBUG_PREFIX, e);
+            return Map.of();
+        }
     }
 
     @Override
     public Object findByHashKey(String key, String hashKey) {
-        log.info("%s Find value by key: %s hashKey: %s".formatted(DEBUG_PREFIX, key, hashKey));
-        return hashOperations.get(key, hashKey);
+        try {
+            log.info("%s Find value by key: %s hashKey: %s".formatted(DEBUG_PREFIX, key, hashKey));
+            return hashOperations.get(key, hashKey);
+        } catch (Exception e) {
+            LogUtils.error(DEBUG_PREFIX, e);
+            return null;
+        }
     }
 
     @Override
     public List<Object> findAllByHashKeyPrefix(String key, String hashKeyPrefix) {
-        log.info("%s Find all values by key: %s hashKeyPrefix: %s".formatted(DEBUG_PREFIX, key, hashKeyPrefix));
-        return hashOperations.entries(key)
-            .entrySet()
-            .stream()
-            .filter(entry -> entry.getKey().startsWith(hashKeyPrefix))
-            .map(Map.Entry::getValue)
-            .toList();
+        try {
+            log.info("%s Find all values by key: %s hashKeyPrefix: %s".formatted(DEBUG_PREFIX, key, hashKeyPrefix));
+            return hashOperations.entries(key)
+                .entrySet()
+                .stream()
+                .filter(entry -> entry.getKey().startsWith(hashKeyPrefix))
+                .map(Map.Entry::getValue)
+                .toList();
+        } catch (Exception e) {
+            LogUtils.error(DEBUG_PREFIX, e);
+            return List.of();
+        }
     }
 
     @Override
     public Set<String> getFieldPrefixes(String key) {
-        log.info("%s Get all field prefixes by key: %s".formatted(DEBUG_PREFIX, key));
-        return hashOperations.entries(key).keySet();
+        try {
+            log.info("%s Get all field prefixes by key: %s".formatted(DEBUG_PREFIX, key));
+            return hashOperations.entries(key).keySet();
+        } catch (Exception e) {
+            LogUtils.error(DEBUG_PREFIX, e);
+            return Set.of();
+        }
     }
 
     @Override
     public void delete(String key) {
-        redisTemplate.delete(key);
-        log.info("%s Delete key: %s".formatted(DEBUG_PREFIX, key));
+        try {
+            redisTemplate.delete(key);
+            log.info("%s Delete key: %s".formatted(DEBUG_PREFIX, key));
+        } catch (Exception e) {
+            LogUtils.error(DEBUG_PREFIX, e);
+        }
     }
 
     @Override
     public void delete(String key, String hashKey) {
-        hashOperations.delete(key, hashKey);
-        log.info("%s Delete key: %s hashKey: %s".formatted(DEBUG_PREFIX, key, hashKey));
+        try {
+            hashOperations.delete(key, hashKey);
+            log.info("%s Delete key: %s hashKey: %s".formatted(DEBUG_PREFIX, key, hashKey));
+        } catch (Exception e) {
+            LogUtils.error(DEBUG_PREFIX, e);
+        }
     }
 
     @Override
     public void delete(String key, List<String> hashKeys) {
-        hashOperations.delete(key, hashKeys.toArray());
-        log.info("%s Delete key: %s hashKeys: %s".formatted(DEBUG_PREFIX, key, String.valueOf(hashKeys)));
+        try {
+            hashOperations.delete(key, hashKeys.toArray());
+            log.info("%s Delete key: %s hashKeys: %s".formatted(DEBUG_PREFIX, key, String.valueOf(hashKeys)));
+        } catch (Exception e) {
+            LogUtils.error(DEBUG_PREFIX, e);
+        }
     }
 }

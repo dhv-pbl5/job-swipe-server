@@ -11,14 +11,18 @@ import org.dhv.pbl5server.profile_service.model.OtherDescription;
 
 import java.sql.Timestamp;
 import java.util.List;
-import java.util.UUID;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @JsonSnakeCaseNaming
 public class CompanyProfileRequest {
-    private UUID accountId;
+    @NotNull
+    private Boolean accountStatus;
+    @NotBlankStringValidation
+    private String address;
+    @NotBlankStringValidation
+    private String phoneNumber;
     @NotBlankStringValidation
     private String companyName;
     @NotBlankStringValidation

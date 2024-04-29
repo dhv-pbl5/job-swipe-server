@@ -89,6 +89,7 @@ public class ConstantServiceImpl implements ConstantService {
                 throw new BadRequestException(ErrorMessageConstant.CONSTANT_TYPE_MUST_BE_EXPERIENCE);
             case NOTIFICATION_TYPE ->
                 throw new BadRequestException(ErrorMessageConstant.CONSTANT_TYPE_MUST_BE_NOTIFICATION);
+            case LANGUAGE -> throw new BadRequestException(ErrorMessageConstant.CONSTANT_TYPE_MUST_BE_LANGUAGE);
             default -> throw new BadRequestException(ErrorMessageConstant.CONSTANT_TYPE_MUST_BE_SYSTEM_ROLE);
         }
     }

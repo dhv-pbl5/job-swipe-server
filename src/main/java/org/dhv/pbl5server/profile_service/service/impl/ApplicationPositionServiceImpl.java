@@ -4,18 +4,25 @@ import lombok.RequiredArgsConstructor;
 import org.dhv.pbl5server.authentication_service.entity.Account;
 import org.dhv.pbl5server.authentication_service.repository.AccountRepository;
 import org.dhv.pbl5server.common_service.constant.ErrorMessageConstant;
+import org.dhv.pbl5server.common_service.constant.RedisCacheConstant;
+import org.dhv.pbl5server.common_service.enums.AbstractEnum;
 import org.dhv.pbl5server.common_service.exception.BadRequestException;
 import org.dhv.pbl5server.common_service.exception.NotFoundObjectException;
 import org.dhv.pbl5server.common_service.model.ApiDataResponse;
+import org.dhv.pbl5server.common_service.repository.RedisRepository;
 import org.dhv.pbl5server.common_service.utils.CommonUtils;
 import org.dhv.pbl5server.common_service.utils.PageUtils;
 import org.dhv.pbl5server.constant_service.enums.ConstantTypePrefix;
+import org.dhv.pbl5server.constant_service.enums.SystemRoleName;
 import org.dhv.pbl5server.constant_service.service.ConstantService;
 import org.dhv.pbl5server.profile_service.entity.ApplicationPosition;
 import org.dhv.pbl5server.profile_service.mapper.ApplicationPositionMapper;
 import org.dhv.pbl5server.profile_service.payload.request.ApplicationPositionRequest;
 import org.dhv.pbl5server.profile_service.payload.request.ApplicationSkillRequest;
 import org.dhv.pbl5server.profile_service.payload.response.ApplicationPositionResponse;
+import org.dhv.pbl5server.profile_service.payload.response.ApplicationSkillResponse;
+import org.dhv.pbl5server.profile_service.payload.response.CompanyProfileResponse;
+import org.dhv.pbl5server.profile_service.payload.response.UserProfileResponse;
 import org.dhv.pbl5server.profile_service.repository.ApplicationPositionRepository;
 import org.dhv.pbl5server.profile_service.repository.ApplicationSkillRepository;
 import org.dhv.pbl5server.profile_service.service.ApplicationPositionService;
@@ -33,6 +40,7 @@ public class ApplicationPositionServiceImpl implements ApplicationPositionServic
     private final ApplicationPositionRepository repository;
     private final ApplicationSkillRepository applicationSkillRepository;
     private final AccountRepository accountRepository;
+    private final RedisRepository redisRepository;
     private final ApplicationPositionMapper mapper;
     private final ConstantService constantService;
 
@@ -42,7 +50,31 @@ public class ApplicationPositionServiceImpl implements ApplicationPositionServic
         var aps = request.stream().map(mapper::toApplicationPosition).toList();
         // Check constant type of apply_position and apply_skill and set dependency
         aps = checkConstantType(account, aps, true);
-        return repository.saveAll(aps).stream().map(mapper::toApplicationPositionResponse).toList();
+        repository.saveAll(aps);
+        var responses = getAccountWithAllApplicationPositions(account.getAccountId())
+            .getApplicationPositions()
+            .stream()
+            .map(mapper::toApplicationPositionResponse)
+            .toList();
+        // Save to redis
+        var role = AbstractEnum.fromString(SystemRoleName.values(), account.getSystemRole().getConstantName());
+        switch (role) {
+            case USER:
+                var userProfile = getUserProfileFromRedis(account.getAccountId().toString());
+                if (userProfile != null) {
+                    userProfile.setApplicationPositions(responses);
+                    saveUserProfileToRedis(userProfile);
+                }
+                break;
+            case COMPANY:
+                var companyProfile = getCompanyProfileFromRedis(account.getAccountId().toString());
+                if (companyProfile != null) {
+                    companyProfile.setApplicationPositions(responses);
+                    saveCompanyProfileToRedis(companyProfile);
+                }
+                break;
+        }
+        return responses;
     }
 
     @Override
@@ -55,7 +87,40 @@ public class ApplicationPositionServiceImpl implements ApplicationPositionServic
         // Check constant type of apply_position and apply_skill and set dependency
         ap = checkConstantType(account, List.of(ap), false).get(0);
         repository.save(ap);
-        return mapper.toApplicationPositionResponse(repository.fetchAllDataApplicationSkillById(ap.getId()).orElseThrow());
+        var response = mapper.toApplicationPositionResponse(repository.fetchAllDataApplicationSkillById(ap.getId()).orElseThrow());
+        // Save to redis
+        var role = AbstractEnum.fromString(SystemRoleName.values(), account.getSystemRole().getConstantName());
+        switch (role) {
+            case USER:
+                var userProfile = getUserProfileFromRedis(account.getAccountId().toString());
+                if (userProfile != null) {
+                    var aps = userProfile.getApplicationPositions();
+                    for (var i = 0; i < aps.size(); i++) {
+                        if (aps.get(i).getId().compareTo(response.getId()) == 0) {
+                            aps.set(i, response);
+                            break;
+                        }
+                    }
+                    userProfile.setApplicationPositions(aps);
+                    saveUserProfileToRedis(userProfile);
+                }
+                break;
+            case COMPANY:
+                var companyProfile = getCompanyProfileFromRedis(account.getAccountId().toString());
+                if (companyProfile != null) {
+                    var aps = companyProfile.getApplicationPositions();
+                    for (var i = 0; i < aps.size(); i++) {
+                        if (aps.get(i).getId().compareTo(response.getId()) == 0) {
+                            aps.set(i, response);
+                            break;
+                        }
+                    }
+                    companyProfile.setApplicationPositions(aps);
+                    saveCompanyProfileToRedis(companyProfile);
+                }
+                break;
+        }
+        return response;
     }
 
     @Override
@@ -68,7 +133,40 @@ public class ApplicationPositionServiceImpl implements ApplicationPositionServic
         // Check constant type of apply_position and apply_skill and set dependency
         ap = checkConstantType(account, List.of(ap), false).get(0);
         repository.save(ap);
-        return mapper.toApplicationPositionResponse(repository.fetchAllDataApplicationSkillById(ap.getId()).orElseThrow());
+        var response = mapper.toApplicationPositionResponse(repository.fetchAllDataApplicationSkillById(ap.getId()).orElseThrow());
+        // Save to redis
+        var role = AbstractEnum.fromString(SystemRoleName.values(), account.getSystemRole().getConstantName());
+        switch (role) {
+            case USER:
+                var userProfile = getUserProfileFromRedis(account.getAccountId().toString());
+                if (userProfile != null) {
+                    var aps = userProfile.getApplicationPositions();
+                    for (var i = 0; i < aps.size(); i++) {
+                        if (aps.get(i).getId().compareTo(response.getId()) == 0) {
+                            aps.set(i, response);
+                            break;
+                        }
+                    }
+                    userProfile.setApplicationPositions(aps);
+                    saveUserProfileToRedis(userProfile);
+                }
+                break;
+            case COMPANY:
+                var companyProfile = getCompanyProfileFromRedis(account.getAccountId().toString());
+                if (companyProfile != null) {
+                    var aps = companyProfile.getApplicationPositions();
+                    for (var i = 0; i < aps.size(); i++) {
+                        if (aps.get(i).getId().compareTo(response.getId()) == 0) {
+                            aps.set(i, response);
+                            break;
+                        }
+                    }
+                    companyProfile.setApplicationPositions(aps);
+                    saveCompanyProfileToRedis(companyProfile);
+                }
+                break;
+        }
+        return response;
     }
 
     @Override
@@ -104,24 +202,111 @@ public class ApplicationPositionServiceImpl implements ApplicationPositionServic
 
     @Override
     public void deleteApplicationPositions(Account account, List<String> ids) {
-        for (var id : ids) {
-            var ap = repository.fetchAllDataApplicationSkillById(UUID.fromString(id))
-                .orElseThrow(() -> new NotFoundObjectException(ErrorMessageConstant.APPLICATION_POSITION_NOT_FOUND));
-            if (account.getAccountId().compareTo(ap.getAccount().getAccountId()) != 0)
-                throw new NotFoundObjectException(ErrorMessageConstant.APPLICATION_POSITION_NOT_FOUND);
-            repository.delete(ap);
+        var role = AbstractEnum.fromString(SystemRoleName.values(), account.getSystemRole().getConstantName());
+        List<ApplicationPositionResponse> aprs = List.of();
+        switch (role) {
+            case USER:
+                var userProfile = getUserProfileFromRedis(account.getAccountId().toString());
+                if (userProfile != null) aprs = userProfile.getApplicationPositions();
+                for (var id : ids) {
+                    var ap = repository.fetchAllDataApplicationSkillById(UUID.fromString(id))
+                        .orElseThrow(() -> new NotFoundObjectException(ErrorMessageConstant.APPLICATION_POSITION_NOT_FOUND));
+                    if (account.getAccountId().compareTo(ap.getAccount().getAccountId()) != 0)
+                        throw new NotFoundObjectException(ErrorMessageConstant.APPLICATION_POSITION_NOT_FOUND);
+                    repository.delete(ap);
+                    if (!aprs.isEmpty())
+                        aprs.removeIf(e -> e.getId().compareTo(UUID.fromString(id)) == 0);
+                }
+                if (userProfile != null) {
+                    userProfile.setApplicationPositions(aprs);
+                    saveUserProfileToRedis(userProfile);
+                }
+                break;
+            case COMPANY:
+                var companyProfile = getCompanyProfileFromRedis(account.getAccountId().toString());
+                if (companyProfile != null) aprs = companyProfile.getApplicationPositions();
+                for (var id : ids) {
+                    var ap = repository.fetchAllDataApplicationSkillById(UUID.fromString(id))
+                        .orElseThrow(() -> new NotFoundObjectException(ErrorMessageConstant.APPLICATION_POSITION_NOT_FOUND));
+                    if (account.getAccountId().compareTo(ap.getAccount().getAccountId()) != 0)
+                        throw new NotFoundObjectException(ErrorMessageConstant.APPLICATION_POSITION_NOT_FOUND);
+                    repository.delete(ap);
+                    if (!aprs.isEmpty())
+                        aprs.removeIf(e -> e.getId().compareTo(UUID.fromString(id)) == 0);
+                }
+                if (companyProfile != null) {
+                    companyProfile.setApplicationPositions(aprs);
+                    saveCompanyProfileToRedis(companyProfile);
+                }
+                break;
         }
-
     }
 
     @Override
     public void deleteApplicationSkills(Account account, String applicationPositionId, List<String> ids) {
-        for (var id : ids) {
-            var ap = repository.findByIdAndAccountId(account.getAccountId(), UUID.fromString(applicationPositionId))
-                .orElseThrow(() -> new NotFoundObjectException(ErrorMessageConstant.APPLICATION_POSITION_NOT_FOUND));
-            var aps = applicationSkillRepository.findByIdAndApplicationPositionId(ap.getId(), UUID.fromString(id))
-                .orElseThrow(() -> new NotFoundObjectException(ErrorMessageConstant.APPLICATION_SKILL_NOT_FOUND));
-            applicationSkillRepository.delete(aps);
+        var role = AbstractEnum.fromString(SystemRoleName.values(), account.getSystemRole().getConstantName());
+        List<ApplicationPositionResponse> aprs = List.of();
+        List<ApplicationSkillResponse> akrs = List.of();
+        int index = -1;
+        switch (role) {
+            case USER:
+                var userProfile = getUserProfileFromRedis(account.getAccountId().toString());
+                if (userProfile != null) {
+                    aprs = userProfile.getApplicationPositions();
+                    for (var i = 0; i < aprs.size(); i++) {
+                        if (aprs.get(i).getId().compareTo(UUID.fromString(applicationPositionId)) == 0) {
+                            akrs = aprs.get(i).getSkills();
+                            index = i;
+                            break;
+                        }
+                    }
+                }
+                for (var id : ids) {
+                    var ap = repository.findByIdAndAccountId(account.getAccountId(), UUID.fromString(applicationPositionId))
+                        .orElseThrow(() -> new NotFoundObjectException(ErrorMessageConstant.APPLICATION_POSITION_NOT_FOUND));
+                    var aps = applicationSkillRepository.findByIdAndApplicationPositionId(ap.getId(), UUID.fromString(id))
+                        .orElseThrow(() -> new NotFoundObjectException(ErrorMessageConstant.APPLICATION_SKILL_NOT_FOUND));
+                    applicationSkillRepository.delete(aps);
+                    if (!akrs.isEmpty())
+                        akrs.removeIf(e -> e.getId().compareTo(UUID.fromString(id)) == 0);
+                }
+                if (userProfile != null) {
+                    var tmp = aprs.get(index);
+                    tmp.setSkills(akrs);
+                    aprs.set(index, tmp);
+                    userProfile.setApplicationPositions(aprs);
+                    saveUserProfileToRedis(userProfile);
+                }
+                break;
+            case COMPANY:
+                var companyProfile = getCompanyProfileFromRedis(account.getAccountId().toString());
+                if (companyProfile != null) {
+                    aprs = companyProfile.getApplicationPositions();
+                    for (var i = 0; i < aprs.size(); i++) {
+                        if (aprs.get(i).getId().compareTo(UUID.fromString(applicationPositionId)) == 0) {
+                            akrs = aprs.get(i).getSkills();
+                            index = i;
+                            break;
+                        }
+                    }
+                }
+                for (var id : ids) {
+                    var ap = repository.findByIdAndAccountId(account.getAccountId(), UUID.fromString(applicationPositionId))
+                        .orElseThrow(() -> new NotFoundObjectException(ErrorMessageConstant.APPLICATION_POSITION_NOT_FOUND));
+                    var aps = applicationSkillRepository.findByIdAndApplicationPositionId(ap.getId(), UUID.fromString(id))
+                        .orElseThrow(() -> new NotFoundObjectException(ErrorMessageConstant.APPLICATION_SKILL_NOT_FOUND));
+                    applicationSkillRepository.delete(aps);
+                    if (!akrs.isEmpty())
+                        akrs.removeIf(e -> e.getId().compareTo(UUID.fromString(id)) == 0);
+                }
+                if (companyProfile != null) {
+                    var tmp = aprs.get(index);
+                    tmp.setSkills(akrs);
+                    aprs.set(index, tmp);
+                    companyProfile.setApplicationPositions(aprs);
+                    saveCompanyProfileToRedis(companyProfile);
+                }
+                break;
         }
     }
 
@@ -155,5 +340,37 @@ public class ApplicationPositionServiceImpl implements ApplicationPositionServic
         // Check all apply_skill constant type
         constantService.checkConstantWithType(applySkillIds, ConstantTypePrefix.SKILL);
         return result;
+    }
+
+    private UserProfileResponse getUserProfileFromRedis(String accountId) {
+        var profile = redisRepository.findByHashKey(
+            RedisCacheConstant.PROFILE,
+            RedisCacheConstant.USER_PROFILE_HASH(accountId));
+        if (profile == null) return null;
+        return CommonUtils.decodeJson(profile.toString(), UserProfileResponse.class);
+    }
+
+    private void saveUserProfileToRedis(UserProfileResponse profile) {
+        redisRepository.save(
+            RedisCacheConstant.PROFILE,
+            RedisCacheConstant.USER_PROFILE_HASH(profile.getAccountId().toString()),
+            profile
+        );
+    }
+
+    private CompanyProfileResponse getCompanyProfileFromRedis(String accountId) {
+        var profile = redisRepository.findByHashKey(
+            RedisCacheConstant.PROFILE,
+            RedisCacheConstant.COMPANY_PROFILE_HASH(accountId));
+        if (profile == null) return null;
+        return CommonUtils.decodeJson(profile.toString(), CompanyProfileResponse.class);
+    }
+
+    private void saveCompanyProfileToRedis(CompanyProfileResponse profile) {
+        redisRepository.save(
+            RedisCacheConstant.PROFILE,
+            RedisCacheConstant.COMPANY_PROFILE_HASH(profile.getAccountId().toString()),
+            profile
+        );
     }
 }
