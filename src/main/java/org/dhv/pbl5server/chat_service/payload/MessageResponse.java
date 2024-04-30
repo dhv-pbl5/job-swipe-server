@@ -6,7 +6,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.dhv.pbl5server.common_service.annotation.JsonSnakeCaseNaming;
 
-import java.sql.Timestamp;
 import java.util.UUID;
 
 @Data
@@ -21,6 +20,6 @@ public class MessageResponse {
     private UUID conversationId;
     private boolean readStatus;
     private String urlFile;
-    private Timestamp createdAt;
-    private Timestamp updatedAt;
+    private String createdAt;
+    private String updatedAt;
 }

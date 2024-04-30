@@ -5,7 +5,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.dhv.pbl5server.common_service.annotation.JsonSnakeCaseNaming;
 
-import java.sql.Timestamp;
 import java.util.UUID;
 
 @Data
@@ -15,11 +14,11 @@ import java.util.UUID;
 public class UserEducationResponse {
     private UUID id;
     private String studyPlace;
-    private Timestamp studyStartTime;
-    private Timestamp studyEndTime;
+    private String studyStartTime;
+    private String studyEndTime;
     private String majority;
     private Double cpa;
     private String note;
-    private Timestamp createdAt;
-    private Timestamp updatedAt;
+    private String createdAt;
+    private String updatedAt;
 }

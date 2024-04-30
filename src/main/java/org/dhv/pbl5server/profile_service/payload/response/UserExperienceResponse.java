@@ -6,7 +6,6 @@ import lombok.NoArgsConstructor;
 import org.dhv.pbl5server.common_service.annotation.JsonSnakeCaseNaming;
 import org.dhv.pbl5server.constant_service.entity.Constant;
 
-import java.sql.Timestamp;
 import java.util.UUID;
 
 @Data
@@ -15,12 +14,12 @@ import java.util.UUID;
 @JsonSnakeCaseNaming
 public class UserExperienceResponse {
     private UUID id;
-    private Timestamp experienceStartTime;
-    private Timestamp experienceEndTime;
+    private String experienceStartTime;
+    private String experienceEndTime;
     private Constant experienceType;
     private String workPlace;
     private String position;
     private String note;
-    private Timestamp createdAt;
-    private Timestamp updatedAt;
+    private String createdAt;
+    private String updatedAt;
 }

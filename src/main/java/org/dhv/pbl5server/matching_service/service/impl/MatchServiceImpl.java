@@ -126,8 +126,13 @@ public class MatchServiceImpl implements MatchService {
             companyMatched = true;
         } else throw new BadRequestException(ErrorMessageConstant.MATCH_FEATURE_NOT_FOR_ADMIN);
         // Check if match already exist --> accept match
-        var existedMatch = repository.findByUserIdAndCompanyId(userId, companyId).orElse(null);
-        if (existedMatch != null) return matchMapper.toMatchResponse(acceptMatch(account, existedMatch, true));
+        var existedMatches = repository.findByUserIdAndCompanyId(userId, companyId);
+        if (CommonUtils.isNotEmptyOrNullList(existedMatches)) {
+            for (var i : existedMatches) {
+                if (i.isCompanyMatchedNull() || i.isUserMatchedNull())
+                    return matchMapper.toMatchResponse(acceptMatch(account, i, true));
+            }
+        }
         // Create new match
         var match = repository.save(
             Match.builder()
@@ -161,11 +166,13 @@ public class MatchServiceImpl implements MatchService {
         Account receiverAccount = null;
         var role = getRole(account);
         if (role == SystemRoleName.USER) {
-            if (!match.isUserMatched()) throw new BadRequestException(ErrorMessageConstant.MATCH_ALREADY_REJECTED);
+            if (!match.isUserMatchedNull() && !match.isUserMatched())
+                throw new BadRequestException(ErrorMessageConstant.MATCH_ALREADY_REJECTED);
             match.setUserMatched(false);
             receiverAccount = match.getCompany().getAccount();
         } else if (role == SystemRoleName.COMPANY) {
-            if (!match.isCompanyMatched()) throw new BadRequestException(ErrorMessageConstant.MATCH_ALREADY_REJECTED);
+            if (!match.isCompanyMatchedNull() && !match.isCompanyMatched())
+                throw new BadRequestException(ErrorMessageConstant.MATCH_ALREADY_REJECTED);
             match.setCompanyMatched(false);
             receiverAccount = match.getUser().getAccount();
         } else throw new BadRequestException(ErrorMessageConstant.MATCH_FEATURE_NOT_FOR_ADMIN);

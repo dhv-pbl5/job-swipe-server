@@ -46,7 +46,15 @@ public class Match extends AbstractEntity {
         return userMatched != null && userMatched;
     }
 
+    public boolean isUserMatchedNull() {
+        return userMatched == null;
+    }
+
     public boolean isCompanyMatched() {
         return companyMatched != null && companyMatched;
+    }
+
+    public boolean isCompanyMatchedNull() {
+        return companyMatched == null;
     }
 }

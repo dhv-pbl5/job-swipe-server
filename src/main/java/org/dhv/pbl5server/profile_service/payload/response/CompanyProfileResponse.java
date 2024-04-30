@@ -10,7 +10,6 @@ import org.dhv.pbl5server.authentication_service.payload.response.AccountRespons
 import org.dhv.pbl5server.common_service.annotation.JsonSnakeCaseNaming;
 import org.dhv.pbl5server.profile_service.model.OtherDescription;
 
-import java.sql.Timestamp;
 import java.util.List;
 import java.util.UUID;
 
@@ -24,6 +23,6 @@ public class CompanyProfileResponse extends AccountResponse {
     private UUID accountId;
     private String companyName;
     private String companyUrl;
-    private Timestamp establishedDate;
+    private String establishedDate;
     private List<OtherDescription> others;
 }

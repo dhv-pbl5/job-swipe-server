@@ -7,6 +7,7 @@ import org.dhv.pbl5server.profile_service.model.OtherDescription;
 import org.dhv.pbl5server.profile_service.payload.request.CompanyProfileRequest;
 import org.dhv.pbl5server.profile_service.payload.response.CompanyProfileResponse;
 import org.springframework.data.domain.Pageable;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.UUID;
@@ -25,6 +26,8 @@ public interface CompanyService {
     void deleteOtherDescriptions(Account account, List<String> ids);
 
     OtherDescription getOtherDescriptionById(String companyId, String id);
+
+    String updateAvatar(Account account, MultipartFile file);
 
     Company getAllDataByAccountId(UUID accountId);
 

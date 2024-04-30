@@ -15,14 +15,14 @@ public interface MessageRepository extends JpaRepository<Message, UUID> {
     @Query("SELECT m FROM Message m WHERE m.account.accountId = :accountId")
     Page<Message> findAllByAccountId(UUID accountId, Pageable pageable);
 
-    @Query("SELECT m FROM Message m WHERE m.account.accountId = :accountId and m.conversation.id = :conversationId")
-    Page<Message> findAllByAccountIdAndConversationId(UUID accountId, UUID conversationId, Pageable pageable);
+    @Query("SELECT m FROM Message m WHERE m.conversation.id = :conversationId")
+    Page<Message> findAllByConversationId(UUID conversationId, Pageable pageable);
 
     Optional<Message> findFirstByConversationId(UUID conversationId, Sort sort);
 
     @Query("SELECT m FROM Message m WHERE m.account.accountId = :accountId and m.conversation.id = :conversationId and m.id = :messageId")
     Optional<Message> findByIdAndAccountIdAndConversationId(UUID messageId, UUID accountId, UUID conversationId);
 
-    @Query("SELECT m FROM Message m WHERE m.account.accountId = :accountId and m.conversation.id = :conversationId and m.readStatus = :readStatus")
-    List<Message> findAllByAccountIdAndConversationIdAndReadStatus(UUID accountId, UUID conversationId, boolean readStatus);
+    @Query("SELECT m FROM Message m WHERE m.conversation.id = :conversationId and m.readStatus = :readStatus")
+    List<Message> findAllByConversationIdAndReadStatus(UUID conversationId, boolean readStatus);
 }

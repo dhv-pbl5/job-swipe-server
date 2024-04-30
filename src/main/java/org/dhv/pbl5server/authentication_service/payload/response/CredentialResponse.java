@@ -6,8 +6,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.dhv.pbl5server.common_service.annotation.JsonSnakeCaseNaming;
 
-import java.sql.Timestamp;
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -17,5 +15,5 @@ public class CredentialResponse {
     private String accessToken;
     private String refreshToken;
     private String type = "Bearer";
-    private Timestamp expiredAt;
+    private String expiredAt;
 }

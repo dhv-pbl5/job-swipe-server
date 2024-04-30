@@ -6,7 +6,6 @@ import lombok.NoArgsConstructor;
 import org.dhv.pbl5server.common_service.annotation.JsonSnakeCaseNaming;
 import org.dhv.pbl5server.constant_service.payload.ConstantResponse;
 
-import java.sql.Timestamp;
 import java.util.List;
 import java.util.UUID;
 
@@ -19,6 +18,6 @@ public class ApplicationPositionResponse {
     private Boolean status;
     private ConstantResponse applyPosition;
     private List<ApplicationSkillResponse> skills;
-    private Timestamp createdAt;
-    private Timestamp updatedAt;
+    private String createdAt;
+    private String updatedAt;
 }

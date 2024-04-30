@@ -4,6 +4,10 @@ server:
     context-path: /api
 
 spring:
+  jackson:
+    time-zone: UTC
+    deserialization:
+      adjust-dates-to-context-time-zone: true
   servlet:
     multipart:
       max-file-size: 10MB
@@ -22,6 +26,8 @@ spring:
     properties:
       hibernate:
         format_sql: true
+        jdbc:
+          time_zone: UTC
     database: postgresql
     open-in-view: false
     database-platform: org.hibernate.dialect.PostgreSQLDialect

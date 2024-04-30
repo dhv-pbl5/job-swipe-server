@@ -9,7 +9,6 @@ import org.dhv.pbl5server.authentication_service.payload.response.AccountRespons
 import org.dhv.pbl5server.common_service.annotation.JsonSnakeCaseNaming;
 import org.dhv.pbl5server.profile_service.model.OtherDescription;
 
-import java.sql.Timestamp;
 import java.util.List;
 import java.util.UUID;
 
@@ -24,7 +23,7 @@ public class UserProfileResponse extends AccountResponse {
     private String firstName;
     private String lastName;
     private Boolean gender;
-    private Timestamp dateOfBirth;
+    private String dateOfBirth;
     private String summaryIntroduction;
     private List<String> socialMediaLink;
     private List<OtherDescription> others;

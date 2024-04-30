@@ -105,14 +105,13 @@ public class ChatServiceImpl implements ChatService {
 
     @Override
     public int getUnreadMessageCount(Account account, String conversationId) {
-        return messageRepository.findAllByAccountIdAndConversationIdAndReadStatus(
-                account.getAccountId(), UUID.fromString(conversationId), false)
+        return messageRepository.findAllByConversationIdAndReadStatus(UUID.fromString(conversationId), false)
             .size();
     }
 
     @Override
     public ApiDataResponse getMessages(Account account, String conversationId, Pageable pageRequest) {
-        var page = messageRepository.findAllByAccountIdAndConversationId(account.getAccountId(), UUID.fromString(conversationId), pageRequest);
+        var page = messageRepository.findAllByConversationId(UUID.fromString(conversationId), pageRequest);
         return ApiDataResponse.success(page
                 .getContent()
                 .stream()
@@ -170,15 +169,13 @@ public class ChatServiceImpl implements ChatService {
                 conversation,
                 NotificationType.NEW_MESSAGE,
                 messageMapper.toMessageResponse(e)));
-        return savedMessages.size() == 1
-            ? messageMapper.toMessageResponse(savedMessages.get(0))
-            : savedMessages.stream().map(messageMapper::toMessageResponse).toList();
+        return savedMessages.stream().map(messageMapper::toMessageResponse).toList();
     }
 
     @Override
     public void readAllMessages(Account account, String conversationId) {
-        List<Message> unreadMessages = messageRepository.findAllByAccountIdAndConversationIdAndReadStatus(
-                account.getAccountId(), UUID.fromString(conversationId), false)
+        List<Message> unreadMessages = messageRepository.findAllByConversationIdAndReadStatus(
+                UUID.fromString(conversationId), false)
             .stream()
             .peek(e -> e.setReadStatus(true))
             .toList();

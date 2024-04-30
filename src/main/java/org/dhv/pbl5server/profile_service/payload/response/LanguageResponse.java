@@ -8,7 +8,6 @@ import lombok.experimental.SuperBuilder;
 import org.dhv.pbl5server.common_service.annotation.JsonSnakeCaseNaming;
 import org.dhv.pbl5server.constant_service.payload.ConstantResponse;
 
-import java.sql.Timestamp;
 import java.util.UUID;
 
 @Getter
@@ -21,7 +20,7 @@ public class LanguageResponse {
     private UUID id;
     private ConstantResponse language;
     private String score;
-    private Timestamp certificateDate;
-    private Timestamp createdAt;
-    private Timestamp updatedAt;
+    private String certificateDate;
+    private String createdAt;
+    private String updatedAt;
 }

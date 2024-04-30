@@ -11,7 +11,6 @@ import lombok.Setter;
 import org.dhv.pbl5server.profile_service.payload.response.CompanyProfileResponse;
 import org.dhv.pbl5server.profile_service.payload.response.UserProfileResponse;
 
-import java.sql.Timestamp;
 import java.util.UUID;
 
 @Getter
@@ -22,11 +21,11 @@ import java.util.UUID;
 @JsonInclude(JsonInclude.Include.ALWAYS)
 public class MatchResponse {
     private UUID id;
-    private Timestamp matchedTime;
+    private String matchedTime;
     private UserProfileResponse user;
     private Boolean userMatched;
     private CompanyProfileResponse company;
     private Boolean companyMatched;
-    private Timestamp createdAt;
-    private Timestamp updatedAt;
+    private String createdAt;
+    private String updatedAt;
 }
