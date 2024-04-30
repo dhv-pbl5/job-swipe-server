@@ -9,7 +9,6 @@ import org.dhv.pbl5server.constant_service.payload.ConstantResponse;
 import org.dhv.pbl5server.profile_service.payload.response.ApplicationPositionResponse;
 import org.dhv.pbl5server.profile_service.payload.response.LanguageResponse;
 
-import java.sql.Timestamp;
 import java.util.List;
 import java.util.UUID;
 
@@ -26,9 +25,9 @@ public class AccountResponse {
     private String avatar;
     private String phoneNumber;
     private ConstantResponse systemRole;
-    private Timestamp createdAt;
-    private Timestamp updatedAt;
-    private Timestamp deletedAt;
+    private String createdAt;
+    private String updatedAt;
+    private String deletedAt;
     private List<ApplicationPositionResponse> applicationPositions;
     private List<LanguageResponse> languages;
 }

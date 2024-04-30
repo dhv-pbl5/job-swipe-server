@@ -15,6 +15,7 @@ import org.dhv.pbl5server.profile_service.payload.request.CompanyProfileRequest;
 import org.dhv.pbl5server.profile_service.service.CompanyService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -64,6 +65,12 @@ public class CompanyController {
     ) {
         validator.validate(request);
         return ResponseEntity.ok(ApiDataResponse.successWithoutMeta(service.updateOtherDescriptions(currentAccount, request)));
+    }
+
+    @PreAuthorizeCompany
+    @PatchMapping("/avatar")
+    public ResponseEntity<ApiDataResponse> updateAvatar(MultipartFile file, @CurrentAccount Account currentAccount) {
+        return ResponseEntity.ok(ApiDataResponse.successWithoutMeta(service.updateAvatar(currentAccount, file)));
     }
 
     @PreAuthorizeCompany

@@ -6,6 +6,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -44,5 +45,5 @@ public interface MatchRepository extends JpaRepository<Match, UUID> {
     Optional<Match> findByIdAndUserIdOrCompanyId(UUID id, UUID accountId);
 
     @Query("SELECT m FROM Match m WHERE m.user.accountId = :userId AND m.company.accountId = :companyId")
-    Optional<Match> findByUserIdAndCompanyId(UUID userId, UUID companyId);
+    List<Match> findByUserIdAndCompanyId(UUID userId, UUID companyId);
 }

@@ -8,7 +8,6 @@ import org.dhv.pbl5server.authentication_service.payload.response.AccountRespons
 import org.dhv.pbl5server.common_service.annotation.JsonSnakeCaseNaming;
 import org.dhv.pbl5server.constant_service.payload.ConstantResponse;
 
-import java.sql.Timestamp;
 import java.util.UUID;
 
 @Data
@@ -24,6 +23,6 @@ public class NotificationResponse {
     private boolean readStatus;
     private AccountResponse receiver;
     private AccountResponse sender;
-    private Timestamp createdAt;
-    private Timestamp updatedAt;
+    private String createdAt;
+    private String updatedAt;
 }

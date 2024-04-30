@@ -52,7 +52,7 @@ public class JwtServiceImpl implements JwtService {
         return CredentialResponse.builder()
             .accessToken(accessToken)
             .refreshToken(generateRefreshToken(accountId))
-            .expiredAt(new Timestamp(getJwtClaims(accessToken, TokenType.ACCESS_TOKEN).getExpiration().getTime()))
+            .expiredAt(new Timestamp(getJwtClaims(accessToken, TokenType.ACCESS_TOKEN).getExpiration().getTime()).toString())
             .type(CommonConstant.JWT_TYPE)
             .build();
 
@@ -75,7 +75,7 @@ public class JwtServiceImpl implements JwtService {
                 .type(CommonConstant.JWT_TYPE)
                 .refreshToken(account.getRefreshToken())
                 .expiredAt(
-                    new Timestamp(getJwtClaims(accessToken, TokenType.ACCESS_TOKEN).getExpiration().getTime()))
+                    new Timestamp(getJwtClaims(accessToken, TokenType.ACCESS_TOKEN).getExpiration().getTime()).toString())
                 .build();
         }
         throw new BadRequestException(ErrorMessageConstant.REFRESH_TOKEN_NOT_FOUND);

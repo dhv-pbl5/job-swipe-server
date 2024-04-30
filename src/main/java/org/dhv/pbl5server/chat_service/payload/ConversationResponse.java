@@ -8,7 +8,6 @@ import org.dhv.pbl5server.common_service.annotation.JsonSnakeCaseNaming;
 import org.dhv.pbl5server.profile_service.payload.response.CompanyProfileResponse;
 import org.dhv.pbl5server.profile_service.payload.response.UserProfileResponse;
 
-import java.sql.Timestamp;
 import java.util.UUID;
 
 @Data
@@ -22,6 +21,6 @@ public class ConversationResponse {
     private CompanyProfileResponse company;
     private MessageResponse lastMessage;
     private boolean activeStatus;
-    private Timestamp createdAt;
-    private Timestamp updatedAt;
+    private String createdAt;
+    private String updatedAt;
 }

@@ -2,6 +2,7 @@ package org.dhv.pbl5server.profile_service.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.dhv.pbl5server.authentication_service.entity.Account;
+import org.dhv.pbl5server.authentication_service.repository.AccountRepository;
 import org.dhv.pbl5server.common_service.constant.ErrorMessageConstant;
 import org.dhv.pbl5server.common_service.constant.RedisCacheConstant;
 import org.dhv.pbl5server.common_service.exception.BadRequestException;
@@ -20,9 +21,11 @@ import org.dhv.pbl5server.profile_service.repository.CompanyRepository;
 import org.dhv.pbl5server.profile_service.repository.LanguageRepository;
 import org.dhv.pbl5server.profile_service.service.ApplicationPositionService;
 import org.dhv.pbl5server.profile_service.service.CompanyService;
+import org.dhv.pbl5server.s3_service.service.S3Service;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.UUID;
@@ -33,9 +36,11 @@ public class CompanyServiceImpl implements CompanyService {
     private final CompanyRepository repository;
     private final CrudDbJsonArrayRepository<OtherDescription, UUID> otherRepository;
     private final LanguageRepository languageRepository;
+    private final AccountRepository accountRepository;
     private final RedisRepository redisRepository;
     private final ApplicationPositionService applicationPositionService;
     private final CompanyMapper mapper;
+    private final S3Service s3Service;
 
     @Override
     public CompanyProfileResponse getCompanyProfile(Account account) {
@@ -126,6 +131,26 @@ public class CompanyServiceImpl implements CompanyService {
             .orElseThrow(() -> new NotFoundObjectException(ErrorMessageConstant.COMPANY_PROFILE_NOT_FOUND));
         return otherRepository.findById(company.getOthers(), UUID.fromString(id))
             .orElseThrow(() -> new NotFoundObjectException(ErrorMessageConstant.OTHER_DESCRIPTION_NOT_FOUND));
+    }
+
+    @Override
+    public String updateAvatar(Account account, MultipartFile file) {
+        var url = CommonUtils.isEmptyOrNullString(account.getAvatar())
+            ? s3Service.uploadFile(file)
+            : s3Service.uploadFile(file, account.getAvatar());
+        account.setAvatar(url);
+        accountRepository.save(account);
+        // Save to redis
+        var companyProfile = getCompanyProfileFromRedis(account.getAccountId().toString());
+        if (companyProfile != null) {
+            companyProfile.setAvatar(url);
+            redisRepository.save(
+                RedisCacheConstant.PROFILE,
+                RedisCacheConstant.COMPANY_PROFILE_HASH(account.getAccountId().toString()),
+                companyProfile
+            );
+        }
+        return url;
     }
 
     @Override

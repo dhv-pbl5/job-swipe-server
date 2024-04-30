@@ -10,6 +10,8 @@ import org.yaml.snakeyaml.Yaml;
 
 import java.io.InputStream;
 import java.sql.Timestamp;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.regex.Pattern;
 
@@ -54,6 +56,8 @@ public class CommonUtils {
     public static String convertToJson(Object object) {
         try {
             ObjectMapper mapper = new ObjectMapper();
+            DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+            mapper.setDateFormat(df);
             return mapper.writeValueAsString(object);
         } catch (JsonProcessingException e) {
             return null;
@@ -63,6 +67,8 @@ public class CommonUtils {
     public static <T> T decodeJson(String json, Class<T> type) {
         try {
             ObjectMapper mapper = new ObjectMapper();
+            DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+            mapper.setDateFormat(df);
             return mapper.readValue(json, type);
         } catch (JsonProcessingException e) {
             return null;
@@ -72,6 +78,8 @@ public class CommonUtils {
     public static <T> T decodeJson(Map<String, Object> map, Class<T> type) {
         try {
             ObjectMapper mapper = new ObjectMapper();
+            DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+            mapper.setDateFormat(df);
             return mapper.convertValue(map, type);
         } catch (Exception e) {
             return null;
@@ -81,6 +89,8 @@ public class CommonUtils {
     public static <T> List<T> decodeJson(List<Map<String, Object>> array, Class<T> type) {
         try {
             ObjectMapper mapper = new ObjectMapper();
+            DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+            mapper.setDateFormat(df);
             return array.stream().map(e -> mapper.convertValue(e, type)).toList();
         } catch (Exception e) {
             return null;
@@ -90,6 +100,8 @@ public class CommonUtils {
     public static Map<String, Object> convertObjectToMap(Object object) {
         try {
             ObjectMapper mapper = new ObjectMapper();
+            DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+            mapper.setDateFormat(df);
             return mapper.convertValue(object, new TypeReference<Map<String, Object>>() {
             });
         } catch (Exception e) {
