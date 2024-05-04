@@ -26,6 +26,7 @@ import org.dhv.pbl5server.profile_service.service.LanguageService;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -70,49 +71,57 @@ public class LanguageServiceImpl implements LanguageService {
     }
 
     @Override
-    public LanguageResponse updateLanguage(Account account, LanguageRequest request) {
-        if (request.getId() == null)
-            throw new BadRequestException(ErrorMessageConstant.LANGUAGE_ID_REQUIRED);
-        var language = languageRepository.findByIdAndAccountId(request.getId(), account.getAccountId())
-            .orElseThrow(() -> new BadRequestException(ErrorMessageConstant.LANGUAGE_NOT_FOUND));
-        language = languageMapper.toLanguage(language, request);
+    public List<LanguageResponse> updateLanguage(Account account, List<LanguageRequest> requests) {
+        List<Language> languages = new ArrayList<>();
+        for (var request : requests) {
+            if (request.getId() == null)
+                throw new BadRequestException(ErrorMessageConstant.LANGUAGE_ID_REQUIRED);
+            var language = languageRepository.findByIdAndAccountId(request.getId(), account.getAccountId())
+                .orElseThrow(() -> new BadRequestException(ErrorMessageConstant.LANGUAGE_NOT_FOUND));
+            language = languageMapper.toLanguage(language, request);
+            languages.add(language);
+        }
         // Check constant type of language and set dependency
-        language = checkConstantType(account, List.of(language), false).get(0);
-        languageRepository.save(language);
-        var response = languageMapper.toLanguageResponse(language);
+        languages = checkConstantType(account, languages, false);
+        languageRepository.saveAll(languages);
+        var responses = languages.stream().map(languageMapper::toLanguageResponse).toList();
         // Save to redis
         var role = AbstractEnum.fromString(SystemRoleName.values(), account.getSystemRole().getConstantName());
         switch (role) {
             case USER:
                 var userProfile = getUserProfileFromRedis(account.getAccountId().toString());
                 if (userProfile != null) {
-                    var languages = userProfile.getLanguages();
-                    for (var i = 0; i < languages.size(); i++) {
-                        if (languages.get(i).getId().compareTo(response.getId()) == 0) {
-                            languages.set(i, response);
-                            break;
+                    var languagesInRedis = userProfile.getLanguages();
+                    for (var response : responses) {
+                        for (var i = 0; i < languagesInRedis.size(); i++) {
+                            if (languagesInRedis.get(i).getId().compareTo(response.getId()) == 0) {
+                                languagesInRedis.set(i, response);
+                                break;
+                            }
                         }
                     }
-                    userProfile.setLanguages(languages);
+                    userProfile.setLanguages(languagesInRedis);
                     saveUserProfileToRedis(userProfile);
                 }
                 break;
             case COMPANY:
                 var companyProfile = getCompanyProfileFromRedis(account.getAccountId().toString());
                 if (companyProfile != null) {
-                    var languages = companyProfile.getLanguages();
-                    for (var i = 0; i < languages.size(); i++) {
-                        if (languages.get(i).getId().compareTo(response.getId()) == 0) {
-                            languages.set(i, response);
-                            break;
+                    var languagesInRedis = companyProfile.getLanguages();
+                    for (var response : responses) {
+                        for (var i = 0; i < languagesInRedis.size(); i++) {
+                            if (languagesInRedis.get(i).getId().compareTo(response.getId()) == 0) {
+                                languagesInRedis.set(i, response);
+                                break;
+                            }
                         }
                     }
-                    companyProfile.setLanguages(languages);
+                    companyProfile.setLanguages(languagesInRedis);
                     saveCompanyProfileToRedis(companyProfile);
                 }
                 break;
         }
-        return response;
+        return responses;
     }
 
     @Override
@@ -198,7 +207,7 @@ public class LanguageServiceImpl implements LanguageService {
             var note = CommonUtils.decodeJson(CommonUtils.convertToJson(validateObj), LanguageConstantNote.class);
             // If values not null
             if (note != null && note.getValues() != null && !note.getValues().contains(scoreStr))
-                throw new BadRequestException(ErrorMessageConstant.LANGUAGE_SCORE_INVALID);
+                return false;
             else if (note != null && note.getValues() != null && note.getValues().contains(scoreStr))
                 return true;
             // If not required points, return true
@@ -208,15 +217,15 @@ public class LanguageServiceImpl implements LanguageService {
             var validator = note.getValidate();
             var score = Double.parseDouble(scoreStr);
             if (validator.getMin() != null && score < validator.getMin())
-                throw new BadRequestException(ErrorMessageConstant.LANGUAGE_SCORE_INVALID);
+                return false;
             if (validator.getMax() != null && score > validator.getMax())
-                throw new BadRequestException(ErrorMessageConstant.LANGUAGE_SCORE_INVALID);
+                return false;
             if (validator.getDivisible() != null && score % validator.getDivisible() != 0)
-                throw new BadRequestException(ErrorMessageConstant.LANGUAGE_SCORE_INVALID);
+                return false;
             return true;
         } catch (Exception e) {
             LogUtils.error("LANGUAGE SERVICE IMPL", e);
-            throw new BadRequestException(ErrorMessageConstant.LANGUAGE_SCORE_INVALID);
+            return false;
         }
     }
 

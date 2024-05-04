@@ -26,20 +26,21 @@ public class ApplicationPositionController {
     @PreAuthorizeSystemRoleWithoutAdmin
     @PostMapping("")
     public ResponseEntity<ApiDataResponse> insertApplicationPositions(
-        @RequestBody List<ApplicationPositionRequest> request,
+        @RequestBody List<ApplicationPositionRequest> requests,
         @CurrentAccount Account account
     ) {
-        listValidator.validate(request);
-        return ResponseEntity.ok(ApiDataResponse.successWithoutMeta(service.insertApplicationPositions(account, request)));
+        listValidator.validate(requests);
+        return ResponseEntity.ok(ApiDataResponse.successWithoutMeta(service.insertApplicationPositions(account, requests)));
     }
 
     @PreAuthorizeSystemRoleWithoutAdmin
     @PatchMapping("")
     public ResponseEntity<ApiDataResponse> updateApplicationPosition(
-        @Valid @RequestBody ApplicationPositionRequest request,
+        @Valid @RequestBody List<ApplicationPositionRequest> requests,
         @CurrentAccount Account account
     ) {
-        return ResponseEntity.ok(ApiDataResponse.successWithoutMeta(service.updateApplicationPosition(account, request)));
+        listValidator.validate(requests);
+        return ResponseEntity.ok(ApiDataResponse.successWithoutMeta(service.updateApplicationPosition(account, requests)));
     }
 
     @PreAuthorizeSystemRoleWithoutAdmin

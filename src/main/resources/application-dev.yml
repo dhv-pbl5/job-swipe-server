@@ -49,9 +49,9 @@ logging:
 
 application:
   jwt:
-    access-token-secret-key: YAOmGqqMFI2T2SJqIw7WV1h+V5miq9zS7uF8f/kBBqx55YqAwWhJTCLxLaxwKsRg
+    access-token-secret-key: 6hSmRTTEvThV9PGxjCTKRJI3OPsrP45iU9eZOkCmUZE=
     access-token-expiration-ms: 7200000
-    refresh-token-secret-key: DHVmGqqMFI2T2SJdIw7dV1h+V5miq9zSvuF6f/kBB1x55Y3AwWdTCLxLaxwKsRg
+    refresh-token-secret-key: lEhcgErgeknNv9/cp1Sh5RXTaB4RTVCCdAnPPewpSMM=
     refresh-token-expiration-ms: 2592000000
   s3:
     bucket-name: pbl5-bucket

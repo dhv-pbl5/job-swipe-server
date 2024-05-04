@@ -78,58 +78,66 @@ public class ApplicationPositionServiceImpl implements ApplicationPositionServic
     }
 
     @Override
-    public ApplicationPositionResponse updateApplicationPosition(Account account, ApplicationPositionRequest request) {
-        if (request.getId() == null)
-            throw new BadRequestException(ErrorMessageConstant.APPLICATION_POSITION_ID_REQUIRED);
-        var ap = repository.findByIdAndAccountId(account.getAccountId(), request.getId())
-            .orElseThrow(() -> new NotFoundObjectException(ErrorMessageConstant.APPLICATION_POSITION_NOT_FOUND));
-        ap = mapper.toApplicationPosition(ap, request);
+    public List<ApplicationPositionResponse> updateApplicationPosition(Account account, List<ApplicationPositionRequest> requests) {
+        List<ApplicationPosition> aps = new ArrayList<>();
+        for (var request : requests) {
+            if (request.getId() == null)
+                throw new BadRequestException(ErrorMessageConstant.APPLICATION_POSITION_ID_REQUIRED);
+            var ap = repository.findByIdAndAccountId(account.getAccountId(), request.getId())
+                .orElseThrow(() -> new NotFoundObjectException(ErrorMessageConstant.APPLICATION_POSITION_NOT_FOUND));
+            ap = mapper.toApplicationPosition(ap, request);
+            aps.add(ap);
+        }
         // Check constant type of apply_position and apply_skill and set dependency
-        ap = checkConstantType(account, List.of(ap), false).get(0);
-        repository.save(ap);
-        var response = mapper.toApplicationPositionResponse(repository.fetchAllDataApplicationSkillById(ap.getId()).orElseThrow());
+        aps = checkConstantType(account, aps, false);
+        repository.saveAll(aps);
+        var responses = aps.stream().map(e -> mapper.toApplicationPositionResponse(repository.fetchAllDataApplicationSkillById(e.getId()).orElseThrow())).toList();
         // Save to redis
         var role = AbstractEnum.fromString(SystemRoleName.values(), account.getSystemRole().getConstantName());
         switch (role) {
             case USER:
                 var userProfile = getUserProfileFromRedis(account.getAccountId().toString());
                 if (userProfile != null) {
-                    var aps = userProfile.getApplicationPositions();
-                    for (var i = 0; i < aps.size(); i++) {
-                        if (aps.get(i).getId().compareTo(response.getId()) == 0) {
-                            aps.set(i, response);
-                            break;
+                    var apsInRedis = userProfile.getApplicationPositions();
+                    for (var response : responses) {
+                        for (var i = 0; i < apsInRedis.size(); i++) {
+                            if (apsInRedis.get(i).getId().compareTo(response.getId()) == 0) {
+                                apsInRedis.set(i, response);
+                                break;
+                            }
                         }
                     }
-                    userProfile.setApplicationPositions(aps);
+                    userProfile.setApplicationPositions(apsInRedis);
                     saveUserProfileToRedis(userProfile);
                 }
                 break;
             case COMPANY:
                 var companyProfile = getCompanyProfileFromRedis(account.getAccountId().toString());
                 if (companyProfile != null) {
-                    var aps = companyProfile.getApplicationPositions();
-                    for (var i = 0; i < aps.size(); i++) {
-                        if (aps.get(i).getId().compareTo(response.getId()) == 0) {
-                            aps.set(i, response);
-                            break;
+                    var apsInRedis = companyProfile.getApplicationPositions();
+                    for (var response : responses) {
+                        for (var i = 0; i < apsInRedis.size(); i++) {
+                            if (apsInRedis.get(i).getId().compareTo(response.getId()) == 0) {
+                                apsInRedis.set(i, response);
+                                break;
+                            }
                         }
                     }
-                    companyProfile.setApplicationPositions(aps);
+                    companyProfile.setApplicationPositions(apsInRedis);
                     saveCompanyProfileToRedis(companyProfile);
                 }
                 break;
         }
-        return response;
+        return responses;
     }
 
     @Override
-    public ApplicationPositionResponse insertOrUpdateApplicationSkills(Account account, String applicationPositionId, List<ApplicationSkillRequest> request) {
+    public ApplicationPositionResponse insertOrUpdateApplicationSkills(Account account, String applicationPositionId, List<ApplicationSkillRequest> requests) {
         if (applicationPositionId == null)
             throw new BadRequestException(ErrorMessageConstant.APPLICATION_POSITION_ID_REQUIRED);
         var ap = repository.findByIdAndAccountId(account.getAccountId(), UUID.fromString(applicationPositionId))
             .orElseThrow(() -> new NotFoundObjectException(ErrorMessageConstant.APPLICATION_POSITION_NOT_FOUND));
-        ap = mapper.toApplicationPosition(ap, request);
+        ap = mapper.toApplicationPosition(ap, requests);
         // Check constant type of apply_position and apply_skill and set dependency
         ap = checkConstantType(account, List.of(ap), false).get(0);
         repository.save(ap);

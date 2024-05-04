@@ -11,7 +11,7 @@ import java.util.List;
 public interface LanguageService {
     List<LanguageResponse> insertLanguage(Account account, List<LanguageRequest> requests);
 
-    LanguageResponse updateLanguage(Account account, LanguageRequest request);
+    List<LanguageResponse> updateLanguage(Account account, List<LanguageRequest> requests);
 
     List<LanguageResponse> getLanguages(String accountId);
 
