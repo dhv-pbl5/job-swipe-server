@@ -15,9 +15,9 @@ public interface ApplicationPositionService {
 
     List<ApplicationPositionResponse> insertApplicationPositions(Account account, List<ApplicationPositionRequest> request);
 
-    ApplicationPositionResponse updateApplicationPosition(Account account, ApplicationPositionRequest request);
+    List<ApplicationPositionResponse> updateApplicationPosition(Account account, List<ApplicationPositionRequest> requests);
 
-    ApplicationPositionResponse insertOrUpdateApplicationSkills(Account account, String applicationPositionId, List<ApplicationSkillRequest> request);
+    ApplicationPositionResponse insertOrUpdateApplicationSkills(Account account, String applicationPositionId, List<ApplicationSkillRequest> requests);
 
     List<ApplicationPositionResponse> getApplicationPositions(String accountId);
 

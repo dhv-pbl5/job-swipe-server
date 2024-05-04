@@ -35,10 +35,11 @@ public class LanguageController {
     @PreAuthorizeSystemRoleWithoutAdmin
     @PatchMapping("")
     public ResponseEntity<ApiDataResponse> updateLanguage(
-        @Valid @RequestBody LanguageRequest request,
+        @Valid @RequestBody List<LanguageRequest> requests,
         @CurrentAccount Account account
     ) {
-        return ResponseEntity.ok(ApiDataResponse.successWithoutMeta(service.updateLanguage(account, request)));
+        listValidator.validate(requests);
+        return ResponseEntity.ok(ApiDataResponse.successWithoutMeta(service.updateLanguage(account, requests)));
     }
 
     @PreAuthorizeSystemRoleWithoutAdmin
