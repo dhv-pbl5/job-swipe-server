@@ -10,9 +10,9 @@ import org.dhv.pbl5server.common_service.annotation.JsonSnakeCaseNaming;
 @Builder
 @JsonSnakeCaseNaming
 public class LanguageValidate {
-    private Integer max;
-    private Integer min;
-    private Integer divisible;
+    private Double max;
+    private Double min;
+    private Double divisible;
     private Boolean requiredPoints;
 }
 

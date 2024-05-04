@@ -60,6 +60,7 @@ public class CommonUtils {
             mapper.setDateFormat(df);
             return mapper.writeValueAsString(object);
         } catch (JsonProcessingException e) {
+            LogUtils.error("convertToJson", e);
             return null;
         }
     }
@@ -71,6 +72,7 @@ public class CommonUtils {
             mapper.setDateFormat(df);
             return mapper.readValue(json, type);
         } catch (JsonProcessingException e) {
+            LogUtils.error("decodeJson", e);
             return null;
         }
     }
@@ -82,6 +84,7 @@ public class CommonUtils {
             mapper.setDateFormat(df);
             return mapper.convertValue(map, type);
         } catch (Exception e) {
+            LogUtils.error("decodeJson", e);
             return null;
         }
     }
@@ -93,6 +96,7 @@ public class CommonUtils {
             mapper.setDateFormat(df);
             return array.stream().map(e -> mapper.convertValue(e, type)).toList();
         } catch (Exception e) {
+            LogUtils.error("decodeJson", e);
             return null;
         }
     }
@@ -105,6 +109,7 @@ public class CommonUtils {
             return mapper.convertValue(object, new TypeReference<Map<String, Object>>() {
             });
         } catch (Exception e) {
+            LogUtils.error("convertObjectToMap", e);
             return null;
         }
     }

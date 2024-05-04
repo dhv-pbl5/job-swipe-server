@@ -206,7 +206,7 @@ public class LanguageServiceImpl implements LanguageService {
                 return true;
             // If required points, check score
             var validator = note.getValidate();
-            var score = Integer.parseInt(scoreStr);
+            var score = Double.parseDouble(scoreStr);
             if (validator.getMin() != null && score < validator.getMin())
                 throw new BadRequestException(ErrorMessageConstant.LANGUAGE_SCORE_INVALID);
             if (validator.getMax() != null && score > validator.getMax())
