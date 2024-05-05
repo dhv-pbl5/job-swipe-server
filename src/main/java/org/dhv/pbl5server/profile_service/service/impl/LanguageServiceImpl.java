@@ -11,6 +11,7 @@ import org.dhv.pbl5server.common_service.repository.RedisRepository;
 import org.dhv.pbl5server.common_service.utils.CommonUtils;
 import org.dhv.pbl5server.common_service.utils.LogUtils;
 import org.dhv.pbl5server.common_service.utils.PageUtils;
+import org.dhv.pbl5server.constant_service.entity.Constant;
 import org.dhv.pbl5server.constant_service.enums.ConstantTypePrefix;
 import org.dhv.pbl5server.constant_service.enums.SystemRoleName;
 import org.dhv.pbl5server.constant_service.model.LanguageConstantNote;
@@ -198,6 +199,12 @@ public class LanguageServiceImpl implements LanguageService {
             var constant = constantService.getConstantById(language.getLanguage().getConstantId());
             if (!checkValidScore(constant.getNote(), language.getLanguageScore()))
                 throw new BadRequestException(ErrorMessageConstant.LANGUAGE_SCORE_INVALID);
+            language.setLanguage(Constant.builder()
+                .constantId(constant.getConstantId())
+                .constantName(constant.getConstantName())
+                .constantType(constant.getConstantType())
+                .note(constant.getNote())
+                .build());
         }).toList();
     }
 

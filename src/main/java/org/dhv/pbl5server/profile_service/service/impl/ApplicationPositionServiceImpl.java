@@ -12,6 +12,7 @@ import org.dhv.pbl5server.common_service.model.ApiDataResponse;
 import org.dhv.pbl5server.common_service.repository.RedisRepository;
 import org.dhv.pbl5server.common_service.utils.CommonUtils;
 import org.dhv.pbl5server.common_service.utils.PageUtils;
+import org.dhv.pbl5server.constant_service.entity.Constant;
 import org.dhv.pbl5server.constant_service.enums.ConstantTypePrefix;
 import org.dhv.pbl5server.constant_service.enums.SystemRoleName;
 import org.dhv.pbl5server.constant_service.service.ConstantService;
@@ -330,24 +331,34 @@ public class ApplicationPositionServiceImpl implements ApplicationPositionServic
     }
 
     private List<ApplicationPosition> checkConstantType(Account account, List<ApplicationPosition> aps, boolean isInsert) {
-        List<UUID> applyPositionIds = new ArrayList<>();
-        List<UUID> applySkillIds = new ArrayList<>();
-        var result = aps.stream().peek(ap -> {
-            applyPositionIds.add(ap.getApplyPosition().getConstantId());
+        // Check all apply_position constant type
+        constantService.checkConstantWithType(aps.stream().map(e -> e.getApplyPosition().getConstantId()).toList(), ConstantTypePrefix.APPLY_POSITION);
+        return aps.stream().peek(ap -> {
             if (isInsert) ap.setId(null);
+            var positionConstant = constantService.getConstantById(ap.getApplyPosition().getConstantId());
+            ap.setApplyPosition(Constant.builder()
+                .constantId(positionConstant.getConstantId())
+                .constantType(positionConstant.getConstantType())
+                .constantName(positionConstant.getConstantName())
+                .note(positionConstant.getNote())
+                .build());
             ap.setAccount(account);
-            if (CommonUtils.isNotEmptyOrNullList(ap.getSkills()))
+            if (CommonUtils.isNotEmptyOrNullList(ap.getSkills())) {
+                // Check all apply_skill constant type
+                constantService.checkConstantWithType(ap.getSkills().stream().map(e -> e.getSkill().getConstantId()).toList(), ConstantTypePrefix.SKILL);
                 ap.setSkills(ap.getSkills().stream().peek(skill -> {
-                    applySkillIds.add(skill.getSkill().getConstantId());
                     if (isInsert) skill.setId(null);
+                    var skillConstant = constantService.getConstantById(skill.getSkill().getConstantId());
+                    ap.setApplyPosition(Constant.builder()
+                        .constantId(skillConstant.getConstantId())
+                        .constantType(skillConstant.getConstantType())
+                        .constantName(skillConstant.getConstantName())
+                        .note(skillConstant.getNote())
+                        .build());
                     skill.setApplicationPosition(ap);
                 }).toList());
+            }
         }).toList();
-        // Check all apply_position constant type
-        constantService.checkConstantWithType(applyPositionIds, ConstantTypePrefix.APPLY_POSITION);
-        // Check all apply_skill constant type
-        constantService.checkConstantWithType(applySkillIds, ConstantTypePrefix.SKILL);
-        return result;
     }
 
     private UserProfileResponse getUserProfileFromRedis(String accountId) {
