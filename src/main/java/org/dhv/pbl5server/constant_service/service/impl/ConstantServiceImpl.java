@@ -3,12 +3,14 @@ package org.dhv.pbl5server.constant_service.service.impl;
 import lombok.RequiredArgsConstructor;
 import org.dhv.pbl5server.common_service.constant.CommonConstant;
 import org.dhv.pbl5server.common_service.constant.ErrorMessageConstant;
+import org.dhv.pbl5server.common_service.enums.AbstractEnum;
 import org.dhv.pbl5server.common_service.exception.BadRequestException;
 import org.dhv.pbl5server.common_service.exception.NotFoundObjectException;
 import org.dhv.pbl5server.common_service.utils.CommonUtils;
 import org.dhv.pbl5server.constant_service.entity.Constant;
 import org.dhv.pbl5server.constant_service.enums.ConstantTypePrefix;
 import org.dhv.pbl5server.constant_service.mapper.ConstantMapper;
+import org.dhv.pbl5server.constant_service.payload.ConstantRequest;
 import org.dhv.pbl5server.constant_service.payload.ConstantResponse;
 import org.dhv.pbl5server.constant_service.repository.ConstantRepository;
 import org.dhv.pbl5server.constant_service.service.ConstantService;
@@ -87,6 +89,38 @@ public class ConstantServiceImpl implements ConstantService {
         return Arrays.stream(ConstantTypePrefix.values()).map(e ->
             Map.of("prefix", e.getEnumName().toLowerCase(), "value", e.getValue())
         ).toList();
+    }
+
+    @Override
+    public ConstantResponse createConstant(ConstantRequest request) {
+        var constant = Constant
+            .builder()
+            .constantType(getConstantType(request.getConstantPrefix()))
+            .constantName(request.getConstantName())
+            .note(request.getNote())
+            .build();
+        return mapper.toConstantResponse(repository.save(constant));
+    }
+
+    @Override
+    public void deleteConstant(List<String> ids) {
+        for (var id : ids) {
+            var constant = repository.findById(UUID.fromString(id)).orElseThrow(
+                () -> new NotFoundObjectException(ErrorMessageConstant.CONSTANT_NOT_FOUND)
+            );
+            repository.delete(constant);
+        }
+    }
+
+    private String getConstantType(String prefix) {
+        var type = AbstractEnum.fromString(ConstantTypePrefix.values(), prefix);
+        var constants = getConstantsByTypePrefix(type);
+        var lastConstant = constants.get(constants.size() - 1);
+        var typeInt = Integer.parseInt(lastConstant.getConstantType().substring(2));
+        typeInt++;
+        final int TYPE_DIGITS = CommonConstant.CONSTANT_LENGTH;
+        int missingDigits = TYPE_DIGITS - Integer.toString(typeInt).length() - prefix.length();
+        return prefix + "0".repeat(Math.max(0, missingDigits)) + typeInt;
     }
 
     private void throwErrorWithConstantType(ConstantTypePrefix type) {
