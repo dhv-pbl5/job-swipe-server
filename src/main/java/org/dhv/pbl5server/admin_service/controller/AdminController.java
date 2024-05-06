@@ -17,12 +17,12 @@ import org.dhv.pbl5server.common_service.model.ApiDataResponse;
 import org.dhv.pbl5server.common_service.utils.CommonUtils;
 import org.dhv.pbl5server.common_service.utils.PageUtils;
 import org.dhv.pbl5server.constant_service.enums.ConstantTypePrefix;
+import org.dhv.pbl5server.constant_service.payload.ConstantRequest;
 import org.dhv.pbl5server.constant_service.service.ConstantService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/v1/admin")
@@ -110,14 +110,14 @@ public class AdminController {
 
     @PreAuthorizeAdmin
     @PostMapping("/constant")
-    public ResponseEntity<ApiDataResponse> createConstant(@Valid @RequestBody Map<String, String> request) {
-        System.out.println(request);
-        return ResponseEntity.ok(ApiDataResponse.successWithoutMetaAndData());
+    public ResponseEntity<ApiDataResponse> createConstant(@Valid @RequestBody ConstantRequest request) {
+        return ResponseEntity.ok(ApiDataResponse.successWithoutMeta(constantService.createConstant(request)));
     }
 
     @PreAuthorizeAdmin
     @DeleteMapping("/constant")
     public ResponseEntity<ApiDataResponse> deleteConstant(@RequestBody List<String> ids) {
+        constantService.deleteConstant(ids);
         return ResponseEntity.ok(ApiDataResponse.successWithoutMetaAndData());
     }
 }

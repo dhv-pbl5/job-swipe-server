@@ -26,6 +26,20 @@ constant_selection_request:
       code: VAL_SEL0101
       message: Constant ID must be a valid UUID
 
+# ConstantRequest
+constant_request:
+  constant_prefix:
+    not_blank_string_validation:
+      code: VAL_CON0101
+      message: Constant prefix cannot be blank
+    pattern:
+      code: VAL_CON0102
+      message: Constant prefix must be in the format of \\d{2}
+  constant_name:
+    not_blank_string_validation:
+      code: VAL_CON0103
+      message: Constant name cannot be blank
+
 # UserRegisterRequest
 user_register_request:
   email:

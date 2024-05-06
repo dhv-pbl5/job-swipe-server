@@ -1,6 +1,7 @@
 package org.dhv.pbl5server.constant_service.service;
 
 import org.dhv.pbl5server.constant_service.enums.ConstantTypePrefix;
+import org.dhv.pbl5server.constant_service.payload.ConstantRequest;
 import org.dhv.pbl5server.constant_service.payload.ConstantResponse;
 
 import java.util.List;
@@ -24,4 +25,8 @@ public interface ConstantService {
     List<Object> getConstantTypes();
 
     List<Map<String, String>> getAllPrefixes();
+
+    ConstantResponse createConstant(ConstantRequest request);
+
+    void deleteConstant(List<String> ids);
 }
