@@ -19,6 +19,8 @@ import org.dhv.pbl5server.common_service.utils.PageUtils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/v1/admin")
 @RequiredArgsConstructor
@@ -43,15 +45,17 @@ public class AdminController {
     }
 
     @PreAuthorizeAdmin
-    @PostMapping("/deactivate-account/{accountId}")
-    public ResponseEntity<ApiDataResponse> deactivateAccount(@PathVariable("accountId") String accountId) {
-        return ResponseEntity.ok(ApiDataResponse.successWithoutMeta(service.deactivateAccount(accountId)));
+    @PostMapping("/deactivate-account")
+    public ResponseEntity<ApiDataResponse> deactivateAccount(@RequestBody List<String> accountIds) {
+        service.deactivateAccount(accountIds);
+        return ResponseEntity.ok(ApiDataResponse.successWithoutMetaAndData());
     }
 
     @PreAuthorizeAdmin
-    @PostMapping("/activate-account/{accountId}")
-    public ResponseEntity<ApiDataResponse> activateAccount(@PathVariable("accountId") String accountId) {
-        return ResponseEntity.ok(ApiDataResponse.successWithoutMeta(service.activateAccount(accountId)));
+    @PostMapping("/activate-account")
+    public ResponseEntity<ApiDataResponse> activateAccount(@RequestBody List<String> accountIds) {
+        service.activateAccount(accountIds);
+        return ResponseEntity.ok(ApiDataResponse.successWithoutMetaAndData());
     }
 
     @PreAuthorizeAdmin
