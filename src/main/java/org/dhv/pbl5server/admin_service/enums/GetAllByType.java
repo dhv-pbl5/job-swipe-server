@@ -7,6 +7,7 @@ import org.dhv.pbl5server.common_service.enums.AbstractEnum;
 @Getter
 @AllArgsConstructor
 public enum GetAllByType implements AbstractEnum<GetAllByType> {
+    CONSTANT("constant"),
     COMPANY("company"),
     USER("user"),
     APPLICATION_POSITION("application_position"),

@@ -4,6 +4,7 @@ import org.dhv.pbl5server.constant_service.enums.ConstantTypePrefix;
 import org.dhv.pbl5server.constant_service.payload.ConstantResponse;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 public interface ConstantService {
@@ -21,4 +22,6 @@ public interface ConstantService {
     ConstantResponse getConstantByType(String type);
 
     List<Object> getConstantTypes();
+
+    List<Map<String, String>> getAllPrefixes();
 }
