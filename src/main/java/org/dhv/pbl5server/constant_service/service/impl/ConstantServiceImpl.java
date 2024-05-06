@@ -14,7 +14,9 @@ import org.dhv.pbl5server.constant_service.repository.ConstantRepository;
 import org.dhv.pbl5server.constant_service.service.ConstantService;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @Service
@@ -78,6 +80,13 @@ public class ConstantServiceImpl implements ConstantService {
     @Override
     public List<Object> getConstantTypes() {
         return repository.getDistinctConstantType();
+    }
+
+    @Override
+    public List<Map<String, String>> getAllPrefixes() {
+        return Arrays.stream(ConstantTypePrefix.values()).map(e ->
+            Map.of("prefix", e.getEnumName().toLowerCase(), "value", e.getValue())
+        ).toList();
     }
 
     private void throwErrorWithConstantType(ConstantTypePrefix type) {

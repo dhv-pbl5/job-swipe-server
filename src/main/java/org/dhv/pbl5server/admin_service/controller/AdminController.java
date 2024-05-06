@@ -16,10 +16,13 @@ import org.dhv.pbl5server.common_service.exception.BadRequestException;
 import org.dhv.pbl5server.common_service.model.ApiDataResponse;
 import org.dhv.pbl5server.common_service.utils.CommonUtils;
 import org.dhv.pbl5server.common_service.utils.PageUtils;
+import org.dhv.pbl5server.constant_service.enums.ConstantTypePrefix;
+import org.dhv.pbl5server.constant_service.service.ConstantService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/v1/admin")
@@ -27,6 +30,7 @@ import java.util.List;
 public class AdminController {
     private final AdminService service;
     private final AuthService authService;
+    private final ConstantService constantService;
 
     @PostMapping("/initial-default-account")
     public ResponseEntity<ApiDataResponse> initialDefaultAccount() {
@@ -62,6 +66,7 @@ public class AdminController {
     @GetMapping("")
     public ResponseEntity<ApiDataResponse> getAll(
         @NotNull @RequestParam String type,
+        @Nullable @RequestParam(name = "constant_type_prefix") String constantTypePrefix,
         @Nullable @RequestParam("page") Integer page,
         @Nullable @RequestParam("paging") Integer paging,
         @Nullable @RequestParam("sort_by") String sortBy,
@@ -92,6 +97,27 @@ public class AdminController {
                     throw new BadRequestException(ErrorMessageConstant.ACCOUNT_ID_IS_REQUIRED);
                 yield ResponseEntity.ok(service.getAllUserEducation(accountId, pageRequest));
             }
+            case CONSTANT -> {
+                if (constantTypePrefix != null && constantTypePrefix.length() == 2) {
+                    var tmp = AbstractEnum.fromString(ConstantTypePrefix.values(), constantTypePrefix);
+                    yield ResponseEntity.ok(ApiDataResponse.successWithoutMeta(constantService.getConstantsByTypePrefix(tmp)));
+                } else {
+                    yield ResponseEntity.ok(ApiDataResponse.error(null));
+                }
+            }
         };
+    }
+
+    @PreAuthorizeAdmin
+    @PostMapping("/constant")
+    public ResponseEntity<ApiDataResponse> createConstant(@Valid @RequestBody Map<String, String> request) {
+        System.out.println(request);
+        return ResponseEntity.ok(ApiDataResponse.successWithoutMetaAndData());
+    }
+
+    @PreAuthorizeAdmin
+    @DeleteMapping("/constant")
+    public ResponseEntity<ApiDataResponse> deleteConstant(@RequestBody List<String> ids) {
+        return ResponseEntity.ok(ApiDataResponse.successWithoutMetaAndData());
     }
 }

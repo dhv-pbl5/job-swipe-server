@@ -50,4 +50,8 @@ public class ConstantController {
         return ResponseEntity.ok(ApiDataResponse.successWithoutMeta(service.getConstantById(UUID.fromString(constantId))));
     }
 
+    @GetMapping("/prefixes")
+    public ResponseEntity<ApiDataResponse> getAllPrefixes() {
+        return ResponseEntity.ok(ApiDataResponse.successWithoutMeta(service.getAllPrefixes()));
+    }
 }
