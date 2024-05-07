@@ -133,6 +133,8 @@ public class ConstantServiceImpl implements ConstantService {
             case NOTIFICATIONS ->
                 throw new BadRequestException(ErrorMessageConstant.CONSTANT_TYPE_MUST_BE_NOTIFICATION);
             case LANGUAGES -> throw new BadRequestException(ErrorMessageConstant.CONSTANT_TYPE_MUST_BE_LANGUAGE);
+            case SALARY_RANGES ->
+                throw new BadRequestException(ErrorMessageConstant.CONSTANT_TYPE_MUST_BE_SALARY_RANGE);
             default -> throw new BadRequestException(ErrorMessageConstant.CONSTANT_TYPE_MUST_BE_SYSTEM_ROLE);
         }
     }
