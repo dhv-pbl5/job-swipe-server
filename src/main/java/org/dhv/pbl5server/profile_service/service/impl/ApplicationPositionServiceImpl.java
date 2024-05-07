@@ -342,6 +342,13 @@ public class ApplicationPositionServiceImpl implements ApplicationPositionServic
                 .constantName(positionConstant.getConstantName())
                 .note(positionConstant.getNote())
                 .build());
+            var salaryConstant = constantService.getConstantById(ap.getSalaryRange().getConstantId());
+            ap.setSalaryRange(Constant.builder()
+                .constantId(salaryConstant.getConstantId())
+                .constantType(salaryConstant.getConstantType())
+                .constantName(salaryConstant.getConstantName())
+                .note(salaryConstant.getNote())
+                .build());
             ap.setAccount(account);
             if (CommonUtils.isNotEmptyOrNullList(ap.getSkills())) {
                 // Check all apply_skill constant type
@@ -349,7 +356,7 @@ public class ApplicationPositionServiceImpl implements ApplicationPositionServic
                 ap.setSkills(ap.getSkills().stream().peek(skill -> {
                     if (isInsert) skill.setId(null);
                     var skillConstant = constantService.getConstantById(skill.getSkill().getConstantId());
-                    ap.setApplyPosition(Constant.builder()
+                    skill.setSkill(Constant.builder()
                         .constantId(skillConstant.getConstantId())
                         .constantType(skillConstant.getConstantType())
                         .constantName(skillConstant.getConstantName())
