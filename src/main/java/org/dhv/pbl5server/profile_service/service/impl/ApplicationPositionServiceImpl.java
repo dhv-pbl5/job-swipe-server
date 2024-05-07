@@ -332,7 +332,7 @@ public class ApplicationPositionServiceImpl implements ApplicationPositionServic
 
     private List<ApplicationPosition> checkConstantType(Account account, List<ApplicationPosition> aps, boolean isInsert) {
         // Check all apply_position constant type
-        constantService.checkConstantWithType(aps.stream().map(e -> e.getApplyPosition().getConstantId()).toList(), ConstantTypePrefix.APPLY_POSITION);
+        constantService.checkConstantWithType(aps.stream().map(e -> e.getApplyPosition().getConstantId()).toList(), ConstantTypePrefix.APPLY_POSITIONS);
         return aps.stream().peek(ap -> {
             if (isInsert) ap.setId(null);
             var positionConstant = constantService.getConstantById(ap.getApplyPosition().getConstantId());
@@ -345,7 +345,7 @@ public class ApplicationPositionServiceImpl implements ApplicationPositionServic
             ap.setAccount(account);
             if (CommonUtils.isNotEmptyOrNullList(ap.getSkills())) {
                 // Check all apply_skill constant type
-                constantService.checkConstantWithType(ap.getSkills().stream().map(e -> e.getSkill().getConstantId()).toList(), ConstantTypePrefix.SKILL);
+                constantService.checkConstantWithType(ap.getSkills().stream().map(e -> e.getSkill().getConstantId()).toList(), ConstantTypePrefix.SKILLS);
                 ap.setSkills(ap.getSkills().stream().peek(skill -> {
                     if (isInsert) skill.setId(null);
                     var skillConstant = constantService.getConstantById(skill.getSkill().getConstantId());

@@ -38,21 +38,21 @@ public class CreateDefaultConstant implements CommandLineRunner {
      * Create system role
      */
     private void createSystemRole() {
-        if (!repository.findByConstantTypeStartsWith(ConstantTypePrefix.SYSTEM_ROLE.getValue()).isEmpty()) return;
+        if (!repository.findByConstantTypeStartsWith(ConstantTypePrefix.SYSTEM_ROLES.getValue()).isEmpty()) return;
         log.info("--------------------- Creating default system role ---------------------");
         // Admin role
         var adminRole = Constant.builder()
-            .constantType("%s100".formatted(ConstantTypePrefix.SYSTEM_ROLE.getValue()))
+            .constantType("%s100".formatted(ConstantTypePrefix.SYSTEM_ROLES.getValue()))
             .constantName(SystemRoleName.ADMIN.getValue())
             .build();
         // Company role
         var companyRole = Constant.builder()
-            .constantType("%s110".formatted(ConstantTypePrefix.SYSTEM_ROLE.getValue()))
+            .constantType("%s110".formatted(ConstantTypePrefix.SYSTEM_ROLES.getValue()))
             .constantName(SystemRoleName.COMPANY.getValue())
             .build();
         // User role
         var userRole = Constant.builder()
-            .constantType("%s120".formatted(ConstantTypePrefix.SYSTEM_ROLE.getValue()))
+            .constantType("%s120".formatted(ConstantTypePrefix.SYSTEM_ROLES.getValue()))
             .constantName(SystemRoleName.USER.getValue())
             .build();
         try {
@@ -67,7 +67,7 @@ public class CreateDefaultConstant implements CommandLineRunner {
      * Create apply position
      */
     private void createApplyPosition() {
-        if (!repository.findByConstantTypeStartsWith(ConstantTypePrefix.APPLY_POSITION.getValue()).isEmpty()) return;
+        if (!repository.findByConstantTypeStartsWith(ConstantTypePrefix.APPLY_POSITIONS.getValue()).isEmpty()) return;
         log.info("--------------------- Creating default apply position ---------------------");
         var positionName = List.of(
             "HR", "Intern", "Fresher", "Junior", "Senior",
@@ -82,7 +82,7 @@ public class CreateDefaultConstant implements CommandLineRunner {
                         randomList.add(randomNum);
                         return Constant
                             .builder()
-                            .constantType(ConstantTypePrefix.APPLY_POSITION.getValue() + randomNum)
+                            .constantType(ConstantTypePrefix.APPLY_POSITIONS.getValue() + randomNum)
                             .constantName(name)
                             .build();
                     }).toList()
@@ -97,7 +97,7 @@ public class CreateDefaultConstant implements CommandLineRunner {
      * Create skill
      */
     private void createSkill() {
-        if (!repository.findByConstantTypeStartsWith(ConstantTypePrefix.SKILL.getValue()).isEmpty()) return;
+        if (!repository.findByConstantTypeStartsWith(ConstantTypePrefix.SKILLS.getValue()).isEmpty()) return;
         log.info("--------------------- Creating default skill ---------------------");
         var skillName = List.of(
             "Java", "Python", "C++", "C#", "JavaScript",
@@ -113,7 +113,7 @@ public class CreateDefaultConstant implements CommandLineRunner {
                         randomList.add(randomNum);
                         return Constant
                             .builder()
-                            .constantType(ConstantTypePrefix.SKILL.getValue() + randomNum)
+                            .constantType(ConstantTypePrefix.SKILLS.getValue() + randomNum)
                             .constantName(name)
                             .build();
                     }).toList()
@@ -128,7 +128,7 @@ public class CreateDefaultConstant implements CommandLineRunner {
      * Create experience type
      */
     private void createExperienceType() {
-        if (!repository.findByConstantTypeStartsWith(ConstantTypePrefix.EXPERIENCE_TYPE.getValue()).isEmpty()) return;
+        if (!repository.findByConstantTypeStartsWith(ConstantTypePrefix.EXPERIENCE_TYPES.getValue()).isEmpty()) return;
         log.info("--------------------- Creating default experience type ---------------------");
         var experienceName = List.of(
             "Working", "Hobby", "Personal Project", "Open Source Project", "Research"
@@ -142,7 +142,7 @@ public class CreateDefaultConstant implements CommandLineRunner {
                         randomList.add(randomNum);
                         return Constant
                             .builder()
-                            .constantType(ConstantTypePrefix.EXPERIENCE_TYPE.getValue() + randomNum)
+                            .constantType(ConstantTypePrefix.EXPERIENCE_TYPES.getValue() + randomNum)
                             .constantName(name)
                             .build();
                     }).toList()
@@ -157,7 +157,7 @@ public class CreateDefaultConstant implements CommandLineRunner {
      * Create notification type
      */
     private void createNotificationType() {
-        if (!repository.findByConstantTypeStartsWith(ConstantTypePrefix.NOTIFICATION_TYPE.getValue()).isEmpty()) return;
+        if (!repository.findByConstantTypeStartsWith(ConstantTypePrefix.NOTIFICATIONS.getValue()).isEmpty()) return;
         log.info("--------------------- Creating default notification type ---------------------");
         try {
             List<Integer> randomList = new ArrayList<>();

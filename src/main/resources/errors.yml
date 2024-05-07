@@ -112,6 +112,9 @@ constant_type_must_be_notification:
 constant_type_must_be_language:
   code: ERR_CON0109
   message: Constant type must be a language!
+constant_type_must_be_salary_range:
+  code: ERR_CON0110
+  message: Constant type must be a salary range!
 
 
 # Register
