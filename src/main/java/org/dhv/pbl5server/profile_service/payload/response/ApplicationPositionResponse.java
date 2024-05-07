@@ -17,6 +17,7 @@ public class ApplicationPositionResponse {
     private UUID id;
     private Boolean status;
     private ConstantResponse applyPosition;
+    private ConstantResponse salaryRange;
     private List<ApplicationSkillResponse> skills;
     private String createdAt;
     private String updatedAt;

@@ -22,5 +22,8 @@ public class ApplicationPositionRequest {
     @NotNull
     @Valid
     private ConstantSelectionRequest applyPosition;
+    @NotNull
+    @Valid
+    private ConstantSelectionRequest salaryRange;
     private List<ApplicationSkillRequest> skills;
 }

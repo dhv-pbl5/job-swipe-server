@@ -295,12 +295,20 @@ application_position_request:
     uuid_validation:
       code: VAL_APP0103
       message: Apply position constant ID must be a valid UUID
-  skills:
+  salary_range:
     not_null:
       code: VAL_APP0104
+      message: Salary range cannot be null
+  salary_range.constant_id:
+    uuid_validation:
+      code: VAL_APP0105
+      message: Salary range constant ID must be a valid UUID
+  skills:
+    not_null:
+      code: VAL_APP0106
       message: Skills cannot be null
     not_empty:
-      code: VAL_APP0105
+      code: VAL_APP0107
       message: Skills cannot be empty
 
 # ApplicationSkillRequest
