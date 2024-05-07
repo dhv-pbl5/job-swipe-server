@@ -172,7 +172,7 @@ public class UserServiceImpl implements UserService {
         constantService.checkConstantWithType(request.stream()
                 .map(e -> UUID.fromString(e.getExperienceType().getConstantId()))
                 .toList(),
-            ConstantTypePrefix.EXPERIENCE_TYPE
+            ConstantTypePrefix.EXPERIENCE_TYPES
         );
         var user = repository.findById(account.getAccountId())
             .orElseThrow(() -> new NotFoundObjectException(ErrorMessageConstant.USER_NOT_FOUND));
@@ -260,7 +260,7 @@ public class UserServiceImpl implements UserService {
         constantService.checkConstantWithType(request.stream()
                 .map(e -> UUID.fromString(e.getExperienceType().getConstantId()))
                 .toList(),
-            ConstantTypePrefix.EXPERIENCE_TYPE
+            ConstantTypePrefix.EXPERIENCE_TYPES
         );
         for (var req : request) {
             if (req.getId() == null)

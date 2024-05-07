@@ -58,12 +58,12 @@ public class ConstantServiceImpl implements ConstantService {
     public Object getSystemRoles(String constantId) {
         // Get all system roles
         if (CommonUtils.isEmptyOrNullString(constantId))
-            return repository.findByConstantTypeStartsWith(CommonConstant.SYSTEM_ROLE_PREFIX);
+            return repository.findByConstantTypeStartsWith(ConstantTypePrefix.SYSTEM_ROLES.getValue());
         // Get role by id
         Constant constant = repository.findById(UUID.fromString(constantId)).orElseThrow(
             () -> new NotFoundObjectException(ErrorMessageConstant.CONSTANT_NOT_FOUND)
         );
-        if (constant == null || !constant.getConstantType().startsWith(CommonConstant.SYSTEM_ROLE_PREFIX))
+        if (constant == null || !constant.getConstantType().startsWith(ConstantTypePrefix.SYSTEM_ROLES.getValue()))
             throw new NotFoundObjectException(ErrorMessageConstant.SYSTEM_ROLE_NOT_FOUND);
         return constant;
     }
@@ -125,14 +125,14 @@ public class ConstantServiceImpl implements ConstantService {
 
     private void throwErrorWithConstantType(ConstantTypePrefix type) {
         switch (type) {
-            case APPLY_POSITION ->
+            case APPLY_POSITIONS ->
                 throw new BadRequestException(ErrorMessageConstant.CONSTANT_TYPE_MUST_BE_APPLY_POSITION);
-            case SKILL -> throw new BadRequestException(ErrorMessageConstant.CONSTANT_TYPE_MUST_BE_APPLY_SKILL);
-            case EXPERIENCE_TYPE ->
+            case SKILLS -> throw new BadRequestException(ErrorMessageConstant.CONSTANT_TYPE_MUST_BE_APPLY_SKILL);
+            case EXPERIENCE_TYPES ->
                 throw new BadRequestException(ErrorMessageConstant.CONSTANT_TYPE_MUST_BE_EXPERIENCE);
-            case NOTIFICATION_TYPE ->
+            case NOTIFICATIONS ->
                 throw new BadRequestException(ErrorMessageConstant.CONSTANT_TYPE_MUST_BE_NOTIFICATION);
-            case LANGUAGE -> throw new BadRequestException(ErrorMessageConstant.CONSTANT_TYPE_MUST_BE_LANGUAGE);
+            case LANGUAGES -> throw new BadRequestException(ErrorMessageConstant.CONSTANT_TYPE_MUST_BE_LANGUAGE);
             default -> throw new BadRequestException(ErrorMessageConstant.CONSTANT_TYPE_MUST_BE_SYSTEM_ROLE);
         }
     }

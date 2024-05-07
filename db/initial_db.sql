@@ -82,6 +82,7 @@ CREATE TABLE public.application_positions
     id uuid NOT NULL,
     account_id uuid NOT NULL,
     apply_position uuid NOT NULL,
+    salary_range uuid NOT NULL,
     status boolean NOT NULL DEFAULT true,
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone,
@@ -91,6 +92,10 @@ CREATE TABLE public.application_positions
         ON UPDATE NO ACTION
         ON DELETE CASCADE,
     FOREIGN KEY (apply_position)
+        REFERENCES public.constants (constant_id) MATCH FULL
+        ON UPDATE NO ACTION
+        ON DELETE CASCADE,
+    FOREIGN KEY (salary_range)
         REFERENCES public.constants (constant_id) MATCH FULL
         ON UPDATE NO ACTION
         ON DELETE CASCADE

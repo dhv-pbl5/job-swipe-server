@@ -27,6 +27,6 @@ public enum NotificationType implements AbstractEnum<NotificationType> {
     private final String enumName = this.name();
 
     public String constantType() {
-        return "%s%s".formatted(ConstantTypePrefix.NOTIFICATION_TYPE.getValue(), value);
+        return "%s%s".formatted(ConstantTypePrefix.NOTIFICATIONS.getValue(), value);
     }
 }

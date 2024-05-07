@@ -192,7 +192,7 @@ public class LanguageServiceImpl implements LanguageService {
 
     private List<Language> checkConstantType(Account account, List<Language> languages, boolean isInsert) {
         // Check all language constant type
-        constantService.checkConstantWithType(languages.stream().map(e -> e.getLanguage().getConstantId()).toList(), ConstantTypePrefix.LANGUAGE);
+        constantService.checkConstantWithType(languages.stream().map(e -> e.getLanguage().getConstantId()).toList(), ConstantTypePrefix.LANGUAGES);
         return languages.stream().peek(language -> {
             if (isInsert) language.setId(null);
             language.setAccount(account);
