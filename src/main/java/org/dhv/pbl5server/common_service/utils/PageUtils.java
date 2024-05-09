@@ -1,5 +1,6 @@
 package org.dhv.pbl5server.common_service.utils;
 
+import org.dhv.pbl5server.authentication_service.entity.Account;
 import org.dhv.pbl5server.common_service.enums.AbstractEnum;
 import org.dhv.pbl5server.common_service.enums.DataSortOrder;
 import org.dhv.pbl5server.common_service.model.PageInfo;
@@ -26,6 +27,10 @@ public class PageUtils {
         Sort sort = null;
         if (CommonUtils.isNotEmptyOrNullString(order) && CommonUtils.isNotEmptyOrNullString(sortBy)) {
             String sortField = CommonUtils.convertToCamelCase(sortBy);
+            // Check if sort field is in Account field
+            if (Account.getFieldNamesForSorting().contains(sortField))
+                sortField = "account." + sortField;
+            // sort order
             DataSortOrder dataSortOrder = AbstractEnum.fromString(DataSortOrder.values(), order);
             sort = switch (dataSortOrder) {
                 case DESC -> Sort.by(Sort.Direction.DESC, sortField);

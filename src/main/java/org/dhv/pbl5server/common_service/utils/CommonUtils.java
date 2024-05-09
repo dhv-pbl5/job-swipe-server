@@ -155,6 +155,18 @@ public class CommonUtils {
                     input.charAt(input.indexOf("_") + 1))));
     }
 
+    /**
+     * Convert capital case
+     */
+    public static String convertToCapitalCase(String input) {
+        if (isEmptyOrNullString(input)) return input;
+        String snakeCase = convertToSnakeCase(input);
+        String[] words = snakeCase.split("_");
+        return Arrays.stream(words).map(
+            word -> word.substring(0, 1).toUpperCase() + word.substring(1)
+        ).reduce((a, b) -> a + " " + b).orElse("");
+    }
+
     /*
      * List util
      */

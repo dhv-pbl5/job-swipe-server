@@ -87,7 +87,7 @@ public class ConstantServiceImpl implements ConstantService {
     @Override
     public List<Map<String, String>> getAllPrefixes() {
         return Arrays.stream(ConstantTypePrefix.values()).map(e ->
-            Map.of("prefix", e.getEnumName().toLowerCase(), "value", e.getValue())
+            Map.of("prefix", CommonUtils.convertToCapitalCase(e.getEnumName()), "value", e.getValue())
         ).toList();
     }
 

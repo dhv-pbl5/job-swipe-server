@@ -81,4 +81,15 @@ public class Account extends AbstractEntity implements UserDetails {
     public boolean isEnabled() {
         return deletedAt == null;
     }
+
+    public static List<String> getFieldNamesForSorting() {
+        return List.of(
+            "email",
+            "accountStatus",
+            "address",
+            "avatar",
+            "phoneNumber",
+            "deletedAt"
+        );
+    }
 }
