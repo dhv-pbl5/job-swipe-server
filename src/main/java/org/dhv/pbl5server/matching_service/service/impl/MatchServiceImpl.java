@@ -7,6 +7,7 @@ import org.dhv.pbl5server.chat_service.service.ChatService;
 import org.dhv.pbl5server.common_service.constant.ErrorMessageConstant;
 import org.dhv.pbl5server.common_service.enums.AbstractEnum;
 import org.dhv.pbl5server.common_service.exception.BadRequestException;
+import org.dhv.pbl5server.common_service.exception.ForbiddenException;
 import org.dhv.pbl5server.common_service.exception.InternalServerException;
 import org.dhv.pbl5server.common_service.exception.NotFoundObjectException;
 import org.dhv.pbl5server.common_service.model.ApiDataResponse;
@@ -22,6 +23,7 @@ import org.dhv.pbl5server.notification_service.entity.NotificationType;
 import org.dhv.pbl5server.notification_service.service.NotificationService;
 import org.dhv.pbl5server.profile_service.entity.Company;
 import org.dhv.pbl5server.profile_service.entity.User;
+import org.dhv.pbl5server.realtime_service.service.RealtimeService;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -34,7 +36,19 @@ public class MatchServiceImpl implements MatchService {
     private final AccountRepository accountRepository;
     private final NotificationService notificationService;
     private final ChatService chatService;
+    private final RealtimeService realtimeService;
     private final MatchMapper matchMapper;
+
+    @Override
+    public ApiDataResponse getMatches(String accountId, Pageable pageRequest) {
+        var page = repository.findAllByAccountId(UUID.fromString(accountId), pageRequest);
+        return ApiDataResponse.success(page
+                .getContent()
+                .stream()
+                .map(matchMapper::toMatchResponse)
+                .toList(),
+            PageUtils.makePageInfo(page));
+    }
 
     @Override
     public ApiDataResponse getMatches(Account account, Pageable pageRequest) {
@@ -188,6 +202,34 @@ public class MatchServiceImpl implements MatchService {
         // Change conversation's active status
         chatService.changeConversationStatus(match.getUser(), match.getCompany(), false);
         return matchMapper.toMatchResponse(match);
+    }
+
+    @Override
+    public MatchResponse cancelMatch(Account account, String matchId) {
+        var role = AbstractEnum.fromString(SystemRoleName.values(), account.getSystemRole().getConstantName());
+        if (role != SystemRoleName.ADMIN)
+            throw new ForbiddenException(ErrorMessageConstant.FORBIDDEN);
+        var match = repository.findById(UUID.fromString(matchId))
+            .orElseThrow(() -> new NotFoundObjectException(ErrorMessageConstant.MATCH_NOT_FOUND));
+        if (!match.isCompanyMatched() && !match.isUserMatched()) {
+            throw new BadRequestException(ErrorMessageConstant.MATCH_ALREADY_CANCELLED);
+        }
+        match.setUserMatched(false);
+        match.setCompanyMatched(false);
+        repository.save(match);
+        var response = matchMapper.toMatchResponse(match);
+        // Realtime
+        realtimeService.sendToClientWithPrefix(
+            response.getUser().getAccountId().toString(),
+            NotificationType.ADMIN_CANCEL_MATCHING,
+            response
+        );
+        realtimeService.sendToClientWithPrefix(
+            response.getCompany().getAccountId().toString(),
+            NotificationType.ADMIN_CANCEL_MATCHING,
+            response
+        );
+        return response;
     }
 
     private Match acceptMatch(Account currentAccount, Match match, boolean isRequest) {

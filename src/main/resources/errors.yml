@@ -316,6 +316,9 @@ match_already_requested:
 match_already_rejected:
   code: ERR_MAT0112
   message: You have already rejected the match with this account!
+match_already_cancelled:
+  code: ERR_MAT0113
+  message: You have already cancelled the match with this account!
 
 # Language
 language_not_found:

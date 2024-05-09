@@ -175,6 +175,7 @@ public final class ErrorMessageConstant {
     public static final String MATCH_FEATURE_NOT_FOR_ADMIN = "match_feature_not_for_admin";
     public static final String MATCH_ALREADY_REQUESTED = "match_already_requested";
     public static final String MATCH_ALREADY_REJECTED = "match_already_rejected";
+    public static final String MATCH_ALREADY_CANCELLED = "match_already_cancelled";
 
     /*
        Language

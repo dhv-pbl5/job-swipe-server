@@ -205,6 +205,7 @@ CREATE TABLE public.matches
     user_matched boolean,
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone,
+    description text,
     PRIMARY KEY (id),
     FOREIGN KEY (company_id)
         REFERENCES public.companies (account_id) MATCH FULL
