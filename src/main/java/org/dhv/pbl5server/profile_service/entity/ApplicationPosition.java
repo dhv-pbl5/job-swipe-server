@@ -29,6 +29,7 @@ public class ApplicationPosition extends AbstractEntity {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "salary_range")
     private Constant salaryRange;
+    private String note;
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "applicationPosition")
     private List<ApplicationSkill> skills;
     @ManyToOne(fetch = FetchType.LAZY)
