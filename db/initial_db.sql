@@ -86,6 +86,7 @@ CREATE TABLE public.application_positions
     status boolean NOT NULL DEFAULT true,
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone,
+    note character varying(10000),
     PRIMARY KEY (id),
     FOREIGN KEY (account_id)
         REFERENCES public.accounts (account_id) MATCH FULL
@@ -204,6 +205,7 @@ CREATE TABLE public.matches
     user_matched boolean,
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone,
+    description text,
     PRIMARY KEY (id),
     FOREIGN KEY (company_id)
         REFERENCES public.companies (account_id) MATCH FULL

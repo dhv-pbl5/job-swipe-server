@@ -6,19 +6,21 @@ import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.dhv.pbl5server.admin_service.enums.GetAllByType;
 import org.dhv.pbl5server.admin_service.service.AdminService;
+import org.dhv.pbl5server.authentication_service.annotation.CurrentAccount;
 import org.dhv.pbl5server.authentication_service.annotation.PreAuthorizeAdmin;
+import org.dhv.pbl5server.authentication_service.entity.Account;
 import org.dhv.pbl5server.authentication_service.payload.request.LoginRequest;
 import org.dhv.pbl5server.authentication_service.payload.request.RefreshTokenRequest;
 import org.dhv.pbl5server.authentication_service.service.AuthService;
-import org.dhv.pbl5server.common_service.constant.ErrorMessageConstant;
 import org.dhv.pbl5server.common_service.enums.AbstractEnum;
-import org.dhv.pbl5server.common_service.exception.BadRequestException;
 import org.dhv.pbl5server.common_service.model.ApiDataResponse;
-import org.dhv.pbl5server.common_service.utils.CommonUtils;
 import org.dhv.pbl5server.common_service.utils.PageUtils;
 import org.dhv.pbl5server.constant_service.enums.ConstantTypePrefix;
 import org.dhv.pbl5server.constant_service.payload.ConstantRequest;
 import org.dhv.pbl5server.constant_service.service.ConstantService;
+import org.dhv.pbl5server.matching_service.service.MatchService;
+import org.dhv.pbl5server.profile_service.service.CompanyService;
+import org.dhv.pbl5server.profile_service.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,6 +33,10 @@ public class AdminController {
     private final AdminService service;
     private final AuthService authService;
     private final ConstantService constantService;
+    private final MatchService matchService;
+    private final UserService userService;
+    private final CompanyService companyService;
+
 
     @PostMapping("/initial-default-account")
     public ResponseEntity<ApiDataResponse> initialDefaultAccount() {
@@ -75,28 +81,8 @@ public class AdminController {
     ) {
         var pageRequest = PageUtils.makePageRequest(sortBy, order, page, paging);
         return switch (AbstractEnum.fromString(GetAllByType.values(), type)) {
-            case COMPANY -> ResponseEntity.ok(service.getAllCompany(pageRequest));
-            case USER -> ResponseEntity.ok(service.getAllUser(pageRequest));
-            case APPLICATION_POSITION -> {
-                if (CommonUtils.isEmptyOrNullString(accountId))
-                    throw new BadRequestException(ErrorMessageConstant.ACCOUNT_ID_IS_REQUIRED);
-                yield ResponseEntity.ok(service.getAllApplicationPosition(accountId, pageRequest));
-            }
-            case USER_EXPERIENCE -> {
-                if (CommonUtils.isEmptyOrNullString(accountId))
-                    throw new BadRequestException(ErrorMessageConstant.ACCOUNT_ID_IS_REQUIRED);
-                yield ResponseEntity.ok(service.getAllUserExperience(accountId, pageRequest));
-            }
-            case USER_AWARD -> {
-                if (CommonUtils.isEmptyOrNullString(accountId))
-                    throw new BadRequestException(ErrorMessageConstant.ACCOUNT_ID_IS_REQUIRED);
-                yield ResponseEntity.ok(service.getAllUserAward(accountId, pageRequest));
-            }
-            case USER_EDUCATION -> {
-                if (CommonUtils.isEmptyOrNullString(accountId))
-                    throw new BadRequestException(ErrorMessageConstant.ACCOUNT_ID_IS_REQUIRED);
-                yield ResponseEntity.ok(service.getAllUserEducation(accountId, pageRequest));
-            }
+            case COMPANY -> ResponseEntity.ok(companyService.getAllData(pageRequest));
+            case USER -> ResponseEntity.ok(userService.getAllData(pageRequest));
             case CONSTANT -> {
                 if (constantTypePrefix != null && constantTypePrefix.length() == 2) {
                     var tmp = AbstractEnum.fromString(ConstantTypePrefix.values(), constantTypePrefix);
@@ -106,6 +92,28 @@ public class AdminController {
                 }
             }
         };
+    }
+
+    @PreAuthorizeAdmin
+    @GetMapping("/matches")
+    public ResponseEntity<ApiDataResponse> getMatches(
+        @RequestParam("account_id") String accountId,
+        @Nullable @RequestParam("page") Integer page,
+        @Nullable @RequestParam("paging") Integer paging,
+        @Nullable @RequestParam("sort_by") String sortBy,
+        @Nullable @RequestParam("order") String order
+    ) {
+        var pageRequest = PageUtils.makePageRequest(sortBy, order, page, paging);
+        return ResponseEntity.ok(matchService.getMatches(accountId, pageRequest));
+    }
+
+    @PreAuthorizeAdmin
+    @PatchMapping("/matches")
+    public ResponseEntity<ApiDataResponse> cancelMatch(
+        @RequestParam("match_id") String matchId,
+        @CurrentAccount Account currentAccount
+    ) {
+        return ResponseEntity.ok(ApiDataResponse.successWithoutMeta(matchService.cancelMatch(currentAccount, matchId)));
     }
 
     @PreAuthorizeAdmin

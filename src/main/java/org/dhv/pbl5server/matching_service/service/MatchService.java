@@ -6,6 +6,7 @@ import org.dhv.pbl5server.matching_service.payload.MatchResponse;
 import org.springframework.data.domain.Pageable;
 
 public interface MatchService {
+    ApiDataResponse getMatches(String accountId, Pageable pageRequest);
 
     ApiDataResponse getMatches(Account account, Pageable pageRequest);
 
@@ -22,4 +23,6 @@ public interface MatchService {
     MatchResponse acceptMatch(Account account, String matchId);
 
     MatchResponse rejectMatch(Account account, String matchId);
+
+    MatchResponse cancelMatch(Account account, String matchId);
 }
