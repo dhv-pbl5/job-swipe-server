@@ -20,6 +20,7 @@ import java.util.List;
 // git commit -m "PBL-595 chat for user"
 // git commit -m "PBL-596 chat for company"
 // git commit -m "PBL-601 chat for user"
+// git commit -m "PBL-602 chat for company"
 
 @RestController
 @RequestMapping("/v1/chat")
