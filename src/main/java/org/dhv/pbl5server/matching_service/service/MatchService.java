@@ -9,6 +9,7 @@ import org.springframework.data.domain.Pageable;
 // git commit -m "PBL-594 realtime matching for company"
 // git commit -m "PBL-584 request matching for user"
 // git commit -m "PBL-586 accept matching for user"
+// git commit -m "PBL-587 accept matching for company"
 
 public interface MatchService {
     ApiDataResponse getMatches(String accountId, Pageable pageRequest);
