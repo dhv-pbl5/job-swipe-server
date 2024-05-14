@@ -1,5 +1,6 @@
-package org.dhv.pbl5server.common_service.model;
+// git commit -m "PBL-850 set up base"
 
+package org.dhv.pbl5server.common_service.model;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Builder;

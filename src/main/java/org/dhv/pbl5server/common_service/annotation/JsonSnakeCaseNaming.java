@@ -1,3 +1,5 @@
+// git commit -m "PBL-850 set up base"
+
 package org.dhv.pbl5server.common_service.annotation;
 
 import com.fasterxml.jackson.annotation.JacksonAnnotationsInside;
@@ -10,7 +12,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-@Target({ElementType.ANNOTATION_TYPE, ElementType.TYPE})
+@Target({ ElementType.ANNOTATION_TYPE, ElementType.TYPE })
 @Retention(RetentionPolicy.RUNTIME)
 @JacksonAnnotationsInside
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)

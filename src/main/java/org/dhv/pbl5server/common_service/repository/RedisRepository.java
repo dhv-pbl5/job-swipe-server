@@ -1,3 +1,5 @@
+// git commit -m "PBL-850 set up base"
+
 package org.dhv.pbl5server.common_service.repository;
 
 import org.springframework.data.repository.NoRepositoryBean;
@@ -6,9 +8,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-
 /**
- * This interface is used to define the methods that are used to interact with Redis.
+ * This interface is used to define the methods that are used to interact with
+ * Redis.
  */
 @NoRepositoryBean
 public interface RedisRepository {

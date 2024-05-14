@@ -1,3 +1,5 @@
+// git commit -m "PBL-850 set up base"
+
 package org.dhv.pbl5server.common_service.repository;
 
 import org.dhv.pbl5server.common_service.model.DbJsonArrayModel;
@@ -20,17 +22,13 @@ public interface CrudDbJsonArrayRepository<T extends DbJsonArrayModel<K>, K> {
 
     boolean existsById(List<T> data, K id);
 
-
     List<T> save(List<T> data, T object);
 
-
     List<T> saveAll(List<T> data, List<T> objects);
-
 
     List<T> deleteById(List<T> data, K id);
 
     List<T> deleteAllById(List<T> data, List<K> ids);
-
 
     Map<K, T> convertArrayToMap(List<T> data);
 }

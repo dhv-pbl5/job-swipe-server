@@ -1,3 +1,5 @@
+// git commit -m "PBL-850 set up base"
+
 package org.dhv.pbl5server.common_service.repository;
 
 import lombok.extern.log4j.Log4j2;
@@ -42,7 +44,8 @@ public class RedisRepositoryImpl implements RedisRepository {
     public void expire(String key, long timeToLiveInDay) {
         try {
             redisTemplate.expire(key, timeToLiveInDay, TimeUnit.DAYS);
-            log.info("%s Set expiration for key: %s in %s days".formatted(DEBUG_PREFIX, key, String.valueOf(timeToLiveInDay)));
+            log.info("%s Set expiration for key: %s in %s days".formatted(DEBUG_PREFIX, key,
+                    String.valueOf(timeToLiveInDay)));
         } catch (Exception e) {
             LogUtils.error(DEBUG_PREFIX, e);
         }
@@ -121,11 +124,11 @@ public class RedisRepositoryImpl implements RedisRepository {
         try {
             log.info("%s Find all values by key: %s hashKeyPrefix: %s".formatted(DEBUG_PREFIX, key, hashKeyPrefix));
             return hashOperations.entries(key)
-                .entrySet()
-                .stream()
-                .filter(entry -> entry.getKey().startsWith(hashKeyPrefix))
-                .map(Map.Entry::getValue)
-                .toList();
+                    .entrySet()
+                    .stream()
+                    .filter(entry -> entry.getKey().startsWith(hashKeyPrefix))
+                    .map(Map.Entry::getValue)
+                    .toList();
         } catch (Exception e) {
             LogUtils.error(DEBUG_PREFIX, e);
             return List.of();

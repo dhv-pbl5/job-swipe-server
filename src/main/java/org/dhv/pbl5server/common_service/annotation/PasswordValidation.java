@@ -1,3 +1,5 @@
+// git commit -m "PBL-850 set up base"
+
 package org.dhv.pbl5server.common_service.annotation;
 
 import jakarta.validation.Constraint;
@@ -23,7 +25,7 @@ import java.lang.annotation.Target;
  * -- 4. Contains at least one lower alpha char and one upper alpha char
  * -- 5. Does not contain space, tab, etc.
  */
-@Target({ElementType.FIELD, ElementType.PARAMETER})
+@Target({ ElementType.FIELD, ElementType.PARAMETER })
 @Retention(RetentionPolicy.RUNTIME)
 @Constraint(validatedBy = {})
 @NotBlank

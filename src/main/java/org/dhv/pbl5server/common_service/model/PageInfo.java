@@ -1,3 +1,5 @@
+// git commit -m "PBL-850 set up base"
+
 package org.dhv.pbl5server.common_service.model;
 
 import lombok.Builder;
@@ -20,10 +22,10 @@ public class PageInfo {
         this.currentPage = currentPage;
         this.nextPage = (currentPage >= totalPage) ? totalPage : currentPage + 1;
         this.previousPage = (currentPage <= 1)
-            ? currentPage
-            : (currentPage > totalPage)
-            ? totalPage
-            : currentPage - 1;
+                ? currentPage
+                : (currentPage > totalPage)
+                        ? totalPage
+                        : currentPage - 1;
         this.totalPage = totalPage;
         this.totalCount = totalCount;
     }

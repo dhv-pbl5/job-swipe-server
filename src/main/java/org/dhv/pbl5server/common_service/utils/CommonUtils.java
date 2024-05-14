@@ -1,3 +1,5 @@
+// git commit -m "PBL-850 set up base"
+
 package org.dhv.pbl5server.common_service.utils;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -27,7 +29,8 @@ public class CommonUtils {
 
     public static String encodeObjectBase64(Object object) {
         var json = convertToJson(object);
-        if (json == null) return null;
+        if (json == null)
+            return null;
         return encodeBase64(json);
     }
 
@@ -136,7 +139,8 @@ public class CommonUtils {
      * @return String type snake case
      */
     public static String convertToSnakeCase(String input) {
-        if (isEmptyOrNullString(input)) return input;
+        if (isEmptyOrNullString(input))
+            return input;
         return input.replaceAll("([^_A-Z])([A-Z])", "$1_$2").toLowerCase();
     }
 
@@ -147,24 +151,26 @@ public class CommonUtils {
      * @return String type camel case
      */
     public static String convertToCamelCase(String input) {
-        if (isEmptyOrNullString(input)) return input;
+        if (isEmptyOrNullString(input))
+            return input;
         return input.replaceAll(
-            "_([a-z])",
-            String.valueOf(
-                Character.toUpperCase(
-                    input.charAt(input.indexOf("_") + 1))));
+                "_([a-z])",
+                String.valueOf(
+                        Character.toUpperCase(
+                                input.charAt(input.indexOf("_") + 1))));
     }
 
     /**
      * Convert capital case
      */
     public static String convertToCapitalCase(String input) {
-        if (isEmptyOrNullString(input)) return input;
+        if (isEmptyOrNullString(input))
+            return input;
         String snakeCase = convertToSnakeCase(input);
         String[] words = snakeCase.split("_");
         return Arrays.stream(words).map(
-            word -> word.substring(0, 1).toUpperCase() + word.substring(1)
-        ).reduce((a, b) -> a + " " + b).orElse("");
+                word -> word.substring(0, 1).toUpperCase() + word.substring(1)).reduce((a, b) -> a + " " + b)
+                .orElse("");
     }
 
     /*

@@ -1,3 +1,5 @@
+// git commit -m "PBL-850 set up base"
+
 package org.dhv.pbl5server.common_service.utils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -66,7 +68,7 @@ public class ErrorUtils {
         Map<String, Object> fields = (Map<String, Object>) errors.get(resource);
         if (fields == null)
             new ErrorResponse(ErrorMessageConstant.INTERNAL_SERVER_ERROR_CODE,
-                String.format("Don't have resource: {%s} in validation.yml", resource));
+                    String.format("Don't have resource: {%s} in validation.yml", resource));
         Map<String, Object> objErrors = (Map<String, Object>) Objects.requireNonNull(fields).get(fieldName);
         Map<String, Object> objError = (Map<String, Object>) objErrors.get(error);
         if (objError == null)
@@ -83,7 +85,8 @@ public class ErrorUtils {
     }
 
     public static InvalidDataException getInvalidDataException(Set<ConstraintViolation<Object>> violations) {
-        if (violations.isEmpty()) return null;
+        if (violations.isEmpty())
+            return null;
         ConstraintViolation<Object> violation = violations.iterator().next();
         String fieldName = CommonUtils.convertToSnakeCase(violation.getPropertyPath().toString());
         String resource = CommonUtils.convertToSnakeCase(violation.getRootBeanClass().getSimpleName());

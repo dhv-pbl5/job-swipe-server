@@ -1,3 +1,5 @@
+// git commit -m "PBL-850 set up base"
+
 package org.dhv.pbl5server.common_service.enums;
 
 import org.dhv.pbl5server.common_service.exception.InternalServerException;
@@ -11,6 +13,7 @@ public interface AbstractEnum<T> {
         for (T v : values)
             if (v.getValue().equalsIgnoreCase(value))
                 return v;
-        throw new InternalServerException("Invalid enum value: %s - %s".formatted(value, values[0].getClass().getSimpleName()));
+        throw new InternalServerException(
+                "Invalid enum value: %s - %s".formatted(value, values[0].getClass().getSimpleName()));
     }
 }

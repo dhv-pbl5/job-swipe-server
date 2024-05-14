@@ -1,3 +1,5 @@
+// git commit -m "PBL-850 set up base"
+
 package org.dhv.pbl5server.common_service.config;
 
 import lombok.RequiredArgsConstructor;
@@ -46,9 +48,8 @@ public class RedisConfig {
             configuration.setPassword(env.getProperty("spring.data.redis.password"));
             configuration.setUsername(env.getProperty("spring.data.redis.username"));
             return new JedisConnectionFactory(
-                configuration,
-                getJedisClientConfiguration(true)
-            );
+                    configuration,
+                    getJedisClientConfiguration(true));
         }
         return new JedisConnectionFactory(configuration, getJedisClientConfiguration(false));
     }
@@ -75,7 +76,7 @@ public class RedisConfig {
         genericObjectPoolConfig.setMinIdle(minConnectionIdle);
         genericObjectPoolConfig.setMaxWait(Duration.ofSeconds(maxConnectionWait));
         return useSsl
-            ? builder.usePooling().poolConfig(genericObjectPoolConfig).and().useSsl().build()
-            : builder.usePooling().poolConfig(genericObjectPoolConfig).build();
+                ? builder.usePooling().poolConfig(genericObjectPoolConfig).and().useSsl().build()
+                : builder.usePooling().poolConfig(genericObjectPoolConfig).build();
     }
 }

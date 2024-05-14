@@ -1,3 +1,5 @@
+// git commit -m "PBL-850 set up base"
+
 package org.dhv.pbl5server.common_service.utils;
 
 import org.dhv.pbl5server.authentication_service.entity.Account;
@@ -10,7 +12,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
 public class PageUtils {
-
 
     /**
      * Handle make page request for query
@@ -45,19 +46,19 @@ public class PageUtils {
      */
     public static PageInfo makePageInfo(int currentPage, int paging, long totalCount) {
         return PageInfo.builder()
-            .currentPage(currentPage)
-            .totalPage((int) Math.ceil(totalCount % paging))
-            .totalCount(totalCount)
-            .build();
+                .currentPage(currentPage)
+                .totalPage((int) Math.ceil(totalCount % paging))
+                .totalCount(totalCount)
+                .build();
     }
 
     public static PageInfo makePageInfo(Page<?> page) {
         if (page.getTotalPages() != 0)
             return PageInfo.builder()
-                .currentPage(page.getNumber() + 1)
-                .totalPage(page.getTotalPages())
-                .totalCount(page.getTotalElements())
-                .build();
+                    .currentPage(page.getNumber() + 1)
+                    .totalPage(page.getTotalPages())
+                    .totalCount(page.getTotalElements())
+                    .build();
         return makePageInfo(page.getNumber() + 1, page.getSize(), page.getTotalElements());
     }
 

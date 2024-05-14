@@ -1,3 +1,5 @@
+// git commit -m "PBL-850 set up base"
+
 package org.dhv.pbl5server.common_service.annotation;
 
 import jakarta.validation.Constraint;
@@ -16,7 +18,7 @@ import java.lang.annotation.Target;
  * Validation constraint for a UUID in string format.
  * e.g. 26929514-237c-11ed-861d-0242ac120002
  */
-@Target({ElementType.FIELD, ElementType.PARAMETER})
+@Target({ ElementType.FIELD, ElementType.PARAMETER })
 @Retention(RetentionPolicy.RUNTIME)
 @Constraint(validatedBy = {})
 @NotNull

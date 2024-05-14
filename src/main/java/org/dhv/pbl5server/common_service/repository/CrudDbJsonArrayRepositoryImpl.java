@@ -1,3 +1,5 @@
+// git commit -m "PBL-850 set up base"
+
 package org.dhv.pbl5server.common_service.repository;
 
 import org.dhv.pbl5server.common_service.model.DbJsonArrayModel;
@@ -11,7 +13,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Repository
-public class CrudDbJsonArrayRepositoryImpl<T extends DbJsonArrayModel<K>, K> implements CrudDbJsonArrayRepository<T, K> {
+public class CrudDbJsonArrayRepositoryImpl<T extends DbJsonArrayModel<K>, K>
+        implements CrudDbJsonArrayRepository<T, K> {
     @Override
     public Optional<T> findById(List<T> data, K id) {
         var mapData = convertArrayToMap(data);
@@ -55,7 +58,6 @@ public class CrudDbJsonArrayRepositoryImpl<T extends DbJsonArrayModel<K>, K> imp
         return result;
     }
 
-
     @Override
     public List<T> deleteById(List<T> data, K id) {
         var mapData = convertArrayToMap(data);
@@ -73,13 +75,12 @@ public class CrudDbJsonArrayRepositoryImpl<T extends DbJsonArrayModel<K>, K> imp
         return result;
     }
 
-
     @Override
     public Map<K, T> convertArrayToMap(List<T> data) {
         if (data == null)
             return new HashMap<>();
         return data
-            .stream()
-            .collect(Collectors.toMap(DbJsonArrayModel::getId, e -> e));
+                .stream()
+                .collect(Collectors.toMap(DbJsonArrayModel::getId, e -> e));
     }
 }

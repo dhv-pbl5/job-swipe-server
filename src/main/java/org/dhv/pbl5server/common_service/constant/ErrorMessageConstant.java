@@ -1,3 +1,5 @@
+// git commit -m "PBL-850 set up base"
+
 package org.dhv.pbl5server.common_service.constant;
 
 public final class ErrorMessageConstant {
@@ -6,8 +8,8 @@ public final class ErrorMessageConstant {
     public static final String BAD_REQUEST_ERROR_CODE = "ERR_SER0102";
 
     /*
-        Common
-    */
+     * Common
+     */
     public static final String INTERNAL_SERVER_ERROR = "internal_server_error";
     public static final String PAGE_NOT_FOUND = "page_not_found";
     public static final String FORBIDDEN = "forbidden";
@@ -16,10 +18,9 @@ public final class ErrorMessageConstant {
     public static final String INVALID_UUID = "invalid_uuid";
     public static final String INVALID_ENUM = "invalid_enum";
 
-
     /*
-        Authentication
-    */
+     * Authentication
+     */
     public static final String INVALID_TOKEN = "invalid_token";
     public static final String EXPIRED_TOKEN = "expired_token";
     public static final String REVOKED_TOKEN = "revoked_token";
@@ -33,22 +34,22 @@ public final class ErrorMessageConstant {
     public static final String RESET_PASSWORD_CODE_EXPIRED = "reset_password_code_expired";
 
     /*
-        Permission
-    */
+     * Permission
+     */
     public static final String PERMISSION_NOT_FOUND = "permission_not_found";
     public static final String PERMISSION_IS_REQUIRE = "permission_is_require";
 
     /*
-        Account
-    */
+     * Account
+     */
     public static final String ACCOUNT_NOT_FOUND = "account_not_found";
     public static final String INCORRECT_EMAIL_OR_PASSWORD = "incorrect_email_or_password";
     public static final String ACCOUNT_IS_DISABLED = "account_is_disabled";
     public static final String ACCOUNT_ID_IS_REQUIRED = "account_id_is_required";
 
     /*
-        Constant
-    */
+     * Constant
+     */
     public static final String CONSTANT_NOT_FOUND = "constant_not_found";
     public static final String SYSTEM_ROLE_NOT_FOUND = "system_role_not_found";
     public static final String CONSTANT_TYPE_MUST_BE_NUMBER = "constant_type_must_be_number";
@@ -61,36 +62,36 @@ public final class ErrorMessageConstant {
     public static final String CONSTANT_TYPE_MUST_BE_SALARY_RANGE = "constant_type_must_be_salary_range";
 
     /*
-        Register
-    */
+     * Register
+     */
     public static final String EMAIL_ALREADY_EXISTS = "email_already_exists";
     public static final String ROLE_NOT_VALID = "role_not_valid";
 
     /*
-        Reset password
-    */
+     * Reset password
+     */
     public static final String NEW_PASSWORD_SAME_OLD_PASSWORD = "new_password_same_old_password";
     public static final String NEW_PASSWORD_CONFIRMATION_NOT_MATCH = "new_password_confirmation_not_match";
     public static final String CURRENT_PASSWORD_IS_INCORRECT = "current_password_is_incorrect";
 
     /*
-        Reset password
-    */
+     * Reset password
+     */
     public static final String UPLOAD_FILE_FAILED = "upload_file_failed";
     public static final String FILE_NOT_FOUND = "file_not_found";
     public static final String DELETE_FILE_FAILED = "delete_file_failed";
 
     /*
-        User
-    */
+     * User
+     */
     public static final String USER_NOT_FOUND = "user_not_found";
     public static final String BASIC_INFO_REQUEST_MUST_BE_OBJECT = "basic_info_request_must_be_object";
     public static final String BASIC_INFO_REQUEST_INVALID = "basic_info_request_invalid";
     public static final String COMPONENT_ID_IS_REQUIRED = "component_id_is_required";
 
     /*
-        Education
-    */
+     * Education
+     */
     public static final String EDUCATION_TIME_INVALID = "study_end_time_must_be_greater_than_start_time";
     public static final String EDUCATION_REQUEST_INVALID = "education_request_invalid";
     public static final String EDUCATION_REQUEST_MUST_BE_LIST = "education_request_must_be_list";
@@ -98,7 +99,7 @@ public final class ErrorMessageConstant {
     public static final String EDUCATION_ID_IS_REQUIRED = "education_id_is_required";
 
     /*
-       Award
+     * Award
      */
     public static final String AWARD_REQUEST_MUST_BE_LIST = "award_request_must_be_list";
     public static final String AWARD_REQUEST_INVALID = "award_request_invalid";
@@ -106,8 +107,8 @@ public final class ErrorMessageConstant {
     public static final String AWARD_ID_IS_REQUIRED = "award_id_is_required";
 
     /*
-       Experience
-    */
+     * Experience
+     */
     public static final String EXPERIENCE_REQUEST_MUST_BE_LIST = "experience_request_must_be_list";
     public static final String EXPERIENCE_REQUEST_INVALID = "experience_request_invalid";
     public static final String EXPERIENCE_TIME_INVALID = "experience_end_time_must_be_greater_than_start_time";
@@ -115,8 +116,8 @@ public final class ErrorMessageConstant {
     public static final String EXPERIENCE_ID_IS_REQUIRED = "experience_id_is_required";
 
     /*
-       Other Description
-    */
+     * Other Description
+     */
     public static final String OTHER_DESCRIPTION_REQUEST_MUST_BE_LIST = "other_description_request_must_be_list";
     public static final String OTHER_DESCRIPTION_REQUEST_INVALID = "other_description_request_invalid";
     public static final String OTHER_DESCRIPTION_NOT_FOUND = "other_description_not_found";
@@ -125,44 +126,44 @@ public final class ErrorMessageConstant {
     public static final String DELETE_IDS_REQUEST_HAVE_ONE_NOT_FOUND = "delete_ids_request_have_one_not_found";
 
     /*
-       Application Position
-    */
+     * Application Position
+     */
     public static final String APPLICATION_POSITION_NOT_FOUND = "application_position_not_found";
     public static final String APPLICATION_POSITION_ID_REQUIRED = "application_position_id_is_required";
 
     /*
-       Application Position
-    */
+     * Application Position
+     */
     public static final String APPLICATION_SKILL_NOT_FOUND = "application_skill_not_found";
     public static final String APPLICATION_SKILL_ID_REQUIRED = "application_skill_id_is_required";
 
     /*
-       Company profile
-    */
+     * Company profile
+     */
     public static final String COMPANY_PROFILE_NOT_FOUND = "company_profile_not_found";
 
     /*
-       Conversation
-    */
+     * Conversation
+     */
     public static final String CONVERSATION_NOT_FOUND = "conversation_not_found";
     public static final String REQUIRED_USER_AND_COMPANY = "user_and_company_are_required";
 
     /*
-       Message
-    */
+     * Message
+     */
     public static final String MESSAGE_NOT_FOUND = "message_not_found";
     public static final String MESSAGE_MUST_HAVE_CONTENT_OR_FILE = "message_must_have_content_or_file";
 
     /*
-       Notification
-    */
+     * Notification
+     */
     public static final String NOTIFICATION_NOT_FOUND = "notification_not_found";
     public static final String REQUIRED_SENDER_AND_RECEIVER = "required_sender_and_receiver";
     public static final String REQUIRED_NOTIFICATION_TYPE = "required_notification_type";
 
     /*
-       Match
-    */
+     * Match
+     */
     public static final String MATCH_NOT_FOUND = "match_not_found";
     public static final String MATCH_ID_INVALID = "match_id_is_invalid";
     public static final String REQUESTED_ACCOUNT_ID_INVALID = "requested_account_id_is_invalid";
@@ -178,12 +179,11 @@ public final class ErrorMessageConstant {
     public static final String MATCH_ALREADY_CANCELLED = "match_already_cancelled";
 
     /*
-       Language
-    */
+     * Language
+     */
     public static final String LANGUAGE_NOT_FOUND = "language_not_found";
     public static final String LANGUAGE_SCORE_INVALID = "language_score_invalid";
     public static final String LANGUAGE_ID_REQUIRED = "language_id_is_required";
-
 
     private ErrorMessageConstant() {
     }
