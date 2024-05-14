@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 // git commit -m "PBL-586 accept matching for user"
 // git commit -m "PBL-587 accept matching for company"
 // git commit -m "PBL-588 reject matching for user"
+// git commit -m "PBL-589 reject matching for company"
 
 @RestController
 @RequestMapping("/v1/matched-pairs")
