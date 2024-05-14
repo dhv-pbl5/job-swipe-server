@@ -17,6 +17,8 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
+// git commit -m "PBL-511 login for company and user"
+
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
@@ -30,17 +32,17 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-            .cors(AbstractHttpConfigurer::disable)
-            .csrf(AbstractHttpConfigurer::disable)
-            .securityMatcher(new AntPathRequestMatcher("/api/**"))
-            .authorizeHttpRequests(authorize -> authorize
-                .anyRequest()
-                .authenticated())
-            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-            .authenticationManager(authenticationManagerBean())
-            .authenticationProvider(authenticationProvider)
-            .addFilterBefore(jwtAuthFilterConfig, UsernamePasswordAuthenticationFilter.class)
-            .httpBasic(Customizer.withDefaults());
+                .cors(AbstractHttpConfigurer::disable)
+                .csrf(AbstractHttpConfigurer::disable)
+                .securityMatcher(new AntPathRequestMatcher("/api/**"))
+                .authorizeHttpRequests(authorize -> authorize
+                        .anyRequest()
+                        .authenticated())
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authenticationManager(authenticationManagerBean())
+                .authenticationProvider(authenticationProvider)
+                .addFilterBefore(jwtAuthFilterConfig, UsernamePasswordAuthenticationFilter.class)
+                .httpBasic(Customizer.withDefaults());
         return http.build();
     }
 

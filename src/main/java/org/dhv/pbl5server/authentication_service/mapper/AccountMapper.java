@@ -16,15 +16,14 @@ import org.mapstruct.Named;
 
 import java.util.List;
 
-@Mapper(
-    config = SpringMapStructConfig.class,
-    uses = {
+// git commit -m "PBL-511 login for company and user"
+
+@Mapper(config = SpringMapStructConfig.class, uses = {
         ConstantMapper.class,
         ApplicationPositionMapper.class,
         ApplicationSkillMapper.class,
         LanguageMapper.class
-    }
-)
+})
 public interface AccountMapper {
     public static final String NAMED_ToAccountResponse = "toAccountResponse";
 

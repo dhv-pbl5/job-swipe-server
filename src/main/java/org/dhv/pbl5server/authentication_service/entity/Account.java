@@ -18,6 +18,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
+// git commit -m "PBL-511 login for company and user"
 
 @Getter
 @Setter
@@ -84,12 +85,11 @@ public class Account extends AbstractEntity implements UserDetails {
 
     public static List<String> getFieldNamesForSorting() {
         return List.of(
-            "email",
-            "accountStatus",
-            "address",
-            "avatar",
-            "phoneNumber",
-            "deletedAt"
-        );
+                "email",
+                "accountStatus",
+                "address",
+                "avatar",
+                "phoneNumber",
+                "deletedAt");
     }
 }

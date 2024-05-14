@@ -28,6 +28,8 @@ import java.sql.Timestamp;
 import java.util.Date;
 import java.util.UUID;
 
+// git commit -m "PBL-511 login for company and user"
+
 @Service
 @RequiredArgsConstructor
 public class JwtServiceImpl implements JwtService {
@@ -39,22 +41,23 @@ public class JwtServiceImpl implements JwtService {
         Claims jwtClaims = getJwtClaims(token, TokenType.ACCESS_TOKEN);
         UUID accountId = UUID.fromString(jwtClaims.getSubject());
         if (redisRepository.findAllByHashKeyPrefix(
-            RedisCacheConstant.AUTH_KEY,
-            RedisCacheConstant.REVOKE_ACCESS_TOKEN_HASH(accountId.toString(), false)).contains(token)) {
+                RedisCacheConstant.AUTH_KEY,
+                RedisCacheConstant.REVOKE_ACCESS_TOKEN_HASH(accountId.toString(), false)).contains(token)) {
             throw new UnauthorizedException(ErrorMessageConstant.REVOKED_TOKEN);
         }
         return accountRepository.findById(accountId)
-            .orElseThrow(() -> new ForbiddenException(ErrorMessageConstant.FORBIDDEN));
+                .orElseThrow(() -> new ForbiddenException(ErrorMessageConstant.FORBIDDEN));
     }
 
     public CredentialResponse generateToken(String accountId) {
         String accessToken = generateAccessToken(accountId);
         return CredentialResponse.builder()
-            .accessToken(accessToken)
-            .refreshToken(generateRefreshToken(accountId))
-            .expiredAt(new Timestamp(getJwtClaims(accessToken, TokenType.ACCESS_TOKEN).getExpiration().getTime()).toString())
-            .type(CommonConstant.JWT_TYPE)
-            .build();
+                .accessToken(accessToken)
+                .refreshToken(generateRefreshToken(accountId))
+                .expiredAt(new Timestamp(getJwtClaims(accessToken, TokenType.ACCESS_TOKEN).getExpiration().getTime())
+                        .toString())
+                .type(CommonConstant.JWT_TYPE)
+                .build();
 
     }
 
@@ -62,7 +65,7 @@ public class JwtServiceImpl implements JwtService {
         Claims jwtClaims = getJwtClaims(refreshToken, TokenType.REFRESH_TOKEN);
         UUID accountId = UUID.fromString(jwtClaims.getSubject());
         Account account = accountRepository.findById(accountId)
-            .orElseThrow(() -> new ForbiddenException(ErrorMessageConstant.FORBIDDEN));
+                .orElseThrow(() -> new ForbiddenException(ErrorMessageConstant.FORBIDDEN));
         // Check if the user is an admin
         var role = AbstractEnum.fromString(SystemRoleName.values(), account.getSystemRole().getConstantName());
         if (isAdmin && role != SystemRoleName.ADMIN) {
@@ -71,32 +74,33 @@ public class JwtServiceImpl implements JwtService {
         if (account.getRefreshToken().equals(refreshToken)) {
             String accessToken = generateAccessToken(accountId.toString());
             return CredentialResponse.builder()
-                .accessToken(accessToken)
-                .type(CommonConstant.JWT_TYPE)
-                .refreshToken(account.getRefreshToken())
-                .expiredAt(
-                    new Timestamp(getJwtClaims(accessToken, TokenType.ACCESS_TOKEN).getExpiration().getTime()).toString())
-                .build();
+                    .accessToken(accessToken)
+                    .type(CommonConstant.JWT_TYPE)
+                    .refreshToken(account.getRefreshToken())
+                    .expiredAt(
+                            new Timestamp(getJwtClaims(accessToken, TokenType.ACCESS_TOKEN).getExpiration().getTime())
+                                    .toString())
+                    .build();
         }
         throw new BadRequestException(ErrorMessageConstant.REFRESH_TOKEN_NOT_FOUND);
     }
 
     private String generateAccessToken(String accountId) {
         return Jwts.builder()
-            .subject(accountId)
-            .issuedAt(new Date())
-            .expiration(new Date(System.currentTimeMillis() + jwtAppProperty.getAccessTokenExpirationMs()))
-            .signWith(getSignInKey(jwtAppProperty.getAccessTokenSecret()))
-            .compact();
+                .subject(accountId)
+                .issuedAt(new Date())
+                .expiration(new Date(System.currentTimeMillis() + jwtAppProperty.getAccessTokenExpirationMs()))
+                .signWith(getSignInKey(jwtAppProperty.getAccessTokenSecret()))
+                .compact();
     }
 
     private String generateRefreshToken(String accountId) {
         return Jwts.builder()
-            .subject(accountId)
-            .issuedAt(new Date())
-            .expiration(new Date(System.currentTimeMillis() + jwtAppProperty.getRefreshTokenExpirationMs()))
-            .signWith(getSignInKey(jwtAppProperty.getRefreshTokenSecret()))
-            .compact();
+                .subject(accountId)
+                .issuedAt(new Date())
+                .expiration(new Date(System.currentTimeMillis() + jwtAppProperty.getRefreshTokenExpirationMs()))
+                .signWith(getSignInKey(jwtAppProperty.getRefreshTokenSecret()))
+                .compact();
     }
 
     private Claims getJwtClaims(String token, TokenType tokenType) {
@@ -104,10 +108,10 @@ public class JwtServiceImpl implements JwtService {
             case ACCESS_TOKEN:
                 try {
                     return Jwts.parser()
-                        .verifyWith(getSignInKey(jwtAppProperty.getAccessTokenSecret()))
-                        .build()
-                        .parseSignedClaims(token)
-                        .getPayload();
+                            .verifyWith(getSignInKey(jwtAppProperty.getAccessTokenSecret()))
+                            .build()
+                            .parseSignedClaims(token)
+                            .getPayload();
                 } catch (ExpiredJwtException ex) {
                     throw new UnauthorizedException(ErrorMessageConstant.EXPIRED_TOKEN);
                 } catch (Exception ex) {
@@ -116,10 +120,10 @@ public class JwtServiceImpl implements JwtService {
             case REFRESH_TOKEN:
                 try {
                     return Jwts.parser()
-                        .verifyWith(getSignInKey(jwtAppProperty.getRefreshTokenSecret()))
-                        .build()
-                        .parseSignedClaims(token)
-                        .getPayload();
+                            .verifyWith(getSignInKey(jwtAppProperty.getRefreshTokenSecret()))
+                            .build()
+                            .parseSignedClaims(token)
+                            .getPayload();
                 } catch (ExpiredJwtException ex) {
                     throw new UnauthorizedException(ErrorMessageConstant.EXPIRED_REFRESH_TOKEN);
                 } catch (Exception ex) {

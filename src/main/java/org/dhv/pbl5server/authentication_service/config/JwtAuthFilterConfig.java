@@ -25,6 +25,8 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 import java.util.Objects;
 
+// git commit -m "PBL-511 login for company and user"
+
 @Component
 @RequiredArgsConstructor
 public class JwtAuthFilterConfig extends OncePerRequestFilter {
@@ -32,10 +34,9 @@ public class JwtAuthFilterConfig extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(
-        @Nonnull HttpServletRequest request,
-        @Nonnull HttpServletResponse response,
-        @Nonnull FilterChain filterChain
-    ) throws ServletException, IOException {
+            @Nonnull HttpServletRequest request,
+            @Nonnull HttpServletResponse response,
+            @Nonnull FilterChain filterChain) throws ServletException, IOException {
         try {
             final String authorizationHeader = request.getHeader("Authorization");
             if (authorizationHeader == null || !authorizationHeader.startsWith(CommonConstant.JWT_TYPE)) {
@@ -48,21 +49,23 @@ public class JwtAuthFilterConfig extends OncePerRequestFilter {
 
             // Set new authentication object to the SecurityContextHolder
             UserDetails userDetails = jwtService.getAccountFromToken(token);
-            UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userDetails, token, userDetails.getAuthorities());
+            UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
+                    userDetails, token, userDetails.getAuthorities());
             authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
             SecurityContextHolder.getContext().setAuthentication(authenticationToken);
 
             filterChain.doFilter(request, response);
         } catch (ForbiddenException | UnauthorizedException ex) {
             CommonUtils.logError(request.getMethod(), request.getRequestURL().toString(), ex.getMessage());
-            response.setStatus(ex instanceof UnauthorizedException ? HttpServletResponse.SC_UNAUTHORIZED : HttpServletResponse.SC_FORBIDDEN);
+            response.setStatus(ex instanceof UnauthorizedException ? HttpServletResponse.SC_UNAUTHORIZED
+                    : HttpServletResponse.SC_FORBIDDEN);
             response.setContentType("application/json");
             response.setCharacterEncoding("UTF-8");
             ErrorResponse error = ErrorUtils.getExceptionError(ex.getMessage());
             ApiDataResponse apiDataResponse = ApiDataResponse.error(error);
             response
-                .getWriter()
-                .write(Objects.requireNonNull(ErrorUtils.convertToJSONString(apiDataResponse)));
+                    .getWriter()
+                    .write(Objects.requireNonNull(ErrorUtils.convertToJSONString(apiDataResponse)));
         } catch (Exception ex) {
             CommonUtils.logError(request.getMethod(), request.getRequestURL().toString(), ex.getMessage());
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
@@ -71,8 +74,8 @@ public class JwtAuthFilterConfig extends OncePerRequestFilter {
             ErrorResponse error = new ErrorResponse(ErrorMessageConstant.INTERNAL_SERVER_ERROR, ex.getMessage());
             ApiDataResponse apiDataResponse = ApiDataResponse.error(error);
             response
-                .getWriter()
-                .write(Objects.requireNonNull(ErrorUtils.convertToJSONString(apiDataResponse)));
+                    .getWriter()
+                    .write(Objects.requireNonNull(ErrorUtils.convertToJSONString(apiDataResponse)));
         }
     }
 }

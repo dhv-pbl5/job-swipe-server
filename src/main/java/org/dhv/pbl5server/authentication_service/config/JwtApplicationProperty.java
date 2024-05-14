@@ -4,6 +4,8 @@ import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
+// git commit -m "PBL-511 login for company and user"
+
 @ConfigurationProperties(prefix = "application")
 @Getter
 public class JwtApplicationProperty {

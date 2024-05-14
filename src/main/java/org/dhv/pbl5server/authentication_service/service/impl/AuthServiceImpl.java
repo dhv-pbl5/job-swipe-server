@@ -37,6 +37,8 @@ import org.springframework.stereotype.Service;
 import java.util.Map;
 import java.util.UUID;
 
+// git commit -m "PBL-511 login for company and user"
+
 @RequiredArgsConstructor
 @Service
 @Slf4j
@@ -57,7 +59,8 @@ public class AuthServiceImpl implements AuthService {
     public CredentialResponse login(LoginRequest loginRequest, boolean isAdmin) {
         try {
             Authentication authentication = authenticationManager
-                .authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
+                    .authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getEmail(),
+                            loginRequest.getPassword()));
             SecurityContextHolder.getContext().setAuthentication(authentication);
             Account account = (Account) authentication.getPrincipal();
             // Check if the user is an admin
@@ -99,9 +102,8 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public AccountResponse getAccountById(String id) {
         return mapper.toAccountResponse(
-            repository.findById(UUID.fromString(id))
-                .orElseThrow(() -> new NotFoundObjectException(ErrorMessageConstant.ACCOUNT_NOT_FOUND))
-        );
+                repository.findById(UUID.fromString(id))
+                        .orElseThrow(() -> new NotFoundObjectException(ErrorMessageConstant.ACCOUNT_NOT_FOUND)));
     }
 
     @Override
@@ -109,10 +111,9 @@ public class AuthServiceImpl implements AuthService {
         currentAccount.setRefreshToken(null);
         repository.save(currentAccount);
         redisRepository.save(
-            RedisCacheConstant.AUTH_KEY,
-            RedisCacheConstant.REVOKE_ACCESS_TOKEN_HASH(currentAccount.getAccountId().toString(), true),
-            SecurityContextHolder.getContext().getAuthentication().getCredentials()
-        );
+                RedisCacheConstant.AUTH_KEY,
+                RedisCacheConstant.REVOKE_ACCESS_TOKEN_HASH(currentAccount.getAccountId().toString(), true),
+                SecurityContextHolder.getContext().getAuthentication().getCredentials());
         SecurityContextHolder.clearContext();
     }
 
@@ -126,12 +127,12 @@ public class AuthServiceImpl implements AuthService {
         account.setSystemRole(role);
         // Creating user
         User user = User.builder()
-            .accountId(account.getAccountId())
-            .dateOfBirth(request.getDateOfBirth())
-            .firstName(request.getFirstName())
-            .lastName(request.getLastName())
-            .gender(request.getGender())
-            .build();
+                .accountId(account.getAccountId())
+                .dateOfBirth(request.getDateOfBirth())
+                .firstName(request.getFirstName())
+                .lastName(request.getLastName())
+                .gender(request.getGender())
+                .build();
         userRepository.save(user);
         return mapper.toAccountResponse(account);
     }
@@ -146,11 +147,11 @@ public class AuthServiceImpl implements AuthService {
         account.setSystemRole(role);
         // Creating company
         Company company = Company.builder()
-            .accountId(account.getAccountId())
-            .companyName(request.getCompanyName())
-            .companyUrl(request.getCompanyUrl())
-            .establishedDate(request.getEstablishedDate())
-            .build();
+                .accountId(account.getAccountId())
+                .companyName(request.getCompanyName())
+                .companyUrl(request.getCompanyUrl())
+                .establishedDate(request.getEstablishedDate())
+                .build();
         companyRepository.save(company);
         return mapper.toAccountResponse(account);
     }
@@ -158,7 +159,7 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public void forgotPassword(ForgotPasswordRequest request) {
         Account account = repository.findByEmail(request.getEmail())
-            .orElseThrow(() -> new NotFoundObjectException(ErrorMessageConstant.ACCOUNT_NOT_FOUND));
+                .orElseThrow(() -> new NotFoundObjectException(ErrorMessageConstant.ACCOUNT_NOT_FOUND));
         // Check if the account is disabled or admin
         var role = AbstractEnum.fromString(SystemRoleName.values(), account.getSystemRole().getConstantName());
         if (role == SystemRoleName.ADMIN || !account.isEnabled())
@@ -166,15 +167,13 @@ public class AuthServiceImpl implements AuthService {
         // Generate reset password code
         String resetPasswordCode = CommonUtils.generate6DigitsOTP();
         Map<String, Object> resetPasswordCodeMap = Map.of(
-            "reset_password_code", resetPasswordCode,
-            "expiration_time", System.currentTimeMillis() + resetPasswordTokenExpirationTime
-        );
+                "reset_password_code", resetPasswordCode,
+                "expiration_time", System.currentTimeMillis() + resetPasswordTokenExpirationTime);
         // Save reset password code to redis
         redisRepository.save(
-            RedisCacheConstant.OTP_KEY,
-            RedisCacheConstant.FORGOT_PASSWORD_HASH(account.getAccountId().toString()),
-            resetPasswordCodeMap
-        );
+                RedisCacheConstant.OTP_KEY,
+                RedisCacheConstant.FORGOT_PASSWORD_HASH(account.getAccountId().toString()),
+                resetPasswordCodeMap);
         // Send email to user
         mailTrapService.sendForgotPasswordEmail(account.getEmail(), resetPasswordCode);
     }
@@ -183,16 +182,15 @@ public class AuthServiceImpl implements AuthService {
     public void resetPassword(ResetPasswordRequest request) {
         // Check email
         Account account = repository.findByEmail(request.getEmail())
-            .orElseThrow(() -> new NotFoundObjectException(ErrorMessageConstant.ACCOUNT_NOT_FOUND));
+                .orElseThrow(() -> new NotFoundObjectException(ErrorMessageConstant.ACCOUNT_NOT_FOUND));
         // Check if the account is disabled or admin
         var role = AbstractEnum.fromString(SystemRoleName.values(), account.getSystemRole().getConstantName());
         if (role == SystemRoleName.ADMIN || !account.isEnabled())
             throw new ForbiddenException(ErrorMessageConstant.FORBIDDEN);
         // Check reset password code
         var object = CommonUtils.decodeJson(redisRepository.findByHashKey(
-            RedisCacheConstant.OTP_KEY,
-            RedisCacheConstant.FORGOT_PASSWORD_HASH(account.getAccountId().toString())
-        ).toString(), Map.class);
+                RedisCacheConstant.OTP_KEY,
+                RedisCacheConstant.FORGOT_PASSWORD_HASH(account.getAccountId().toString())).toString(), Map.class);
         if (object == null || !request.getResetPasswordCode().equals(object.get("reset_password_code")))
             throw new BadRequestException(ErrorMessageConstant.RESET_PASSWORD_CODE_INVALID);
         if (System.currentTimeMillis() > (long) object.get("expiration_time"))
@@ -204,9 +202,8 @@ public class AuthServiceImpl implements AuthService {
         repository.save(account);
         // Remove reset password code from redis
         redisRepository.delete(
-            RedisCacheConstant.OTP_KEY,
-            RedisCacheConstant.FORGOT_PASSWORD_HASH(account.getAccountId().toString())
-        );
+                RedisCacheConstant.OTP_KEY,
+                RedisCacheConstant.FORGOT_PASSWORD_HASH(account.getAccountId().toString()));
     }
 
     @Override
@@ -229,8 +226,8 @@ public class AuthServiceImpl implements AuthService {
         // Check constant's id is not null
         if (CommonUtils.isEmptyOrNullString(roleId))
             throw new BadRequestException(ErrorMessageConstant.SYSTEM_ROLE_NOT_FOUND);
-        Constant role = constantRepository.findById(roleIdUUID).orElseThrow(() ->
-            new NotFoundObjectException(ErrorMessageConstant.SYSTEM_ROLE_NOT_FOUND));
+        Constant role = constantRepository.findById(roleIdUUID)
+                .orElseThrow(() -> new NotFoundObjectException(ErrorMessageConstant.SYSTEM_ROLE_NOT_FOUND));
         // Check constant is not system role
         if (!ConstantTypePrefix.isSystemRole(role.getConstantType()))
             throw new BadRequestException(ErrorMessageConstant.SYSTEM_ROLE_NOT_FOUND);

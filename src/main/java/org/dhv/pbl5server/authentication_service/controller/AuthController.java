@@ -12,6 +12,8 @@ import org.dhv.pbl5server.common_service.model.ApiDataResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+// git commit -m "PBL-511 login for company and user"
+
 @RestController
 @RequestMapping("/v1/auth")
 @RequiredArgsConstructor
@@ -25,7 +27,8 @@ public class AuthController {
 
     @PostMapping("/refresh-token")
     public ResponseEntity<ApiDataResponse> refreshToken(@Valid @RequestBody RefreshTokenRequest refreshTokenRequest) {
-        return ResponseEntity.ok(ApiDataResponse.successWithoutMeta(authService.refreshToken(refreshTokenRequest, false)));
+        return ResponseEntity
+                .ok(ApiDataResponse.successWithoutMeta(authService.refreshToken(refreshTokenRequest, false)));
     }
 
     @PreAuthorizeSystemRole
@@ -72,13 +75,10 @@ public class AuthController {
     @PreAuthorizeSystemRoleWithoutAdmin
     @PostMapping("/change-password")
     public ResponseEntity<ApiDataResponse> changePassword(
-        @Valid @RequestBody ChangePasswordRequest request,
-        @CurrentAccount Account currentAccount
-    ) {
+            @Valid @RequestBody ChangePasswordRequest request,
+            @CurrentAccount Account currentAccount) {
         authService.changePassword(request, currentAccount);
         return ResponseEntity.ok(ApiDataResponse.successWithoutMetaAndData());
     }
 
-
 }
-

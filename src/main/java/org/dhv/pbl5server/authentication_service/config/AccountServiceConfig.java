@@ -12,6 +12,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+// git commit -m "PBL-511 login for company and user"
+
 @Configuration
 @RequiredArgsConstructor
 public class AccountServiceConfig {
@@ -22,7 +24,7 @@ public class AccountServiceConfig {
         return email -> {
             if (email != null && !email.isBlank()) {
                 return repo.findByEmail(email)
-                    .orElseThrow(() -> new NotFoundObjectException(ErrorMessageConstant.ACCOUNT_NOT_FOUND));
+                        .orElseThrow(() -> new NotFoundObjectException(ErrorMessageConstant.ACCOUNT_NOT_FOUND));
             }
             throw new NotFoundObjectException(ErrorMessageConstant.ACCOUNT_NOT_FOUND);
         };
