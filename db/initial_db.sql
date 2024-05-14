@@ -1,3 +1,5 @@
+-- git commit -m "PBL-850 set up enviroment on render"
+
 CREATE TABLE public.constants
 (
     constant_id uuid NOT NULL,

@@ -1,3 +1,5 @@
+# git commit -m "PBL-850 set up enviroment on render"
+
 # Run database with docker-compose
 cd ../
 docker-compose up -d

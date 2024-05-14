@@ -1,4 +1,5 @@
-# git commit -m "PBL-850 set up base"
+# git commit -m "PBL-850 set up base"]
+# git commit -m "PBL-850 set up enviroment on render"
 
 services:
   postgres:
