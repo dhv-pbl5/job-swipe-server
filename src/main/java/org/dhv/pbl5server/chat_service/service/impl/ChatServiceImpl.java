@@ -40,6 +40,7 @@ import java.util.UUID;
 // git commit -m "PBL-601 chat for user"
 // git commit -m "PBL-602 chat for company"
 // git commit -m "PBL-603 upload file to s3"
+// git commit -m "PBL-604 upload file to s3"
 
 @Service
 @RequiredArgsConstructor
