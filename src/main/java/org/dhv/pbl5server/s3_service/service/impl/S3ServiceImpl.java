@@ -16,6 +16,8 @@ import software.amazon.awssdk.services.s3.S3Client;
 import java.net.URL;
 import java.util.List;
 
+// git commit -m "PBL-603 upload file to s3"
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -100,8 +102,8 @@ public class S3ServiceImpl implements S3Service {
 
     private String generateFileName(MultipartFile file) {
         var fileName = "%s-%s"
-            .formatted(CommonUtils.getCurrentTimestamp().toString(), file.getOriginalFilename())
-            .replaceAll(" ", "_");
+                .formatted(CommonUtils.getCurrentTimestamp().toString(), file.getOriginalFilename())
+                .replaceAll(" ", "_");
         LogUtils.info(S3_DEBUG_PREFIX, "Generated file name:", fileName);
         return fileName;
     }

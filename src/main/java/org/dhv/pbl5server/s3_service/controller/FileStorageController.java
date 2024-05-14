@@ -10,6 +10,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
+// git commit -m "PBL-603 upload file to s3"
+
 @RestController
 @RequestMapping("/v1/file-storage")
 @RequiredArgsConstructor

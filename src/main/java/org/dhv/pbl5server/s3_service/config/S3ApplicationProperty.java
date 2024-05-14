@@ -10,6 +10,8 @@ import software.amazon.awssdk.services.s3.model.*;
 
 import java.util.List;
 
+// git commit -m "PBL-603 upload file to s3"
+
 @Configuration
 @Getter
 public class S3ApplicationProperty {
@@ -18,45 +20,45 @@ public class S3ApplicationProperty {
 
     public GetObjectRequest getObjectRequest(String keyName) {
         return GetObjectRequest.builder()
-            .bucket(awsBucketName)
-            .key(keyName)
-            .build();
+                .bucket(awsBucketName)
+                .key(keyName)
+                .build();
     }
 
     public PutObjectRequest putObjectRequest(String keyName) {
         return PutObjectRequest.builder()
-            .bucket(awsBucketName)
-            .key(keyName)
-            .build();
+                .bucket(awsBucketName)
+                .key(keyName)
+                .build();
     }
 
     public DeleteObjectRequest deleteObjectRequest(String keyName) {
         return DeleteObjectRequest.builder()
-            .bucket(awsBucketName)
-            .key(keyName)
-            .build();
+                .bucket(awsBucketName)
+                .key(keyName)
+                .build();
     }
 
     public DeleteObjectsRequest deleteObjectsRequest(List<String> keyNames) {
         var keys = keyNames.stream().map(key -> ObjectIdentifier.builder().key(key).build()).toList();
         var del = Delete.builder().objects(keys).build();
         return DeleteObjectsRequest.builder()
-            .bucket(awsBucketName)
-            .delete(del)
-            .build();
+                .bucket(awsBucketName)
+                .delete(del)
+                .build();
     }
 
     public GetUrlRequest getUrlRequest(String keyName) {
         return GetUrlRequest.builder()
-            .bucket(awsBucketName)
-            .key(keyName)
-            .build();
+                .bucket(awsBucketName)
+                .key(keyName)
+                .build();
     }
 
     @Bean
     public S3Client s3Client() {
         return S3Client.builder()
-            .region(Region.AP_SOUTHEAST_1)
-            .build();
+                .region(Region.AP_SOUTHEAST_1)
+                .build();
     }
 }

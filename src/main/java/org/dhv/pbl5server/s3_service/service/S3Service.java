@@ -4,6 +4,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
+// git commit -m "PBL-603 upload file to s3"
+
 public interface S3Service {
     String uploadFile(MultipartFile file);
 
