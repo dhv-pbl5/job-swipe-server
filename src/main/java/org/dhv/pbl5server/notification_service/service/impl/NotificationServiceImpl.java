@@ -50,22 +50,22 @@ public class NotificationServiceImpl implements NotificationService {
                 .stream()
                 .map(notificationMapper::toNotificationResponse)
                 .toList(),
-            PageUtils.makePageInfo(page));
+                PageUtils.makePageInfo(page));
     }
 
     @Override
     public NotificationResponse getNotificationById(Account account, String notificationId) {
         var notification = notificationRepository
-            .findByIdAndReceiverId(UUID.fromString(notificationId), account.getAccountId())
-            .orElseThrow(() -> new NotFoundObjectException(ErrorMessageConstant.NOTIFICATION_NOT_FOUND));
+                .findByIdAndReceiverId(UUID.fromString(notificationId), account.getAccountId())
+                .orElseThrow(() -> new NotFoundObjectException(ErrorMessageConstant.NOTIFICATION_NOT_FOUND));
         return notificationMapper.toNotificationResponse(notification);
     }
 
     @Override
     public void markAsRead(Account account, String notificationId) {
         var notification = notificationRepository
-            .findByIdAndReceiverId(UUID.fromString(notificationId), account.getAccountId())
-            .orElseThrow(() -> new NotFoundObjectException(ErrorMessageConstant.NOTIFICATION_NOT_FOUND));
+                .findByIdAndReceiverId(UUID.fromString(notificationId), account.getAccountId())
+                .orElseThrow(() -> new NotFoundObjectException(ErrorMessageConstant.NOTIFICATION_NOT_FOUND));
         if (notification.isReadStatus())
             return;
         notification.setReadStatus(true);
@@ -75,9 +75,9 @@ public class NotificationServiceImpl implements NotificationService {
     @Override
     public void markAllAsRead(Account account) {
         var unreadNotifications = notificationRepository.findAllByReceiverIdAndReadStatus(account.getAccountId(), false)
-            .stream()
-            .peek(e -> e.setReadStatus(true))
-            .toList();
+                .stream()
+                .peek(e -> e.setReadStatus(true))
+                .toList();
         notificationRepository.saveAll(unreadNotifications);
     }
 
@@ -94,48 +94,51 @@ public class NotificationServiceImpl implements NotificationService {
             throw new BadRequestException(ErrorMessageConstant.REQUIRED_NOTIFICATION_TYPE);
         var constant = constantService.getConstantByType(type.constantType());
         var notification = Notification.builder()
-            .sender(sender)
-            .receiver(receiver)
-            .objectId(objectId)
-            .readStatus(false)
-            .content(getNotificationContent(constant.getConstantName(), sender, receiver))
-            .type(Constant.builder().constantId(constant.getConstantId()).build())
-            .build();
+                .sender(sender)
+                .receiver(receiver)
+                .objectId(objectId)
+                .readStatus(false)
+                .content(getNotificationContent(constant.getConstantName(), sender, receiver))
+                .type(Constant.builder().constantId(constant.getConstantId()).build())
+                .build();
         var savedNotification = notificationRepository.save(notification);
         var response = notificationMapper
-            .toNotificationResponse(notificationRepository.findById(savedNotification.getId()).orElseThrow());
+                .toNotificationResponse(notificationRepository.findById(savedNotification.getId()).orElseThrow());
         // Realtime: send notification to receiver
         realtimeService.sendToClientWithPrefix(
-            receiver.getAccountId().toString(),
-            type,
-            response);
+                receiver.getAccountId().toString(),
+                type,
+                response);
     }
 
     private String getNotificationContent(String notificationConstantContent, Account sender, Account receiver) {
         if (CommonUtils.isEmptyOrNullString(notificationConstantContent))
             return "";
         var senderRole = AbstractEnum.fromString(SystemRoleName.values(), sender.getSystemRole().getConstantName());
+        if (senderRole == SystemRoleName.ADMIN) {
+            return notificationConstantContent;
+        }
         // var receiverRole = AbstractEnum.fromString(SystemRoleName.values(),
         // receiver.getSystemRole().getConstantName());
         String senderName = "";
         String receiverName = "";
         if (senderRole == SystemRoleName.USER) {
             senderName = userRepository.findById(sender.getAccountId())
-                .orElseThrow(() -> new NotFoundObjectException(ErrorMessageConstant.USER_NOT_FOUND)).getFullName();
+                    .orElseThrow(() -> new NotFoundObjectException(ErrorMessageConstant.USER_NOT_FOUND)).getFullName();
             receiverName = companyRepository.findById(receiver.getAccountId())
-                .orElseThrow(() -> new NotFoundObjectException(ErrorMessageConstant.COMPANY_PROFILE_NOT_FOUND))
-                .getCompanyName();
+                    .orElseThrow(() -> new NotFoundObjectException(ErrorMessageConstant.COMPANY_PROFILE_NOT_FOUND))
+                    .getCompanyName();
         } else {
             senderName = companyRepository.findById(sender.getAccountId())
-                .orElseThrow(() -> new NotFoundObjectException(ErrorMessageConstant.COMPANY_PROFILE_NOT_FOUND))
-                .getCompanyName();
+                    .orElseThrow(() -> new NotFoundObjectException(ErrorMessageConstant.COMPANY_PROFILE_NOT_FOUND))
+                    .getCompanyName();
             receiverName = userRepository.findById(receiver.getAccountId())
-                .orElseThrow(() -> new NotFoundObjectException(ErrorMessageConstant.USER_NOT_FOUND)).getFullName();
+                    .orElseThrow(() -> new NotFoundObjectException(ErrorMessageConstant.USER_NOT_FOUND)).getFullName();
         }
         notificationConstantContent = notificationConstantContent.replace(CommonConstant.NOTIFICATION_SENDER_PATTERN,
-            senderName);
+                senderName);
         notificationConstantContent = notificationConstantContent
-            .replace(CommonConstant.NOTIFICATION_RECEIVER_PATTERN, receiverName);
+                .replace(CommonConstant.NOTIFICATION_RECEIVER_PATTERN, receiverName);
         return notificationConstantContent;
     }
 }

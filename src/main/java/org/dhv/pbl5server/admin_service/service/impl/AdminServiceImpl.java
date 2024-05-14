@@ -17,6 +17,8 @@ import org.dhv.pbl5server.constant_service.entity.Constant;
 import org.dhv.pbl5server.constant_service.enums.SystemRoleName;
 import org.dhv.pbl5server.constant_service.payload.ConstantSelectionRequest;
 import org.dhv.pbl5server.constant_service.service.ConstantService;
+import org.dhv.pbl5server.notification_service.entity.NotificationType;
+import org.dhv.pbl5server.notification_service.service.NotificationService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -30,31 +32,44 @@ public class AdminServiceImpl implements AdminService {
     private final ConstantService constantService;
     private final AuthService authService;
     private final PasswordEncoder passwordEncoder;
+    private final NotificationService notificationService;
 
     @Override
-    public void activateAccount(List<String> accountIds) {
+    public void activateAccount(Account adminAccount, List<String> accountIds) {
         for (var id : accountIds) {
             Account account = repository.findById(UUID.fromString(id))
-                .orElseThrow(() -> new NotFoundObjectException(ErrorMessageConstant.ACCOUNT_NOT_FOUND));
+                    .orElseThrow(() -> new NotFoundObjectException(ErrorMessageConstant.ACCOUNT_NOT_FOUND));
             if (account.getDeletedAt() == null)
                 throw new BadRequestException(ErrorMessageConstant.ACCOUNT_IS_ACTIVE);
             account.setDeletedAt(null);
             account.setUpdatedAt(CommonUtils.getCurrentTimestamp());
             repository.save(account);
+            // Realtime notification
+            notificationService.createNotification(
+                    UUID.fromString(id),
+                    adminAccount,
+                    account,
+                    NotificationType.ADMIN_ACTIVATE_ACCOUNT);
         }
 
     }
 
     @Override
-    public void deactivateAccount(List<String> accountIds) {
+    public void deactivateAccount(Account adminAccount, List<String> accountIds) {
         for (var id : accountIds) {
             Account account = repository.findById(UUID.fromString(id))
-                .orElseThrow(() -> new NotFoundObjectException(ErrorMessageConstant.ACCOUNT_NOT_FOUND));
+                    .orElseThrow(() -> new NotFoundObjectException(ErrorMessageConstant.ACCOUNT_NOT_FOUND));
             if (account.getDeletedAt() != null)
                 throw new BadRequestException(ErrorMessageConstant.ACCOUNT_IS_NOT_ACTIVE);
             account.setDeletedAt(CommonUtils.getCurrentTimestamp());
             account.setUpdatedAt(CommonUtils.getCurrentTimestamp());
             repository.save(account);
+            // Realtime notification
+            notificationService.createNotification(
+                    UUID.fromString(id),
+                    adminAccount,
+                    account,
+                    NotificationType.ADMIN_DEACTIVATE_ACCOUNT);
         }
     }
 
@@ -63,32 +78,32 @@ public class AdminServiceImpl implements AdminService {
     public void initialDefaultAccount() {
         // Admin account
         var adminAccount = Account.builder()
-            .email("admin@gmail.com")
-            .password(passwordEncoder.encode("123456Aa"))
-            .address("54 Nguyen Luong Bang, Hoa Khanh Bac, Lien Chieu, Da Nang")
-            .phoneNumber("0348219257")
-            .build();
+                .email("admin@gmail.com")
+                .password(passwordEncoder.encode("123456Aa"))
+                .address("54 Nguyen Luong Bang, Hoa Khanh Bac, Lien Chieu, Da Nang")
+                .phoneNumber("0348219257")
+                .build();
         // User account
         var userRegisterRequest = UserRegisterRequest.builder()
-            .email("user@gmail.com")
-            .password("123456Aa")
-            .address("54 Nguyen Luong Bang, Hoa Khanh Bac, Lien Chieu, Da Nang")
-            .phoneNumber("0348219257")
-            .dateOfBirth(CommonUtils.getCurrentTimestamp())
-            .lastName("Pham Thanh")
-            .firstName("Vinh")
-            .gender(true)
-            .build();
+                .email("user@gmail.com")
+                .password("123456Aa")
+                .address("54 Nguyen Luong Bang, Hoa Khanh Bac, Lien Chieu, Da Nang")
+                .phoneNumber("0348219257")
+                .dateOfBirth(CommonUtils.getCurrentTimestamp())
+                .lastName("Pham Thanh")
+                .firstName("Vinh")
+                .gender(true)
+                .build();
         // Company account
         var companyRegisterRequest = CompanyRegisterRequest.builder()
-            .email("company@gmail.com")
-            .password("123456Aa")
-            .address("54 Nguyen Luong Bang, Hoa Khanh Bac, Lien Chieu, Da Nang")
-            .phoneNumber("0348219257")
-            .companyName("DHV job swipe")
-            .companyUrl("https://github.com/dhv-pbl5")
-            .establishedDate(CommonUtils.getCurrentTimestamp())
-            .build();
+                .email("company@gmail.com")
+                .password("123456Aa")
+                .address("54 Nguyen Luong Bang, Hoa Khanh Bac, Lien Chieu, Da Nang")
+                .phoneNumber("0348219257")
+                .companyName("DHV job swipe")
+                .companyUrl("https://github.com/dhv-pbl5")
+                .establishedDate(CommonUtils.getCurrentTimestamp())
+                .build();
         for (var item : (List<Constant>) constantService.getSystemRoles(null)) {
             var role = AbstractEnum.fromString(SystemRoleName.values(), item.getConstantName());
             if (role == SystemRoleName.ADMIN)

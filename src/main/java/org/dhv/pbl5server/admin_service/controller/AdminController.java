@@ -37,7 +37,6 @@ public class AdminController {
     private final UserService userService;
     private final CompanyService companyService;
 
-
     @PostMapping("/initial-default-account")
     public ResponseEntity<ApiDataResponse> initialDefaultAccount() {
         service.initialDefaultAccount();
@@ -50,35 +49,38 @@ public class AdminController {
     }
 
     @PostMapping("/refresh-token")
-    public ResponseEntity<ApiDataResponse> refreshTokenAdmin(@Valid @RequestBody RefreshTokenRequest refreshTokenRequest) {
-        return ResponseEntity.ok(ApiDataResponse.successWithoutMeta(authService.refreshToken(refreshTokenRequest, true)));
+    public ResponseEntity<ApiDataResponse> refreshTokenAdmin(
+            @Valid @RequestBody RefreshTokenRequest refreshTokenRequest) {
+        return ResponseEntity
+                .ok(ApiDataResponse.successWithoutMeta(authService.refreshToken(refreshTokenRequest, true)));
     }
 
     @PreAuthorizeAdmin
     @PostMapping("/deactivate-account")
-    public ResponseEntity<ApiDataResponse> deactivateAccount(@RequestBody List<String> accountIds) {
-        service.deactivateAccount(accountIds);
+    public ResponseEntity<ApiDataResponse> deactivateAccount(@RequestBody List<String> accountIds,
+            @CurrentAccount Account currentAccount) {
+        service.deactivateAccount(currentAccount, accountIds);
         return ResponseEntity.ok(ApiDataResponse.successWithoutMetaAndData());
     }
 
     @PreAuthorizeAdmin
     @PostMapping("/activate-account")
-    public ResponseEntity<ApiDataResponse> activateAccount(@RequestBody List<String> accountIds) {
-        service.activateAccount(accountIds);
+    public ResponseEntity<ApiDataResponse> activateAccount(@RequestBody List<String> accountIds,
+            @CurrentAccount Account currentAccount) {
+        service.activateAccount(currentAccount, accountIds);
         return ResponseEntity.ok(ApiDataResponse.successWithoutMetaAndData());
     }
 
     @PreAuthorizeAdmin
     @GetMapping("")
     public ResponseEntity<ApiDataResponse> getAll(
-        @NotNull @RequestParam String type,
-        @Nullable @RequestParam(name = "constant_type_prefix") String constantTypePrefix,
-        @Nullable @RequestParam("page") Integer page,
-        @Nullable @RequestParam("paging") Integer paging,
-        @Nullable @RequestParam("sort_by") String sortBy,
-        @Nullable @RequestParam("order") String order,
-        @Nullable @RequestParam("account_id") String accountId
-    ) {
+            @NotNull @RequestParam String type,
+            @Nullable @RequestParam(name = "constant_type_prefix") String constantTypePrefix,
+            @Nullable @RequestParam("page") Integer page,
+            @Nullable @RequestParam("paging") Integer paging,
+            @Nullable @RequestParam("sort_by") String sortBy,
+            @Nullable @RequestParam("order") String order,
+            @Nullable @RequestParam("account_id") String accountId) {
         var pageRequest = PageUtils.makePageRequest(sortBy, order, page, paging);
         return switch (AbstractEnum.fromString(GetAllByType.values(), type)) {
             case COMPANY -> ResponseEntity.ok(companyService.getAllData(pageRequest));
@@ -86,7 +88,8 @@ public class AdminController {
             case CONSTANT -> {
                 if (constantTypePrefix != null && constantTypePrefix.length() == 2) {
                     var tmp = AbstractEnum.fromString(ConstantTypePrefix.values(), constantTypePrefix);
-                    yield ResponseEntity.ok(ApiDataResponse.successWithoutMeta(constantService.getConstantsByTypePrefix(tmp)));
+                    yield ResponseEntity
+                            .ok(ApiDataResponse.successWithoutMeta(constantService.getConstantsByTypePrefix(tmp)));
                 } else {
                     yield ResponseEntity.ok(ApiDataResponse.error(null));
                 }
@@ -97,12 +100,11 @@ public class AdminController {
     @PreAuthorizeAdmin
     @GetMapping("/matches")
     public ResponseEntity<ApiDataResponse> getMatches(
-        @RequestParam("account_id") String accountId,
-        @Nullable @RequestParam("page") Integer page,
-        @Nullable @RequestParam("paging") Integer paging,
-        @Nullable @RequestParam("sort_by") String sortBy,
-        @Nullable @RequestParam("order") String order
-    ) {
+            @RequestParam("account_id") String accountId,
+            @Nullable @RequestParam("page") Integer page,
+            @Nullable @RequestParam("paging") Integer paging,
+            @Nullable @RequestParam("sort_by") String sortBy,
+            @Nullable @RequestParam("order") String order) {
         var pageRequest = PageUtils.makePageRequest(sortBy, order, page, paging);
         return ResponseEntity.ok(matchService.getMatches(accountId, pageRequest));
     }
@@ -110,9 +112,8 @@ public class AdminController {
     @PreAuthorizeAdmin
     @PatchMapping("/matches")
     public ResponseEntity<ApiDataResponse> cancelMatch(
-        @RequestParam("match_id") String matchId,
-        @CurrentAccount Account currentAccount
-    ) {
+            @RequestParam("match_id") String matchId,
+            @CurrentAccount Account currentAccount) {
         return ResponseEntity.ok(ApiDataResponse.successWithoutMeta(matchService.cancelMatch(currentAccount, matchId)));
     }
 
