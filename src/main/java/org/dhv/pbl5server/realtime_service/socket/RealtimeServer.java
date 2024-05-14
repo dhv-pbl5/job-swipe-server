@@ -10,6 +10,8 @@ import java.net.Socket;
 import java.util.Hashtable;
 import java.util.Map;
 
+// git commit -m "PBL-593 config realtime"
+
 @Getter
 public class RealtimeServer implements Runnable {
     private final int port;

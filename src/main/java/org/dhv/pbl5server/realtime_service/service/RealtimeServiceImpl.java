@@ -8,6 +8,8 @@ import org.dhv.pbl5server.realtime_service.socket.AbstractClient;
 import org.dhv.pbl5server.realtime_service.socket.RealtimeServer;
 import org.springframework.stereotype.Service;
 
+// git commit -m "PBL-593 config realtime"
+
 @Service
 @RequiredArgsConstructor
 public class RealtimeServiceImpl implements RealtimeService {
@@ -23,7 +25,8 @@ public class RealtimeServiceImpl implements RealtimeService {
     @Override
     public void sendToAllClient(NotificationType type, Object object) {
         var json = CommonUtils.convertToJson(object);
-        if (json == null) return;
+        if (json == null)
+            return;
         var typeResponse = constantService.getConstantByType(type.constantType());
         server.getClients().forEach((ignore, value) -> value.send(typeResponse, json));
     }
@@ -41,7 +44,8 @@ public class RealtimeServiceImpl implements RealtimeService {
     public void sendToClientWithPrefix(String accountId, NotificationType type, Object object) {
         var json = CommonUtils.convertToJson(object);
         var client = getClientByPrefixId(accountId);
-        if (json == null || client == null) return;
+        if (json == null || client == null)
+            return;
         var typeResponse = constantService.getConstantByType(type.constantType());
         client.send(typeResponse, json);
     }
@@ -60,7 +64,8 @@ public class RealtimeServiceImpl implements RealtimeService {
 
     private AbstractClient getClientByPrefixId(String prefix) {
         for (var key : server.getClients().keySet())
-            if (key.startsWith(prefix)) return server.getClients().get(key);
+            if (key.startsWith(prefix))
+                return server.getClients().get(key);
         return null;
     }
 }

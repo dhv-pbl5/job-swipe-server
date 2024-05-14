@@ -24,6 +24,8 @@ import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 import java.util.concurrent.atomic.AtomicReference;
 
+// git commit -m "PBL-593 config realtime"
+
 @Getter
 @Setter
 public class RealtimeClient extends Thread implements AbstractClient {

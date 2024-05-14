@@ -5,6 +5,8 @@ import org.dhv.pbl5server.common_service.model.ApiDataResponse;
 import org.dhv.pbl5server.matching_service.payload.MatchResponse;
 import org.springframework.data.domain.Pageable;
 
+// git commit -m "PBL-593 realtime matching for user"
+
 public interface MatchService {
     ApiDataResponse getMatches(String accountId, Pageable pageRequest);
 

@@ -1,5 +1,7 @@
 package org.dhv.pbl5server.realtime_service.constants;
 
+// git commit -m "PBL-593 config realtime"
+
 public class RealtimeConstant {
 
     /*

@@ -4,6 +4,8 @@ import lombok.*;
 import org.dhv.pbl5server.common_service.constant.CommonConstant;
 import org.dhv.pbl5server.common_service.utils.CommonUtils;
 
+// git commit -m "PBL-593 config realtime"
+
 @Getter
 @Setter
 @Builder

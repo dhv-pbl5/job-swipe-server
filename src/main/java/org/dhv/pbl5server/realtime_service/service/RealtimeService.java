@@ -2,6 +2,8 @@ package org.dhv.pbl5server.realtime_service.service;
 
 import org.dhv.pbl5server.notification_service.entity.NotificationType;
 
+// git commit -m "PBL-593 config realtime"
+
 public interface RealtimeService {
     void sendToAllClient(NotificationType type, String message);
 

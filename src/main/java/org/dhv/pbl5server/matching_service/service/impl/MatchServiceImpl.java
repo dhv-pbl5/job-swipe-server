@@ -29,6 +29,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.UUID;
 
+// git commit -m "PBL-593 realtime matching for user"
+
 @Service
 @RequiredArgsConstructor
 public class MatchServiceImpl implements MatchService {
@@ -47,7 +49,7 @@ public class MatchServiceImpl implements MatchService {
                 .stream()
                 .map(matchMapper::toMatchResponse)
                 .toList(),
-            PageUtils.makePageInfo(page));
+                PageUtils.makePageInfo(page));
     }
 
     @Override
@@ -58,7 +60,7 @@ public class MatchServiceImpl implements MatchService {
                 .stream()
                 .map(matchMapper::toMatchResponse)
                 .toList(),
-            PageUtils.makePageInfo(page));
+                PageUtils.makePageInfo(page));
     }
 
     @Override
@@ -69,7 +71,7 @@ public class MatchServiceImpl implements MatchService {
                 .stream()
                 .map(matchMapper::toMatchResponse)
                 .toList(),
-            PageUtils.makePageInfo(page));
+                PageUtils.makePageInfo(page));
     }
 
     @Override
@@ -85,7 +87,7 @@ public class MatchServiceImpl implements MatchService {
                 .stream()
                 .map(matchMapper::toMatchResponse)
                 .toList(),
-            PageUtils.makePageInfo(page));
+                PageUtils.makePageInfo(page));
     }
 
     @Override
@@ -101,14 +103,14 @@ public class MatchServiceImpl implements MatchService {
                 .stream()
                 .map(matchMapper::toMatchResponse)
                 .toList(),
-            PageUtils.makePageInfo(page));
+                PageUtils.makePageInfo(page));
     }
 
     @Override
     public MatchResponse getMatchById(Account account, String matchingId) {
         var match = repository.findByIdAndUserIdOrCompanyId(UUID.fromString(matchingId), account.getAccountId())
-            .orElseThrow(
-                () -> new NotFoundObjectException(ErrorMessageConstant.MATCH_NOT_FOUND));
+                .orElseThrow(
+                        () -> new NotFoundObjectException(ErrorMessageConstant.MATCH_NOT_FOUND));
         return matchMapper.toMatchResponse(match);
     }
 
@@ -117,7 +119,7 @@ public class MatchServiceImpl implements MatchService {
         UUID requestedAccountUuid = UUID.fromString(requestedAccountId);
         // Get requested account
         var requestedAccount = accountRepository.findById(requestedAccountUuid)
-            .orElseThrow(() -> new NotFoundObjectException(ErrorMessageConstant.REQUESTED_ACCOUNT_NOT_FOUND));
+                .orElseThrow(() -> new NotFoundObjectException(ErrorMessageConstant.REQUESTED_ACCOUNT_NOT_FOUND));
         // Check if requested account have same role with current account
         if (account.getSystemRole().getConstantId() == requestedAccount.getSystemRole().getConstantId())
             throw new BadRequestException(ErrorMessageConstant.REQUESTED_ACCOUNT_SAME_ROLE);
@@ -138,7 +140,8 @@ public class MatchServiceImpl implements MatchService {
             userId = requestedAccountUuid;
             companyId = account.getAccountId();
             companyMatched = true;
-        } else throw new BadRequestException(ErrorMessageConstant.MATCH_FEATURE_NOT_FOR_ADMIN);
+        } else
+            throw new BadRequestException(ErrorMessageConstant.MATCH_FEATURE_NOT_FOR_ADMIN);
         // Check if match already exist --> accept match
         var existedMatches = repository.findByUserIdAndCompanyId(userId, companyId);
         if (CommonUtils.isNotEmptyOrNullList(existedMatches)) {
@@ -149,34 +152,33 @@ public class MatchServiceImpl implements MatchService {
         }
         // Create new match
         var match = repository.save(
-            Match.builder()
-                .matchedTime(CommonUtils.getCurrentTimestamp())
-                .userMatched(userMatched)
-                .companyMatched(companyMatched)
-                .user(User.builder().accountId(userId).build())
-                .company(Company.builder().accountId(companyId).build())
-                .build());
+                Match.builder()
+                        .matchedTime(CommonUtils.getCurrentTimestamp())
+                        .userMatched(userMatched)
+                        .companyMatched(companyMatched)
+                        .user(User.builder().accountId(userId).build())
+                        .company(Company.builder().accountId(companyId).build())
+                        .build());
         // Realtime notification
         notificationService.createNotification(
-            match.getId(),
-            account,
-            requestedAccount,
-            NotificationType.REQUEST_MATCHING
-        );
+                match.getId(),
+                account,
+                requestedAccount,
+                NotificationType.REQUEST_MATCHING);
         return matchMapper.toMatchResponse(repository.findById(match.getId()).orElseThrow());
     }
 
     @Override
     public MatchResponse acceptMatch(Account account, String matchId) {
         var match = repository.findByIdAndUserIdOrCompanyId(UUID.fromString(matchId), account.getAccountId())
-            .orElseThrow(() -> new NotFoundObjectException(ErrorMessageConstant.MATCH_NOT_FOUND));
+                .orElseThrow(() -> new NotFoundObjectException(ErrorMessageConstant.MATCH_NOT_FOUND));
         return matchMapper.toMatchResponse(acceptMatch(account, match, false));
     }
 
     @Override
     public MatchResponse rejectMatch(Account account, String matchId) {
         var match = repository.findByIdAndUserIdOrCompanyId(UUID.fromString(matchId), account.getAccountId())
-            .orElseThrow(() -> new NotFoundObjectException(ErrorMessageConstant.MATCH_NOT_FOUND));
+                .orElseThrow(() -> new NotFoundObjectException(ErrorMessageConstant.MATCH_NOT_FOUND));
         Account receiverAccount = null;
         var role = getRole(account);
         if (role == SystemRoleName.USER) {
@@ -189,14 +191,14 @@ public class MatchServiceImpl implements MatchService {
                 throw new BadRequestException(ErrorMessageConstant.MATCH_ALREADY_REJECTED);
             match.setCompanyMatched(false);
             receiverAccount = match.getUser().getAccount();
-        } else throw new BadRequestException(ErrorMessageConstant.MATCH_FEATURE_NOT_FOR_ADMIN);
+        } else
+            throw new BadRequestException(ErrorMessageConstant.MATCH_FEATURE_NOT_FOR_ADMIN);
         // Realtime
         notificationService.createNotification(
-            match.getId(),
-            account,
-            receiverAccount,
-            NotificationType.REJECT_MATCHING
-        );
+                match.getId(),
+                account,
+                receiverAccount,
+                NotificationType.REJECT_MATCHING);
 
         repository.save(match);
         // Change conversation's active status
@@ -210,7 +212,7 @@ public class MatchServiceImpl implements MatchService {
         if (role != SystemRoleName.ADMIN)
             throw new ForbiddenException(ErrorMessageConstant.FORBIDDEN);
         var match = repository.findById(UUID.fromString(matchId))
-            .orElseThrow(() -> new NotFoundObjectException(ErrorMessageConstant.MATCH_NOT_FOUND));
+                .orElseThrow(() -> new NotFoundObjectException(ErrorMessageConstant.MATCH_NOT_FOUND));
         if (!match.isCompanyMatched() && !match.isUserMatched()) {
             throw new BadRequestException(ErrorMessageConstant.MATCH_ALREADY_CANCELLED);
         }
@@ -220,15 +222,13 @@ public class MatchServiceImpl implements MatchService {
         var response = matchMapper.toMatchResponse(match);
         // Realtime
         realtimeService.sendToClientWithPrefix(
-            response.getUser().getAccountId().toString(),
-            NotificationType.ADMIN_CANCEL_MATCHING,
-            response
-        );
+                response.getUser().getAccountId().toString(),
+                NotificationType.ADMIN_CANCEL_MATCHING,
+                response);
         realtimeService.sendToClientWithPrefix(
-            response.getCompany().getAccountId().toString(),
-            NotificationType.ADMIN_CANCEL_MATCHING,
-            response
-        );
+                response.getCompany().getAccountId().toString(),
+                NotificationType.ADMIN_CANCEL_MATCHING,
+                response);
         return response;
     }
 
@@ -239,32 +239,35 @@ public class MatchServiceImpl implements MatchService {
         // Check if match is invalid
         if (match.isInvalidMatch()) {
             repository.delete(match); // Delete invalid match
-            throw new InternalServerException("Match's data is invalid: %s".formatted(CommonUtils.convertToJson(match)));
+            throw new InternalServerException(
+                    "Match's data is invalid: %s".formatted(CommonUtils.convertToJson(match)));
         }
         Account receiverAccount = null;
         var role = getRole(currentAccount);
         // Company accept user's request --> receiver is user
         if (match.isUserMatched() && role == SystemRoleName.COMPANY) {
-            if (isRequest) throw new BadRequestException(ErrorMessageConstant.MATCH_ALREADY_REQUESTED);
+            if (isRequest)
+                throw new BadRequestException(ErrorMessageConstant.MATCH_ALREADY_REQUESTED);
             match.setCompanyMatched(true);
             receiverAccount = match.getUser().getAccount();
         }
         // User accept company's request --> receiver is company
         else if (match.isCompanyMatched() && role == SystemRoleName.USER) {
-            if (isRequest) throw new BadRequestException(ErrorMessageConstant.MATCH_ALREADY_REQUESTED);
+            if (isRequest)
+                throw new BadRequestException(ErrorMessageConstant.MATCH_ALREADY_REQUESTED);
             match.setUserMatched(true);
             receiverAccount = match.getCompany().getAccount();
         }
         // Match accepted by yourself
-        else throw new BadRequestException(ErrorMessageConstant.MATCH_NOT_ACCEPTED_YOURSELF);
+        else
+            throw new BadRequestException(ErrorMessageConstant.MATCH_NOT_ACCEPTED_YOURSELF);
         var result = repository.save(match);
         // Realtime
         notificationService.createNotification(
-            match.getId(),
-            currentAccount,
-            receiverAccount,
-            NotificationType.MATCHING
-        );
+                match.getId(),
+                currentAccount,
+                receiverAccount,
+                NotificationType.MATCHING);
         // Create conversation
         chatService.createConversation(match.getUser(), match.getCompany());
         result.setUser(match.getUser());
