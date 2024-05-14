@@ -29,6 +29,7 @@ import java.util.UUID;
 
 // git commit -m "PBL-597 realtime conversation"
 // git commit -m "PBL-599 unread notification count"
+// git commit -m "PBL-600 unread notification count for company"
 
 @Service
 @RequiredArgsConstructor

@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 // git commit -m "PBL-597 realtime conversation"
 // git commit -m "PBL-599 unread notification count"
+// git commit -m "PBL-600 unread notification count for company"
 
 @RestController
 @RequestMapping("/v1/notifications")
