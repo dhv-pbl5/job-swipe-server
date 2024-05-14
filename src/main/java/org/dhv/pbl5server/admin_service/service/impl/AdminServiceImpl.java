@@ -23,6 +23,8 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.UUID;
 
+// git commit -m "PBL-510 login for admin"
+
 @Service
 @RequiredArgsConstructor
 public class AdminServiceImpl implements AdminService {
@@ -35,7 +37,7 @@ public class AdminServiceImpl implements AdminService {
     public void activateAccount(List<String> accountIds) {
         for (var id : accountIds) {
             Account account = repository.findById(UUID.fromString(id))
-                .orElseThrow(() -> new NotFoundObjectException(ErrorMessageConstant.ACCOUNT_NOT_FOUND));
+                    .orElseThrow(() -> new NotFoundObjectException(ErrorMessageConstant.ACCOUNT_NOT_FOUND));
             if (account.getDeletedAt() == null)
                 throw new BadRequestException(ErrorMessageConstant.ACCOUNT_IS_ACTIVE);
             account.setDeletedAt(null);
@@ -49,7 +51,7 @@ public class AdminServiceImpl implements AdminService {
     public void deactivateAccount(List<String> accountIds) {
         for (var id : accountIds) {
             Account account = repository.findById(UUID.fromString(id))
-                .orElseThrow(() -> new NotFoundObjectException(ErrorMessageConstant.ACCOUNT_NOT_FOUND));
+                    .orElseThrow(() -> new NotFoundObjectException(ErrorMessageConstant.ACCOUNT_NOT_FOUND));
             if (account.getDeletedAt() != null)
                 throw new BadRequestException(ErrorMessageConstant.ACCOUNT_IS_NOT_ACTIVE);
             account.setDeletedAt(CommonUtils.getCurrentTimestamp());
@@ -63,32 +65,32 @@ public class AdminServiceImpl implements AdminService {
     public void initialDefaultAccount() {
         // Admin account
         var adminAccount = Account.builder()
-            .email("admin@gmail.com")
-            .password(passwordEncoder.encode("123456Aa"))
-            .address("54 Nguyen Luong Bang, Hoa Khanh Bac, Lien Chieu, Da Nang")
-            .phoneNumber("0348219257")
-            .build();
+                .email("admin@gmail.com")
+                .password(passwordEncoder.encode("123456Aa"))
+                .address("54 Nguyen Luong Bang, Hoa Khanh Bac, Lien Chieu, Da Nang")
+                .phoneNumber("0348219257")
+                .build();
         // User account
         var userRegisterRequest = UserRegisterRequest.builder()
-            .email("user@gmail.com")
-            .password("123456Aa")
-            .address("54 Nguyen Luong Bang, Hoa Khanh Bac, Lien Chieu, Da Nang")
-            .phoneNumber("0348219257")
-            .dateOfBirth(CommonUtils.getCurrentTimestamp())
-            .lastName("Pham Thanh")
-            .firstName("Vinh")
-            .gender(true)
-            .build();
+                .email("user@gmail.com")
+                .password("123456Aa")
+                .address("54 Nguyen Luong Bang, Hoa Khanh Bac, Lien Chieu, Da Nang")
+                .phoneNumber("0348219257")
+                .dateOfBirth(CommonUtils.getCurrentTimestamp())
+                .lastName("Pham Thanh")
+                .firstName("Vinh")
+                .gender(true)
+                .build();
         // Company account
         var companyRegisterRequest = CompanyRegisterRequest.builder()
-            .email("company@gmail.com")
-            .password("123456Aa")
-            .address("54 Nguyen Luong Bang, Hoa Khanh Bac, Lien Chieu, Da Nang")
-            .phoneNumber("0348219257")
-            .companyName("DHV job swipe")
-            .companyUrl("https://github.com/dhv-pbl5")
-            .establishedDate(CommonUtils.getCurrentTimestamp())
-            .build();
+                .email("company@gmail.com")
+                .password("123456Aa")
+                .address("54 Nguyen Luong Bang, Hoa Khanh Bac, Lien Chieu, Da Nang")
+                .phoneNumber("0348219257")
+                .companyName("DHV job swipe")
+                .companyUrl("https://github.com/dhv-pbl5")
+                .establishedDate(CommonUtils.getCurrentTimestamp())
+                .build();
         for (var item : (List<Constant>) constantService.getSystemRoles(null)) {
             var role = AbstractEnum.fromString(SystemRoleName.values(), item.getConstantName());
             if (role == SystemRoleName.ADMIN)
