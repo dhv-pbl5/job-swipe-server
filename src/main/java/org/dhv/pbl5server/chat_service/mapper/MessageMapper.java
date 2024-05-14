@@ -10,6 +10,7 @@ import org.mapstruct.Mapping;
 import org.mapstruct.Named;
 
 // git commit -m "PBL-595 chat for user"
+// git commit -m "PBL-596 chat for company"
 
 @Mapper(config = SpringMapStructConfig.class, uses = { AccountMapper.class })
 public interface MessageMapper {

@@ -12,6 +12,7 @@ import org.dhv.pbl5server.common_service.model.AbstractEntity;
 import java.util.UUID;
 
 // git commit -m "PBL-595 chat for user"
+// git commit -m "PBL-596 chat for company"
 
 @Getter
 @Setter

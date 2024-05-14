@@ -10,6 +10,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 // git commit -m "PBL-595 chat for user"
+// git commit -m "PBL-596 chat for company"
 
 public interface ConversationRepository extends JpaRepository<Conversation, UUID> {
     @Query("SELECT c FROM Conversation c JOIN FETCH c.user WHERE c.user.accountId = :userId")
