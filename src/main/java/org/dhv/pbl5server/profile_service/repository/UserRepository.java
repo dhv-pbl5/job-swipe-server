@@ -1,6 +1,5 @@
 package org.dhv.pbl5server.profile_service.repository;
 
-
 import org.dhv.pbl5server.profile_service.entity.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -9,6 +8,8 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.util.Optional;
 import java.util.UUID;
+
+// git commit -m "PBL-514 register for user"
 
 public interface UserRepository extends JpaRepository<User, UUID> {
     @Query("SELECT u FROM User u LEFT JOIN FETCH u.educations WHERE u.accountId = :accountId")

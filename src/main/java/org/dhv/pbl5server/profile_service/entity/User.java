@@ -16,6 +16,8 @@ import java.sql.Timestamp;
 import java.util.List;
 import java.util.UUID;
 
+// git commit -m "PBL-514 register for user"
+
 @Entity
 @Getter
 @Setter
