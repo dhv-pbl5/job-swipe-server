@@ -13,6 +13,7 @@ import org.springframework.data.domain.Pageable;
 // git commit -m "PBL-588 reject matching for user"
 // git commit -m "PBL-589 reject matching for company"
 // git commit -m "PBL-590 cancel matching for user"
+// git commit -m "PBL-591 cancel matching for company"
 
 public interface MatchService {
     ApiDataResponse getMatches(String accountId, Pageable pageRequest);
