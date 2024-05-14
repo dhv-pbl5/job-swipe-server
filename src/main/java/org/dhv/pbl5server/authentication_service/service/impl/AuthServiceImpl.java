@@ -41,6 +41,7 @@ import java.util.UUID;
 // git commit -m "PBL-512 login for company and user"
 // git commit -m "PBL-513 register for company"
 // git commit -m "PBL-514 register for user"
+// git commit -m "PBL-518 forgot password for company"
 
 @RequiredArgsConstructor
 @Service

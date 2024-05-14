@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 // git commit -m "PBL-511 login for company and user"
 // git commit -m "PBL-512 login for company and user"
 // git commit -m "PBL-514 register for user"
+// git commit -m "PBL-518 forgot password for company"
 
 @RestController
 @RequestMapping("/v1/auth")

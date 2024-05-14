@@ -14,6 +14,8 @@ import org.springframework.context.annotation.Configuration;
 
 import java.util.Objects;
 
+// git commit -m "PBL-518 forgot password for company"
+
 @Configuration
 @Getter
 public class MailTrapConfig {
@@ -34,39 +36,38 @@ public class MailTrapConfig {
     }
 
     /*
-        Public methods
+     * Public methods
      */
     public Request getForgotPasswordRequest(String toEmail, String resetPassCode) {
         return getRequest("POST", getRequestBody(
-            toEmail,
-            forgotPasswordTemplateUuid,
-            ForgotPasswordTemplateVariable.builder()
-                .userEmail(toEmail)
-                .resetPassCode(resetPassCode)
-                .build()));
+                toEmail,
+                forgotPasswordTemplateUuid,
+                ForgotPasswordTemplateVariable.builder()
+                        .userEmail(toEmail)
+                        .resetPassCode(resetPassCode)
+                        .build()));
     }
 
     /*
-        Private methods
+     * Private methods
      */
     private Request getRequest(String method, RequestBody body) {
         return new Request.Builder()
-            .url(apiUrl)
-            .method(method, body)
-            .addHeader("Authorization", "Bearer %s".formatted(apiKey))
-            .addHeader("Content-Type", "application/json")
-            .build();
+                .url(apiUrl)
+                .method(method, body)
+                .addHeader("Authorization", "Bearer %s".formatted(apiKey))
+                .addHeader("Content-Type", "application/json")
+                .build();
     }
 
     private RequestBody getRequestBody(String toEmail, String templateUuid, Object templateVariables) {
         MediaType mediaType = MediaType.parse("application/json");
         var mailTrapRequestBody = MailTrapTemplateRequestBody.create(
-            fromEmail,
-            fromEmailName,
-            toEmail,
-            templateUuid,
-            templateVariables
-        );
+                fromEmail,
+                fromEmailName,
+                toEmail,
+                templateUuid,
+                templateVariables);
         return RequestBody.create(Objects.requireNonNull(CommonUtils.convertToJson(mailTrapRequestBody)), mediaType);
     }
 }

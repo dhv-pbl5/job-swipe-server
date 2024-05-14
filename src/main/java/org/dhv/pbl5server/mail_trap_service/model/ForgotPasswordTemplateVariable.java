@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.Setter;
 import org.dhv.pbl5server.common_service.annotation.JsonSnakeCaseNaming;
 
+// git commit -m "PBL-518 forgot password for company"
+
 @Getter
 @Setter
 @Builder
