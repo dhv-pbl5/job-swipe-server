@@ -15,6 +15,8 @@ import org.dhv.pbl5server.constant_service.payload.ConstantSelectionRequest;
 
 import java.sql.Timestamp;
 
+// git commit -m "PBL-513 register for company"
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

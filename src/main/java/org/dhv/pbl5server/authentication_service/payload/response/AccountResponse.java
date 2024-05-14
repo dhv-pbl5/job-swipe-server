@@ -12,6 +12,8 @@ import org.dhv.pbl5server.profile_service.payload.response.LanguageResponse;
 import java.util.List;
 import java.util.UUID;
 
+// git commit -m "PBL-513 register for company"
+
 @Getter
 @Setter
 @NoArgsConstructor

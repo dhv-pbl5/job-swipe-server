@@ -8,6 +8,8 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.util.UUID;
 
+// git commit -m "PBL-513 register for company"
+
 public interface CompanyRepository extends JpaRepository<Company, UUID> {
     @Query("SELECT c FROM Company c WHERE c.companyName LIKE %:name%")
     Page<Company> searchByName(String name, Pageable pageable);

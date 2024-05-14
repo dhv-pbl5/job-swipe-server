@@ -10,7 +10,10 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
 
-@Mapper(config = SpringMapStructConfig.class, uses = {ConstantMapper.class, LanguageMapper.class, ApplicationPositionMapper.class})
+// git commit -m "PBL-513 register for company"
+
+@Mapper(config = SpringMapStructConfig.class, uses = { ConstantMapper.class, LanguageMapper.class,
+        ApplicationPositionMapper.class })
 public interface CompanyMapper {
     public static final String NAMED_ToCompanyResponseWithBasicInfoOnly = "toCompanyResponseWithBasicInfoOnly";
 
@@ -40,7 +43,6 @@ public interface CompanyMapper {
     @Mapping(source = "company.account.languages", target = "languages", ignore = true)
     @Mapping(source = "company.others", target = "others")
     CompanyProfileResponse toCompanyResponseWithBasicInfoOnly(Company company);
-
 
     @Mapping(source = "request.companyName", target = "companyName")
     @Mapping(source = "request.companyUrl", target = "companyUrl")

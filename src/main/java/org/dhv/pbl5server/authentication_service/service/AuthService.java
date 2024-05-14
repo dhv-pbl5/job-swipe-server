@@ -6,6 +6,7 @@ import org.dhv.pbl5server.authentication_service.payload.response.AccountRespons
 import org.dhv.pbl5server.authentication_service.payload.response.CredentialResponse;
 
 // git commit -m "PBL-511 login for company and user"
+// git commit -m "PBL-513 register for company"
 
 public interface AuthService {
     CredentialResponse login(LoginRequest loginRequest, boolean isAdmin);
