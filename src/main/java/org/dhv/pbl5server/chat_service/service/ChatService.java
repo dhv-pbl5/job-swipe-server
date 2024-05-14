@@ -15,6 +15,7 @@ import java.util.List;
 // git commit -m "PBL-596 chat for company"
 // git commit -m "PBL-597 realtime conversation"
 // git commit -m "PBL-598 realtime conversation for company"
+// git commit -m "PBL-601 chat for user"
 
 public interface ChatService {
     ApiDataResponse getConversations(Account account, Pageable pageRequest);
