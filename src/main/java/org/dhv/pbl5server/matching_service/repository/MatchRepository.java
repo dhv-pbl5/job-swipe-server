@@ -10,6 +10,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+// git commit -m "PBL-594 realtime matching for company"
+
 public interface MatchRepository extends JpaRepository<Match, UUID> {
 
     @Query("SELECT m FROM Match m WHERE m.user.accountId = :accountId OR m.company.accountId = :accountId")
@@ -29,16 +31,16 @@ public interface MatchRepository extends JpaRepository<Match, UUID> {
 
     // Requested by user when company has requested but user has not accepted
     @Query("SELECT m FROM Match m WHERE " +
-        "m.companyMatched = TRUE " +
-        "AND (m.userMatched IS NULL OR m.userMatched = FALSE) " +
-        "AND m.user.accountId = :userId")
+            "m.companyMatched = TRUE " +
+            "AND (m.userMatched IS NULL OR m.userMatched = FALSE) " +
+            "AND m.user.accountId = :userId")
     Page<Match> findAllRequestedMatchesByUserId(UUID userId, Pageable pageRequest);
 
     // Requested by company when user has requested but company has not accepted
     @Query("SELECT m FROM Match m WHERE " +
-        "(m.companyMatched IS NULL OR m.companyMatched = FALSE) " +
-        "AND m.userMatched = TRUE " +
-        "AND m.company.accountId = :companyId")
+            "(m.companyMatched IS NULL OR m.companyMatched = FALSE) " +
+            "AND m.userMatched = TRUE " +
+            "AND m.company.accountId = :companyId")
     Page<Match> findAllRequestedMatchesByCompanyId(UUID companyId, Pageable pageRequest);
 
     @Query("SELECT m FROM Match m WHERE m.id = :id AND (m.user.accountId = :accountId OR m.company.accountId = :accountId)")

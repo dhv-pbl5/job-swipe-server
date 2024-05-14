@@ -8,13 +8,12 @@ import org.dhv.pbl5server.profile_service.mapper.UserMapper;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-@Mapper(
-    config = SpringMapStructConfig.class,
-    uses = {
+// git commit -m "PBL-594 realtime matching for company"
+
+@Mapper(config = SpringMapStructConfig.class, uses = {
         UserMapper.class,
         CompanyMapper.class
-    }
-)
+})
 public interface MatchMapper {
     @Mapping(source = "user", target = "user", qualifiedByName = UserMapper.NAMED_ToUserProfileResponseWithBasicInfoOnly)
     @Mapping(source = "company", target = "company", qualifiedByName = CompanyMapper.NAMED_ToCompanyResponseWithBasicInfoOnly)

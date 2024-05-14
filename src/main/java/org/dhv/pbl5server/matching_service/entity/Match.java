@@ -13,6 +13,8 @@ import org.dhv.pbl5server.profile_service.entity.User;
 import java.sql.Timestamp;
 import java.util.UUID;
 
+// git commit -m "PBL-594 realtime matching for company"
+
 @Getter
 @Setter
 @SuperBuilder
