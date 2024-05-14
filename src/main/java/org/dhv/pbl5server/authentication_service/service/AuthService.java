@@ -11,6 +11,7 @@ import org.dhv.pbl5server.authentication_service.payload.response.CredentialResp
 // git commit -m "PBL-518 forgot password for company"
 // git commit -m "PBL-519 forgot password for user"
 // git commit -m "PBL-515 refresh token for admin"
+// git commit -m "PBL-516 refresh token for company"
 
 public interface AuthService {
     CredentialResponse login(LoginRequest loginRequest, boolean isAdmin);
