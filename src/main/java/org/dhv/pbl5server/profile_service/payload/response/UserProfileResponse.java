@@ -14,6 +14,7 @@ import java.util.UUID;
 
 // git commit -m "PBL-536 user profile"
 // git commit -m "PBL-565 user education"
+// git commit -m "PBL-522 update user profile"
 
 @Getter
 @Setter

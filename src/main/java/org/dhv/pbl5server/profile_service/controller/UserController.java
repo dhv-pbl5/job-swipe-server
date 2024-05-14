@@ -36,6 +36,7 @@ import java.util.Set;
 // git commit -m "PBL-559 user experience"
 // git commit -m "PBL-565 user education"
 // git commit -m "PBL-561 delete user experience"
+// git commit -m "PBL-522 update user profile"
 
 @RestController
 @RequestMapping("/v1/profile/user")

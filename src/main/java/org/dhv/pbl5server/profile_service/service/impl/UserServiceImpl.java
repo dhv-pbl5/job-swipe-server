@@ -46,6 +46,7 @@ import java.util.UUID;
 // git commit -m "PBL-536 user profile"
 // git commit -m "PBL-559 user experience"
 // git commit -m "PBL-561 delete user experience"
+// git commit -m "PBL-522 update user profile"
 
 @Service
 @RequiredArgsConstructor
