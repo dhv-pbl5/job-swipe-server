@@ -12,6 +12,7 @@ import org.mapstruct.Mapping;
 // git commit -m "PBL-526 position and skill"
 // git commit -m "PBL-534 application position"
 // git commit -m "PBL-528 delete application position"
+// git commit -m "PBL-530 update application position"
 
 @Mapper(config = SpringMapStructConfig.class, uses = { ConstantMapper.class })
 public interface ApplicationSkillMapper {

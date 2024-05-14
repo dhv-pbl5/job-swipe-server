@@ -21,6 +21,7 @@ import java.util.List;
 // git commit -m "PBL-534 application position"
 // git commit -m "PBL-528 delete application position"
 // git commit -m "PBL-532 delete application position skill"
+// git commit -m "PBL-530 update application position"
 
 @RestController
 @RequestMapping("/v1/account/application-positions")
