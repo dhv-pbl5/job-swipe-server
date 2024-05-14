@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.UUID;
 
 // git commit -m "PBL-510 login for admin"
+// git commit -m "PBL-605 realtime deactivate account for user"
 
 @Service
 @RequiredArgsConstructor

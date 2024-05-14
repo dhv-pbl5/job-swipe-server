@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 // git commit -m "PBL-510 login for admin"
+// git commit -m "PBL-605 realtime deactivate account for user"
 
 @RestController
 @RequestMapping("/v1/admin")
