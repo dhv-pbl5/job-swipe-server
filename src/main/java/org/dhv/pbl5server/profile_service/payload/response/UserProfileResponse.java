@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.UUID;
 
 // git commit -m "PBL-536 user profile"
+// git commit -m "PBL-565 user education"
 
 @Getter
 @Setter
