@@ -1,4 +1,5 @@
 -- git commit -m "PBL-850 set up enviroment on render"
+-- git commit -m "PBL-846 set up db"
 
 CREATE TABLE public.constants
 (
