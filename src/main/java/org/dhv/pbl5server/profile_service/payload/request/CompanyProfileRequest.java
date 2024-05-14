@@ -12,6 +12,7 @@ import java.sql.Timestamp;
 import java.util.List;
 
 // git commit -m "PBL-534 application position"
+// git commit -m "PBL-523 update company profile"
 
 @Data
 @AllArgsConstructor

@@ -10,6 +10,7 @@ import java.util.UUID;
 
 // git commit -m "PBL-513 register for company"
 // git commit -m "PBL-538 company profile"
+// git commit -m "PBL-523 update company profile"
 
 public interface CompanyRepository extends JpaRepository<Company, UUID> {
     @Query("SELECT c FROM Company c WHERE c.companyName LIKE %:name%")
