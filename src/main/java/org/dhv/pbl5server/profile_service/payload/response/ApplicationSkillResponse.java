@@ -8,6 +8,8 @@ import org.dhv.pbl5server.constant_service.payload.ConstantResponse;
 
 import java.util.UUID;
 
+// git commit -m "PBL-526 position and skill"
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

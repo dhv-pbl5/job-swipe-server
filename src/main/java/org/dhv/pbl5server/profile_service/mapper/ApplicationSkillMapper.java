@@ -9,6 +9,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
 // git commit -m "PBL-536 user profile"
+// git commit -m "PBL-526 position and skill"
 
 @Mapper(config = SpringMapStructConfig.class, uses = { ConstantMapper.class })
 public interface ApplicationSkillMapper {

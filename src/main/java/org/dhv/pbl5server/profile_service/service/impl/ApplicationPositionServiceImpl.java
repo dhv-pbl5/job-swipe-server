@@ -36,6 +36,7 @@ import java.util.List;
 import java.util.UUID;
 
 // git commit -m "PBL-538 company profile"
+// git commit -m "PBL-526 position and skill"
 
 @Service
 @RequiredArgsConstructor

@@ -12,6 +12,7 @@ import org.dhv.pbl5server.constant_service.entity.Constant;
 import java.util.List;
 import java.util.UUID;
 
+// git commit -m "PBL-526 position and skill"
 // git commit -m "PBL-536 user profile"
 
 @Getter

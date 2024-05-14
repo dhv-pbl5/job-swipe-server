@@ -11,27 +11,28 @@ import java.util.List;
 import java.util.UUID;
 
 // git commit -m "PBL-538 company profile"
+// git commit -m "PBL-526 position and skill"
 
 public interface ApplicationPositionService {
 
-    List<ApplicationPositionResponse> insertApplicationPositions(Account account,
-            List<ApplicationPositionRequest> request);
+        List<ApplicationPositionResponse> insertApplicationPositions(Account account,
+                        List<ApplicationPositionRequest> request);
 
-    List<ApplicationPositionResponse> updateApplicationPosition(Account account,
-            List<ApplicationPositionRequest> requests);
+        List<ApplicationPositionResponse> updateApplicationPosition(Account account,
+                        List<ApplicationPositionRequest> requests);
 
-    ApplicationPositionResponse insertOrUpdateApplicationSkills(Account account, String applicationPositionId,
-            List<ApplicationSkillRequest> requests);
+        ApplicationPositionResponse insertOrUpdateApplicationSkills(Account account, String applicationPositionId,
+                        List<ApplicationSkillRequest> requests);
 
-    List<ApplicationPositionResponse> getApplicationPositions(String accountId);
+        List<ApplicationPositionResponse> getApplicationPositions(String accountId);
 
-    ApiDataResponse getApplicationPositions(String accountId, Pageable pageable);
+        ApiDataResponse getApplicationPositions(String accountId, Pageable pageable);
 
-    ApplicationPositionResponse getApplicationPositionById(String accountId, String applicationPositionId);
+        ApplicationPositionResponse getApplicationPositionById(String accountId, String applicationPositionId);
 
-    void deleteApplicationPositions(Account account, List<String> ids);
+        void deleteApplicationPositions(Account account, List<String> ids);
 
-    void deleteApplicationSkills(Account account, String applicationPositionId, List<String> ids);
+        void deleteApplicationSkills(Account account, String applicationPositionId, List<String> ids);
 
-    Account getAccountWithAllApplicationPositions(UUID id);
+        Account getAccountWithAllApplicationPositions(UUID id);
 }

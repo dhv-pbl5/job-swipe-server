@@ -13,38 +13,40 @@ import org.mapstruct.Named;
 import java.util.List;
 
 // git commit -m "PBL-536 user profile"
+// git commit -m "PBL-526 position and skill"
 
 @Mapper(config = SpringMapStructConfig.class, uses = { ConstantMapper.class, ApplicationSkillMapper.class })
 public interface ApplicationPositionMapper {
-    public static final String NAMED_ToApplicationPositionResponse = "toApplicationPositionResponse";
+        public static final String NAMED_ToApplicationPositionResponse = "toApplicationPositionResponse";
 
-    @Mapping(source = "skills", target = "skills")
-    @Mapping(source = "applyPosition", target = "applyPosition")
-    @Mapping(source = "salaryRange", target = "salaryRange")
-    ApplicationPosition toApplicationPosition(ApplicationPositionRequest request);
+        @Mapping(source = "skills", target = "skills")
+        @Mapping(source = "applyPosition", target = "applyPosition")
+        @Mapping(source = "salaryRange", target = "salaryRange")
+        ApplicationPosition toApplicationPosition(ApplicationPositionRequest request);
 
-    @Mapping(source = "request.id", target = "id")
-    @Mapping(source = "request.status", target = "status")
-    @Mapping(source = "request.skills", target = "skills")
-    @Mapping(source = "request.applyPosition", target = "applyPosition")
-    @Mapping(source = "request.salaryRange", target = "salaryRange")
-    ApplicationPosition toApplicationPosition(ApplicationPosition applicationPosition,
-            ApplicationPositionRequest request);
+        @Mapping(source = "request.id", target = "id")
+        @Mapping(source = "request.status", target = "status")
+        @Mapping(source = "request.skills", target = "skills")
+        @Mapping(source = "request.applyPosition", target = "applyPosition")
+        @Mapping(source = "request.salaryRange", target = "salaryRange")
+        ApplicationPosition toApplicationPosition(ApplicationPosition applicationPosition,
+                        ApplicationPositionRequest request);
 
-    @Mapping(source = "request", target = "skills")
-    @Mapping(source = "applicationPosition.applyPosition", target = "applyPosition")
-    @Mapping(source = "applicationPosition.salaryRange", target = "salaryRange")
-    ApplicationPosition toApplicationPosition(ApplicationPosition applicationPosition,
-            List<ApplicationSkillRequest> request);
+        @Mapping(source = "request", target = "skills")
+        @Mapping(source = "applicationPosition.applyPosition", target = "applyPosition")
+        @Mapping(source = "applicationPosition.salaryRange", target = "salaryRange")
+        ApplicationPosition toApplicationPosition(ApplicationPosition applicationPosition,
+                        List<ApplicationSkillRequest> request);
 
-    @Named(NAMED_ToApplicationPositionResponse)
-    @Mapping(source = "skills", target = "skills")
-    @Mapping(source = "applyPosition", target = "applyPosition")
-    @Mapping(source = "salaryRange", target = "salaryRange")
-    ApplicationPositionResponse toApplicationPositionResponse(ApplicationPosition applicationPosition);
+        @Named(NAMED_ToApplicationPositionResponse)
+        @Mapping(source = "skills", target = "skills")
+        @Mapping(source = "applyPosition", target = "applyPosition")
+        @Mapping(source = "salaryRange", target = "salaryRange")
+        ApplicationPositionResponse toApplicationPositionResponse(ApplicationPosition applicationPosition);
 
-    @Mapping(source = "skills", target = "skills")
-    @Mapping(source = "applyPosition", target = "applyPosition")
-    @Mapping(source = "salaryRange", target = "salaryRange")
-    ApplicationPositionResponse toApplicationPositionResponseWithBasicInfoOnly(ApplicationPosition applicationPosition);
+        @Mapping(source = "skills", target = "skills")
+        @Mapping(source = "applyPosition", target = "applyPosition")
+        @Mapping(source = "salaryRange", target = "salaryRange")
+        ApplicationPositionResponse toApplicationPositionResponseWithBasicInfoOnly(
+                        ApplicationPosition applicationPosition);
 }
