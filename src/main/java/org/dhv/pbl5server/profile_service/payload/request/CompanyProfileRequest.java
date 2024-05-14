@@ -1,6 +1,5 @@
 package org.dhv.pbl5server.profile_service.payload.request;
 
-
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -11,6 +10,8 @@ import org.dhv.pbl5server.profile_service.model.OtherDescription;
 
 import java.sql.Timestamp;
 import java.util.List;
+
+// git commit -m "PBL-534 application position"
 
 @Data
 @AllArgsConstructor

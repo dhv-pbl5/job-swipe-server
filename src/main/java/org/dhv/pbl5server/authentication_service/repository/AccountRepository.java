@@ -8,6 +8,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 // git commit -m "PBL-511 login for company and user"
+// git commit -m "PBL-534 application position"
 
 public interface AccountRepository extends JpaRepository<Account, UUID> {
     Optional<Account> findByEmail(String email);

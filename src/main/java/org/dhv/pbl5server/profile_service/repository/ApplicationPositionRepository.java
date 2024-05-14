@@ -13,6 +13,7 @@ import java.util.UUID;
 // git commit -m "PBL-536 user profile"
 // git commit -m "PBL-538 company profile"
 // git commit -m "PBL-526 position and skill"
+// git commit -m "PBL-534 application position"
 
 public interface ApplicationPositionRepository extends JpaRepository<ApplicationPosition, UUID> {
     @Query("SELECT ap FROM ApplicationPosition ap LEFT JOIN FETCH ap.skills WHERE ap.id = :id")

@@ -11,6 +11,7 @@ import org.dhv.pbl5server.constant_service.payload.ConstantSelectionRequest;
 import java.util.UUID;
 
 // git commit -m "PBL-526 position and skill"
+// git commit -m "PBL-534 application position"
 
 @Data
 @AllArgsConstructor

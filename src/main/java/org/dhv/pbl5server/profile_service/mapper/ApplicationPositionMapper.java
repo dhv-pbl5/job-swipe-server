@@ -14,6 +14,7 @@ import java.util.List;
 
 // git commit -m "PBL-536 user profile"
 // git commit -m "PBL-526 position and skill"
+// git commit -m "PBL-534 application position"
 
 @Mapper(config = SpringMapStructConfig.class, uses = { ConstantMapper.class, ApplicationSkillMapper.class })
 public interface ApplicationPositionMapper {
