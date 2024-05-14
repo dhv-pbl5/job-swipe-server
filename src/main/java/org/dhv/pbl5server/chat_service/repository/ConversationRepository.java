@@ -9,6 +9,8 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.Optional;
 import java.util.UUID;
 
+// git commit -m "PBL-595 chat for user"
+
 public interface ConversationRepository extends JpaRepository<Conversation, UUID> {
     @Query("SELECT c FROM Conversation c JOIN FETCH c.user WHERE c.user.accountId = :userId")
     Page<Conversation> findAllByUserId(UUID userId, Pageable pageable);

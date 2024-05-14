@@ -8,6 +8,8 @@ import org.dhv.pbl5server.common_service.annotation.JsonSnakeCaseNaming;
 
 import java.util.UUID;
 
+// git commit -m "PBL-595 chat for user"
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

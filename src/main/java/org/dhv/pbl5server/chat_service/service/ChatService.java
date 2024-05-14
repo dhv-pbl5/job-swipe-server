@@ -11,6 +11,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
+// git commit -m "PBL-595 chat for user"
+
 public interface ChatService {
     ApiDataResponse getConversations(Account account, Pageable pageRequest);
 

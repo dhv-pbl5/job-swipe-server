@@ -12,6 +12,8 @@ import org.dhv.pbl5server.profile_service.entity.User;
 
 import java.util.UUID;
 
+// git commit -m "PBL-595 chat for user"
+
 @Getter
 @Setter
 @SuperBuilder

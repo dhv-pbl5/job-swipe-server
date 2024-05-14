@@ -9,7 +9,9 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
 
-@Mapper(config = SpringMapStructConfig.class, uses = {AccountMapper.class})
+// git commit -m "PBL-595 chat for user"
+
+@Mapper(config = SpringMapStructConfig.class, uses = { AccountMapper.class })
 public interface MessageMapper {
     public static String NAMED_DecodeContent = "decodeContent";
     public static String NAMED_DecodeUrl = "decodeUrl";

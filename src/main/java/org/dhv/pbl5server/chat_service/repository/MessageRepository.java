@@ -11,6 +11,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+// git commit -m "PBL-595 chat for user"
+
 public interface MessageRepository extends JpaRepository<Message, UUID> {
     @Query("SELECT m FROM Message m WHERE m.account.accountId = :accountId")
     Page<Message> findAllByAccountId(UUID accountId, Pageable pageable);

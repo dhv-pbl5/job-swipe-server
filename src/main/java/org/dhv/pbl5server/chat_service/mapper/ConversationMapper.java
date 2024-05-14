@@ -9,13 +9,13 @@ import org.dhv.pbl5server.profile_service.mapper.UserMapper;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-@Mapper(
-    config = SpringMapStructConfig.class,
-    uses = {
+// git commit -m "PBL-595 chat for user"
+
+@Mapper(config = SpringMapStructConfig.class, uses = {
         MessageMapper.class,
         UserMapper.class,
         CompanyMapper.class
-    })
+})
 public interface ConversationMapper {
     @Mapping(source = "conversation.user", target = "user", qualifiedByName = UserMapper.NAMED_ToUserProfileResponseWithBasicInfoOnly)
     @Mapping(source = "conversation.company", target = "company", qualifiedByName = CompanyMapper.NAMED_ToCompanyResponseWithBasicInfoOnly)
