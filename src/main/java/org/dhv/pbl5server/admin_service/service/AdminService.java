@@ -5,6 +5,7 @@ import java.util.List;
 // git commit -m "PBL-510 login for admin"
 // git commit -m "PBL-605 realtime deactivate account for user"
 // git commit -m "PBL-606 realtime deactivate account for company"
+// git commit -m "PBL-607 realtime activate account for user"
 
 public interface AdminService {
 
