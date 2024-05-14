@@ -35,6 +35,7 @@ import java.util.UUID;
 
 // git commit -m "PBL-595 chat for user"
 // git commit -m "PBL-596 chat for company"
+// git commit -m "PBL-597 realtime conversation"
 
 @Service
 @RequiredArgsConstructor

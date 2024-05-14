@@ -15,6 +15,8 @@ import org.dhv.pbl5server.notification_service.service.NotificationService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+// git commit -m "PBL-597 realtime conversation"
+
 @RestController
 @RequestMapping("/v1/notifications")
 @RequiredArgsConstructor
@@ -31,14 +33,14 @@ public class NotificationController {
     @PreAuthorizeSystemRoleWithoutAdmin
     @GetMapping("")
     public ResponseEntity<ApiDataResponse> getNotifications(
-        @Nullable @RequestParam("notification_id") String notificationId,
-        @Nullable @RequestParam("page") Integer page,
-        @Nullable @RequestParam("paging") Integer paging,
-        @CurrentAccount Account account
-    ) {
+            @Nullable @RequestParam("notification_id") String notificationId,
+            @Nullable @RequestParam("page") Integer page,
+            @Nullable @RequestParam("paging") Integer paging,
+            @CurrentAccount Account account) {
         // Get notification by id
         if (CommonUtils.isNotEmptyOrNullString(notificationId))
-            return ResponseEntity.ok(ApiDataResponse.successWithoutMeta(service.getNotificationById(account, notificationId)));
+            return ResponseEntity
+                    .ok(ApiDataResponse.successWithoutMeta(service.getNotificationById(account, notificationId)));
         // Get all notifications
         var pageRequest = PageUtils.makePageRequest("created_at", "desc", page, paging);
         return ResponseEntity.ok(service.getNotifications(account, pageRequest));
@@ -53,10 +55,9 @@ public class NotificationController {
     @PreAuthorizeSystemRoleWithoutAdmin
     @PatchMapping("")
     public ResponseEntity<ApiDataResponse> markAsRead(
-        @Nullable @RequestParam("notification_id") String notificationId,
-        @Nullable @RequestParam("is_all") Boolean isAll,
-        @CurrentAccount Account account
-    ) {
+            @Nullable @RequestParam("notification_id") String notificationId,
+            @Nullable @RequestParam("is_all") Boolean isAll,
+            @CurrentAccount Account account) {
         // Mark all notifications as read
         if (isAll != null && isAll) {
             service.markAllAsRead(account);

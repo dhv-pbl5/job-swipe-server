@@ -1,10 +1,11 @@
 package org.dhv.pbl5server.notification_service.entity;
 
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.dhv.pbl5server.common_service.enums.AbstractEnum;
 import org.dhv.pbl5server.constant_service.enums.ConstantTypePrefix;
+
+// git commit -m "PBL-597 realtime conversation"
 
 @Getter
 @AllArgsConstructor

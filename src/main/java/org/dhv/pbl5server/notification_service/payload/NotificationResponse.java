@@ -10,6 +10,8 @@ import org.dhv.pbl5server.constant_service.payload.ConstantResponse;
 
 import java.util.UUID;
 
+// git commit -m "PBL-597 realtime conversation"
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

@@ -8,6 +8,8 @@ import org.springframework.data.domain.Pageable;
 
 import java.util.UUID;
 
+// git commit -m "PBL-597 realtime conversation"
+
 public interface NotificationService {
     void notifyToAll(String message);
 

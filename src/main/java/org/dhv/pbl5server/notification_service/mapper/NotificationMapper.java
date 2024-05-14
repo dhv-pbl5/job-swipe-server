@@ -8,12 +8,12 @@ import org.dhv.pbl5server.notification_service.payload.NotificationResponse;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-@Mapper(
-    config = SpringMapStructConfig.class,
-    uses = {
+// git commit -m "PBL-597 realtime conversation"
+
+@Mapper(config = SpringMapStructConfig.class, uses = {
         AccountMapper.class,
         ConstantMapper.class
-    })
+})
 public interface NotificationMapper {
     @Mapping(source = "type", target = "type")
     @Mapping(source = "sender", target = "sender", qualifiedByName = AccountMapper.NAMED_ToAccountResponse)

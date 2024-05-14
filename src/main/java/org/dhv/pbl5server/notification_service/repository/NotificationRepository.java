@@ -10,6 +10,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+// git commit -m "PBL-597 realtime conversation"
+
 public interface NotificationRepository extends JpaRepository<Notification, UUID> {
     @Query("SELECT n FROM Notification n JOIN FETCH n.receiver WHERE n.receiver.accountId = :accountId")
     Page<Notification> findAllByReceiverId(UUID accountId, Pageable pageable);
