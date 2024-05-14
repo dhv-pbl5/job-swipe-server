@@ -16,6 +16,8 @@ import org.dhv.pbl5server.matching_service.service.MatchService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+// git commit -m "PBL-584 request matching for user"
+
 @RestController
 @RequestMapping("/v1/matched-pairs")
 @RequiredArgsConstructor
@@ -25,12 +27,11 @@ public class MatchController {
     @PreAuthorizeSystemRoleWithoutAdmin
     @GetMapping("")
     public ResponseEntity<ApiDataResponse> getMatches(
-        @Nullable @RequestParam("match_id") String matchingId,
-        @Nullable @RequestParam("type") String type,
-        @Nullable @RequestParam("page") Integer page,
-        @Nullable @RequestParam("paging") Integer paging,
-        @CurrentAccount Account account
-    ) {
+            @Nullable @RequestParam("match_id") String matchingId,
+            @Nullable @RequestParam("type") String type,
+            @Nullable @RequestParam("page") Integer page,
+            @Nullable @RequestParam("paging") Integer paging,
+            @CurrentAccount Account account) {
         // Get matching by id
         if (CommonUtils.isNotEmptyOrNullString(matchingId))
             return ResponseEntity.ok(ApiDataResponse.successWithoutMeta(service.getMatchById(account, matchingId)));
@@ -48,9 +49,8 @@ public class MatchController {
     @PreAuthorizeSystemRoleWithoutAdmin
     @PostMapping("/request")
     public ResponseEntity<ApiDataResponse> requestMatch(
-        @RequestParam("requested_account_id") String requestedAccountId,
-        @CurrentAccount Account account
-    ) {
+            @RequestParam("requested_account_id") String requestedAccountId,
+            @CurrentAccount Account account) {
         if (!CommonUtils.isValidUuid(requestedAccountId))
             throw new BadRequestException(ErrorMessageConstant.REQUESTED_ACCOUNT_ID_INVALID);
         return ResponseEntity.ok(ApiDataResponse.successWithoutMeta(service.requestMatch(account, requestedAccountId)));
@@ -59,9 +59,8 @@ public class MatchController {
     @PreAuthorizeSystemRoleWithoutAdmin
     @PostMapping("/accept")
     public ResponseEntity<ApiDataResponse> acceptMatch(
-        @RequestParam("match_id") String matchingId,
-        @CurrentAccount Account account
-    ) {
+            @RequestParam("match_id") String matchingId,
+            @CurrentAccount Account account) {
         if (!CommonUtils.isValidUuid(matchingId))
             throw new BadRequestException(ErrorMessageConstant.MATCH_ID_INVALID);
         return ResponseEntity.ok(ApiDataResponse.successWithoutMeta(service.acceptMatch(account, matchingId)));
@@ -70,9 +69,8 @@ public class MatchController {
     @PreAuthorizeSystemRoleWithoutAdmin
     @PostMapping("/reject")
     public ResponseEntity<ApiDataResponse> rejectMatch(
-        @RequestParam("match_id") String matchingId,
-        @CurrentAccount Account account
-    ) {
+            @RequestParam("match_id") String matchingId,
+            @CurrentAccount Account account) {
         if (!CommonUtils.isValidUuid(matchingId))
             throw new BadRequestException(ErrorMessageConstant.MATCH_ID_INVALID);
         return ResponseEntity.ok(ApiDataResponse.successWithoutMeta(service.rejectMatch(account, matchingId)));
