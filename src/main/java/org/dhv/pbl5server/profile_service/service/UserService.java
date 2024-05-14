@@ -23,6 +23,7 @@ import java.util.UUID;
 // git commit -m "PBL-561 delete user experience"
 // git commit -m "PBL-522 update user profile"
 // git commit -m "PBL-557 update user experience"
+// git commit -m "PBL-563 user award"
 
 public interface UserService {
     UserProfileResponse getUserProfile(Account account);

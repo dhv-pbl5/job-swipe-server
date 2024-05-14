@@ -10,6 +10,8 @@ import org.dhv.pbl5server.common_service.annotation.NotBlankStringValidation;
 import java.sql.Timestamp;
 import java.util.UUID;
 
+// git commit -m "PBL-563 user award"
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

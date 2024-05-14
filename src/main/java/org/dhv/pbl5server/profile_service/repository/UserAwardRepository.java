@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.UUID;
 
 // git commit -m "PBL-536 user profile"
+// git commit -m "PBL-563 user award"
 
 public interface UserAwardRepository extends JpaRepository<UserAward, UUID> {
     @Query("SELECT ua FROM UserAward ua WHERE ua.user.accountId = :userId")

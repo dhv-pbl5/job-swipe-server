@@ -7,6 +7,7 @@ import org.dhv.pbl5server.profile_service.payload.response.UserAwardResponse;
 import org.mapstruct.Mapper;
 
 // git commit -m "PBL-536 user profile"
+// git commit -m "PBL-563 user award"
 
 @Mapper(config = SpringMapStructConfig.class)
 public interface AwardMapper {
