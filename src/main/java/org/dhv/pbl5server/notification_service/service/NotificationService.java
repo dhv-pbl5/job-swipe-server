@@ -9,6 +9,7 @@ import org.springframework.data.domain.Pageable;
 import java.util.UUID;
 
 // git commit -m "PBL-597 realtime conversation"
+// git commit -m "PBL-599 unread notification count"
 
 public interface NotificationService {
     void notifyToAll(String message);
