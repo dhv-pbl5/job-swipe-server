@@ -12,6 +12,8 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 import java.util.UUID;
 
+// git commit -m "PBL-538 company profile"
+
 public interface CompanyService {
     CompanyProfileResponse getCompanyProfile(Account account);
 

@@ -11,6 +11,7 @@ import org.mapstruct.Mapping;
 import org.mapstruct.Named;
 
 // git commit -m "PBL-513 register for company"
+// git commit -m "PBL-538 company profile"
 
 @Mapper(config = SpringMapStructConfig.class, uses = { ConstantMapper.class, LanguageMapper.class,
         ApplicationPositionMapper.class })

@@ -10,14 +10,18 @@ import org.springframework.data.domain.Pageable;
 import java.util.List;
 import java.util.UUID;
 
+// git commit -m "PBL-538 company profile"
+
 public interface ApplicationPositionService {
 
+    List<ApplicationPositionResponse> insertApplicationPositions(Account account,
+            List<ApplicationPositionRequest> request);
 
-    List<ApplicationPositionResponse> insertApplicationPositions(Account account, List<ApplicationPositionRequest> request);
+    List<ApplicationPositionResponse> updateApplicationPosition(Account account,
+            List<ApplicationPositionRequest> requests);
 
-    List<ApplicationPositionResponse> updateApplicationPosition(Account account, List<ApplicationPositionRequest> requests);
-
-    ApplicationPositionResponse insertOrUpdateApplicationSkills(Account account, String applicationPositionId, List<ApplicationSkillRequest> requests);
+    ApplicationPositionResponse insertOrUpdateApplicationSkills(Account account, String applicationPositionId,
+            List<ApplicationSkillRequest> requests);
 
     List<ApplicationPositionResponse> getApplicationPositions(String accountId);
 

@@ -8,6 +8,8 @@ import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
+// git commit -m "PBL-538 company profile"
+
 public interface LanguageService {
     List<LanguageResponse> insertLanguage(Account account, List<LanguageRequest> requests);
 

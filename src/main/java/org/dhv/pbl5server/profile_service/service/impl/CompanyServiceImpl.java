@@ -30,6 +30,8 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 import java.util.UUID;
 
+// git commit -m "PBL-538 company profile"
+
 @Service
 @RequiredArgsConstructor
 public class CompanyServiceImpl implements CompanyService {
@@ -46,7 +48,8 @@ public class CompanyServiceImpl implements CompanyService {
     public CompanyProfileResponse getCompanyProfile(Account account) {
         // Redis
         var companyProfileInRedis = getCompanyProfileFromRedis(account.getAccountId().toString());
-        if (companyProfileInRedis != null) return companyProfileInRedis;
+        if (companyProfileInRedis != null)
+            return companyProfileInRedis;
         // Database
         var company = getAllDataByAccountId(account.getAccountId());
         return mapper.toCompanyResponse(company);
@@ -56,7 +59,8 @@ public class CompanyServiceImpl implements CompanyService {
     public CompanyProfileResponse getCompanyProfileById(String accountId) {
         // Redis
         var companyProfileInRedis = getCompanyProfileFromRedis(accountId);
-        if (companyProfileInRedis != null) return companyProfileInRedis;
+        if (companyProfileInRedis != null)
+            return companyProfileInRedis;
         // Database
         var company = getAllDataByAccountId(UUID.fromString(accountId));
         return mapper.toCompanyResponse(company);
@@ -65,7 +69,7 @@ public class CompanyServiceImpl implements CompanyService {
     @Override
     public CompanyProfileResponse updateCompanyProfile(Account account, CompanyProfileRequest request) {
         var company = repository.findById(account.getAccountId())
-            .orElseThrow(() -> new NotFoundObjectException(ErrorMessageConstant.COMPANY_PROFILE_NOT_FOUND));
+                .orElseThrow(() -> new NotFoundObjectException(ErrorMessageConstant.COMPANY_PROFILE_NOT_FOUND));
         company = mapper.toCompany(company, request);
         company.setAccount(mapper.toAccount(account, request));
         company = repository.save(company);
@@ -79,7 +83,7 @@ public class CompanyServiceImpl implements CompanyService {
         // Remove id if exist
         request.forEach(e -> e.setId(null));
         var company = repository.findById(account.getAccountId())
-            .orElseThrow(() -> new NotFoundObjectException(ErrorMessageConstant.COMPANY_PROFILE_NOT_FOUND));
+                .orElseThrow(() -> new NotFoundObjectException(ErrorMessageConstant.COMPANY_PROFILE_NOT_FOUND));
         company.setOthers(otherRepository.saveAll(company.getOthers(), request));
         company = repository.save(company);
         // Save to redis
@@ -90,7 +94,7 @@ public class CompanyServiceImpl implements CompanyService {
     @Override
     public CompanyProfileResponse updateOtherDescriptions(Account account, List<OtherDescription> request) {
         var company = repository.findById(account.getAccountId())
-            .orElseThrow(() -> new NotFoundObjectException(ErrorMessageConstant.COMPANY_PROFILE_NOT_FOUND));
+                .orElseThrow(() -> new NotFoundObjectException(ErrorMessageConstant.COMPANY_PROFILE_NOT_FOUND));
         for (var req : request) {
             if (req.getId() == null)
                 throw new BadRequestException(ErrorMessageConstant.OTHER_DESCRIPTION_ID_IS_REQUIRED);
@@ -108,19 +112,19 @@ public class CompanyServiceImpl implements CompanyService {
     public void deleteOtherDescriptions(Account account, List<String> ids) {
         var companyProfile = getCompanyProfileFromRedis(account.getAccountId().toString());
         var company = repository.findById(account.getAccountId())
-            .orElseThrow(() -> new NotFoundObjectException(ErrorMessageConstant.COMPANY_PROFILE_NOT_FOUND));
+                .orElseThrow(() -> new NotFoundObjectException(ErrorMessageConstant.COMPANY_PROFILE_NOT_FOUND));
         if (checkDeleteIdsRequest(company.getOthers().stream().map(OtherDescription::getId).toList(), ids)) {
-            var result = otherRepository.deleteAllById(company.getOthers(), ids.stream().map(UUID::fromString).toList());
+            var result = otherRepository.deleteAllById(company.getOthers(),
+                    ids.stream().map(UUID::fromString).toList());
             company.setOthers(result);
             repository.save(company);
             // Save to redis
             if (companyProfile != null) {
                 companyProfile.setOthers(result);
                 redisRepository.save(
-                    RedisCacheConstant.PROFILE,
-                    RedisCacheConstant.COMPANY_PROFILE_HASH(account.getAccountId().toString()),
-                    companyProfile
-                );
+                        RedisCacheConstant.PROFILE,
+                        RedisCacheConstant.COMPANY_PROFILE_HASH(account.getAccountId().toString()),
+                        companyProfile);
             }
         }
     }
@@ -128,16 +132,16 @@ public class CompanyServiceImpl implements CompanyService {
     @Override
     public OtherDescription getOtherDescriptionById(String companyId, String id) {
         var company = repository.findById(UUID.fromString(companyId))
-            .orElseThrow(() -> new NotFoundObjectException(ErrorMessageConstant.COMPANY_PROFILE_NOT_FOUND));
+                .orElseThrow(() -> new NotFoundObjectException(ErrorMessageConstant.COMPANY_PROFILE_NOT_FOUND));
         return otherRepository.findById(company.getOthers(), UUID.fromString(id))
-            .orElseThrow(() -> new NotFoundObjectException(ErrorMessageConstant.OTHER_DESCRIPTION_NOT_FOUND));
+                .orElseThrow(() -> new NotFoundObjectException(ErrorMessageConstant.OTHER_DESCRIPTION_NOT_FOUND));
     }
 
     @Override
     public String updateAvatar(Account account, MultipartFile file) {
         var url = CommonUtils.isEmptyOrNullString(account.getAvatar())
-            ? s3Service.uploadFile(file)
-            : s3Service.uploadFile(file, account.getAvatar());
+                ? s3Service.uploadFile(file)
+                : s3Service.uploadFile(file, account.getAvatar());
         account.setAvatar(url);
         accountRepository.save(account);
         // Save to redis
@@ -145,27 +149,26 @@ public class CompanyServiceImpl implements CompanyService {
         if (companyProfile != null) {
             companyProfile.setAvatar(url);
             redisRepository.save(
-                RedisCacheConstant.PROFILE,
-                RedisCacheConstant.COMPANY_PROFILE_HASH(account.getAccountId().toString()),
-                companyProfile
-            );
+                    RedisCacheConstant.PROFILE,
+                    RedisCacheConstant.COMPANY_PROFILE_HASH(account.getAccountId().toString()),
+                    companyProfile);
         }
         return url;
     }
 
     @Override
     public Company getAllDataByAccountId(UUID accountId) {
-        var company = repository.findById(accountId).orElseThrow(() -> new NotFoundObjectException(ErrorMessageConstant.COMPANY_PROFILE_NOT_FOUND));
+        var company = repository.findById(accountId)
+                .orElseThrow(() -> new NotFoundObjectException(ErrorMessageConstant.COMPANY_PROFILE_NOT_FOUND));
         var account = company.getAccount();
         account = applicationPositionService.getAccountWithAllApplicationPositions(accountId);
         account.setLanguages(languageRepository.findAllByAccountId(accountId));
         company.setAccount(account);
         // Save to redis
         redisRepository.save(
-            RedisCacheConstant.PROFILE,
-            RedisCacheConstant.COMPANY_PROFILE_HASH(company.getAccountId().toString()),
-            mapper.toCompanyResponse(company)
-        );
+                RedisCacheConstant.PROFILE,
+                RedisCacheConstant.COMPANY_PROFILE_HASH(company.getAccountId().toString()),
+                mapper.toCompanyResponse(company));
         return company;
     }
 
@@ -177,10 +180,9 @@ public class CompanyServiceImpl implements CompanyService {
         company.setAccount(account);
         // Save to redis
         redisRepository.save(
-            RedisCacheConstant.PROFILE,
-            RedisCacheConstant.COMPANY_PROFILE_HASH(company.getAccountId().toString()),
-            mapper.toCompanyResponse(company)
-        );
+                RedisCacheConstant.PROFILE,
+                RedisCacheConstant.COMPANY_PROFILE_HASH(company.getAccountId().toString()),
+                mapper.toCompanyResponse(company));
         return company;
     }
 
@@ -192,7 +194,7 @@ public class CompanyServiceImpl implements CompanyService {
                 .stream()
                 .map(mapper::toCompanyResponseWithBasicInfoOnly)
                 .toList(),
-            PageUtils.makePageInfo(page));
+                PageUtils.makePageInfo(page));
     }
 
     private boolean checkDeleteIdsRequest(List<UUID> data, List<String> ids) {
@@ -205,9 +207,10 @@ public class CompanyServiceImpl implements CompanyService {
 
     private CompanyProfileResponse getCompanyProfileFromRedis(String accountId) {
         var profile = redisRepository.findByHashKey(
-            RedisCacheConstant.PROFILE,
-            RedisCacheConstant.COMPANY_PROFILE_HASH(accountId));
-        if (profile == null) return null;
+                RedisCacheConstant.PROFILE,
+                RedisCacheConstant.COMPANY_PROFILE_HASH(accountId));
+        if (profile == null)
+            return null;
         return CommonUtils.decodeJson(profile.toString(), CompanyProfileResponse.class);
     }
 }
