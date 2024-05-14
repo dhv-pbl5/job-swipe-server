@@ -11,6 +11,7 @@ import java.util.UUID;
 
 // git commit -m "PBL-514 register for user"
 // git commit -m "PBL-536 user profile"
+// git commit -m "PBL-559 user experience"
 
 public interface UserRepository extends JpaRepository<User, UUID> {
     @Query("SELECT u FROM User u LEFT JOIN FETCH u.educations WHERE u.accountId = :accountId")

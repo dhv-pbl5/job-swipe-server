@@ -16,6 +16,7 @@ import org.mapstruct.Named;
 import java.util.List;
 
 // git commit -m "PBL-536 user profile"
+// git commit -m "PBL-559 user experience"
 
 @Mapper(config = SpringMapStructConfig.class, uses = {
         ConstantMapper.class,
