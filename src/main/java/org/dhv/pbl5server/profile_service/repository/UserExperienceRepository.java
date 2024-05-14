@@ -8,6 +8,8 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.util.UUID;
 
+// git commit -m "PBL-536 user profile"
+
 public interface UserExperienceRepository extends JpaRepository<UserExperience, UUID> {
     @Query("SELECT ue FROM UserExperience ue WHERE ue.user.accountId = :userId")
     Page<UserExperience> findAllByUserId(UUID userId, Pageable pageable);

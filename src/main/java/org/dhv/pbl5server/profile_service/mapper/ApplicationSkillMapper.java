@@ -8,7 +8,9 @@ import org.dhv.pbl5server.profile_service.payload.response.ApplicationSkillRespo
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-@Mapper(config = SpringMapStructConfig.class, uses = {ConstantMapper.class})
+// git commit -m "PBL-536 user profile"
+
+@Mapper(config = SpringMapStructConfig.class, uses = { ConstantMapper.class })
 public interface ApplicationSkillMapper {
     @Mapping(source = "skill", target = "skill")
     ApplicationSkill toApplicationSkill(ApplicationSkillRequest request);

@@ -12,6 +12,8 @@ import org.dhv.pbl5server.profile_service.model.OtherDescription;
 import java.util.List;
 import java.util.UUID;
 
+// git commit -m "PBL-536 user profile"
+
 @Getter
 @Setter
 @SuperBuilder

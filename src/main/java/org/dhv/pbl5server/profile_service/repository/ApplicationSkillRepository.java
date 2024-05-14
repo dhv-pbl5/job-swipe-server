@@ -10,6 +10,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+// git commit -m "PBL-536 user profile"
+
 public interface ApplicationSkillRepository extends JpaRepository<ApplicationSkill, UUID> {
     @Query("SELECT aps FROM ApplicationSkill aps WHERE aps.applicationPosition.id = :apId")
     List<ApplicationSkill> findAllByApplicationPositionId(UUID apId);

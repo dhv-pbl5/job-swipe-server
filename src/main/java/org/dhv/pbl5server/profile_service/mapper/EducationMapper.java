@@ -6,6 +6,8 @@ import org.dhv.pbl5server.profile_service.payload.request.UserEducationRequest;
 import org.dhv.pbl5server.profile_service.payload.response.UserEducationResponse;
 import org.mapstruct.Mapper;
 
+// git commit -m "PBL-536 user profile"
+
 @Mapper(config = SpringMapStructConfig.class)
 public interface EducationMapper {
     UserEducation toUserEducation(UserEducationRequest request);

@@ -12,7 +12,9 @@ import org.mapstruct.Named;
 
 import java.util.List;
 
-@Mapper(config = SpringMapStructConfig.class, uses = {ConstantMapper.class, ApplicationSkillMapper.class})
+// git commit -m "PBL-536 user profile"
+
+@Mapper(config = SpringMapStructConfig.class, uses = { ConstantMapper.class, ApplicationSkillMapper.class })
 public interface ApplicationPositionMapper {
     public static final String NAMED_ToApplicationPositionResponse = "toApplicationPositionResponse";
 
@@ -26,12 +28,14 @@ public interface ApplicationPositionMapper {
     @Mapping(source = "request.skills", target = "skills")
     @Mapping(source = "request.applyPosition", target = "applyPosition")
     @Mapping(source = "request.salaryRange", target = "salaryRange")
-    ApplicationPosition toApplicationPosition(ApplicationPosition applicationPosition, ApplicationPositionRequest request);
+    ApplicationPosition toApplicationPosition(ApplicationPosition applicationPosition,
+            ApplicationPositionRequest request);
 
     @Mapping(source = "request", target = "skills")
     @Mapping(source = "applicationPosition.applyPosition", target = "applyPosition")
     @Mapping(source = "applicationPosition.salaryRange", target = "salaryRange")
-    ApplicationPosition toApplicationPosition(ApplicationPosition applicationPosition, List<ApplicationSkillRequest> request);
+    ApplicationPosition toApplicationPosition(ApplicationPosition applicationPosition,
+            List<ApplicationSkillRequest> request);
 
     @Named(NAMED_ToApplicationPositionResponse)
     @Mapping(source = "skills", target = "skills")

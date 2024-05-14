@@ -10,6 +10,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+// git commit -m "PBL-536 user profile"
+
 public interface LanguageRepository extends JpaRepository<Language, UUID> {
 
     @Query("SELECT l FROM Language l WHERE l.account.accountId = :accountId")

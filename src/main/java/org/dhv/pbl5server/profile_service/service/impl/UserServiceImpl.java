@@ -43,6 +43,8 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 import java.util.UUID;
 
+// git commit -m "PBL-536 user profile"
+
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
@@ -66,7 +68,8 @@ public class UserServiceImpl implements UserService {
     public UserProfileResponse getUserProfile(Account account) {
         // Redis
         var userProfileInRedis = getUserProfileFromRedis(account.getAccountId().toString());
-        if (userProfileInRedis != null) return userProfileInRedis;
+        if (userProfileInRedis != null)
+            return userProfileInRedis;
         // Database
         var user = getAllDataByAccountId(account.getAccountId());
         return userMapper.toUserProfileResponse(user);
@@ -76,7 +79,8 @@ public class UserServiceImpl implements UserService {
     public UserProfileResponse getUserProfileById(String id) {
         // Redis
         var userProfileInRedis = getUserProfileFromRedis(id);
-        if (userProfileInRedis != null) return userProfileInRedis;
+        if (userProfileInRedis != null)
+            return userProfileInRedis;
         // Database
         var user = getAllDataByAccountId(UUID.fromString(id));
         return userMapper.toUserProfileResponse(user);
@@ -90,13 +94,13 @@ public class UserServiceImpl implements UserService {
                 .stream()
                 .map(awardMapper::toUserAwardResponse)
                 .toList(),
-            PageUtils.makePageInfo(page));
+                PageUtils.makePageInfo(page));
     }
 
     @Override
     public UserAwardResponse getUserAwardById(String id) {
         return awardMapper.toUserAwardResponse(awardRepository.findById(UUID.fromString(id))
-            .orElseThrow(() -> new NotFoundObjectException(ErrorMessageConstant.AWARD_NOT_FOUND)));
+                .orElseThrow(() -> new NotFoundObjectException(ErrorMessageConstant.AWARD_NOT_FOUND)));
     }
 
     @Override
@@ -107,13 +111,13 @@ public class UserServiceImpl implements UserService {
                 .stream()
                 .map(educationMapper::toUserEducationResponse)
                 .toList(),
-            PageUtils.makePageInfo(page));
+                PageUtils.makePageInfo(page));
     }
 
     @Override
     public UserEducationResponse getUserEducationById(String id) {
         return educationMapper.toUserEducationResponse(educationRepository.findById(UUID.fromString(id))
-            .orElseThrow(() -> new NotFoundObjectException(ErrorMessageConstant.EDUCATION_NOT_FOUND)));
+                .orElseThrow(() -> new NotFoundObjectException(ErrorMessageConstant.EDUCATION_NOT_FOUND)));
     }
 
     @Override
@@ -124,34 +128,35 @@ public class UserServiceImpl implements UserService {
                 .stream()
                 .map(experienceMapper::toUserExperienceResponse)
                 .toList(),
-            PageUtils.makePageInfo(page));
+                PageUtils.makePageInfo(page));
     }
 
     @Override
     public UserExperienceResponse getUserExperienceById(String id) {
         return experienceMapper.toUserExperienceResponse(experienceRepository.findById(UUID.fromString(id))
-            .orElseThrow(() -> new NotFoundObjectException(ErrorMessageConstant.EXPERIENCE_NOT_FOUND)));
+                .orElseThrow(() -> new NotFoundObjectException(ErrorMessageConstant.EXPERIENCE_NOT_FOUND)));
     }
 
     @Override
     public OtherDescription getUserOtherDescriptionById(String userId, String id) {
         var user = repository.findById(UUID.fromString(userId))
-            .orElseThrow(() -> new NotFoundObjectException(ErrorMessageConstant.USER_NOT_FOUND));
+                .orElseThrow(() -> new NotFoundObjectException(ErrorMessageConstant.USER_NOT_FOUND));
         return otherDescriptionRepository.findById(user.getOthers(), UUID.fromString(id))
-            .orElseThrow(() -> new NotFoundObjectException(ErrorMessageConstant.OTHER_DESCRIPTION_NOT_FOUND));
+                .orElseThrow(() -> new NotFoundObjectException(ErrorMessageConstant.OTHER_DESCRIPTION_NOT_FOUND));
     }
 
     @Override
     public ApiDataResponse getListOtherDescriptionByUserId(String userId) {
         var user = repository.findById(UUID.fromString(userId))
-            .orElseThrow(() -> new NotFoundObjectException(ErrorMessageConstant.USER_NOT_FOUND));
-        return ApiDataResponse.successWithoutMeta(CommonUtils.isEmptyOrNullList(user.getOthers()) ? List.of() : user.getOthers());
+                .orElseThrow(() -> new NotFoundObjectException(ErrorMessageConstant.USER_NOT_FOUND));
+        return ApiDataResponse
+                .successWithoutMeta(CommonUtils.isEmptyOrNullList(user.getOthers()) ? List.of() : user.getOthers());
     }
 
     @Override
     public UserProfileResponse insertEducations(Account account, List<UserEducationRequest> request) {
         var user = repository.findById(account.getAccountId())
-            .orElseThrow(() -> new NotFoundObjectException(ErrorMessageConstant.USER_NOT_FOUND));
+                .orElseThrow(() -> new NotFoundObjectException(ErrorMessageConstant.USER_NOT_FOUND));
         var updatedUser = userMapper.toUserWithinListEducations(user, request);
         for (var education : updatedUser.getEducations()) {
             if (education.getStudyEndTime().before(education.getStudyStartTime()))
@@ -172,10 +177,9 @@ public class UserServiceImpl implements UserService {
         constantService.checkConstantWithType(request.stream()
                 .map(e -> UUID.fromString(e.getExperienceType().getConstantId()))
                 .toList(),
-            ConstantTypePrefix.EXPERIENCE_TYPES
-        );
+                ConstantTypePrefix.EXPERIENCE_TYPES);
         var user = repository.findById(account.getAccountId())
-            .orElseThrow(() -> new NotFoundObjectException(ErrorMessageConstant.USER_NOT_FOUND));
+                .orElseThrow(() -> new NotFoundObjectException(ErrorMessageConstant.USER_NOT_FOUND));
         var updatedUser = userMapper.toUserWithinListExperiences(user, request);
         for (var experience : updatedUser.getExperiences()) {
             if (experience.getExperienceEndTime().before(experience.getExperienceStartTime()))
@@ -195,7 +199,7 @@ public class UserServiceImpl implements UserService {
         // Remove id if exist
         request.forEach(e -> e.setId(null));
         var user = repository.findById(account.getAccountId())
-            .orElseThrow(() -> new NotFoundObjectException(ErrorMessageConstant.USER_NOT_FOUND));
+                .orElseThrow(() -> new NotFoundObjectException(ErrorMessageConstant.USER_NOT_FOUND));
         user.setOthers(otherDescriptionRepository.saveAll(user.getOthers(), request));
         user = repository.save(user);
         // Save to redis
@@ -206,7 +210,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserProfileResponse insertAwards(Account account, List<UserAwardRequest> request) {
         var user = repository.fetchAllDataEducationById(account.getAccountId())
-            .orElseThrow(() -> new NotFoundObjectException(ErrorMessageConstant.USER_NOT_FOUND));
+                .orElseThrow(() -> new NotFoundObjectException(ErrorMessageConstant.USER_NOT_FOUND));
         var updatedUser = userMapper.toUserWithinListAwards(user, request);
         for (var award : updatedUser.getAwards()) {
             award.setUser(user);
@@ -222,7 +226,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserProfileResponse updateBasicInfo(Account account, UserBasicInfoRequest request) {
         var user = repository.findById(account.getAccountId())
-            .orElseThrow(() -> new NotFoundObjectException(ErrorMessageConstant.USER_NOT_FOUND));
+                .orElseThrow(() -> new NotFoundObjectException(ErrorMessageConstant.USER_NOT_FOUND));
         var updatedUser = userMapper.toUser(user, request);
         var updatedAccount = userMapper.toAccount(account, request);
         updatedUser.setAccount(updatedAccount);
@@ -241,7 +245,7 @@ public class UserServiceImpl implements UserService {
                 throw new NotFoundObjectException(ErrorMessageConstant.EDUCATION_NOT_FOUND);
         }
         var user = repository.findById(account.getAccountId())
-            .orElseThrow(() -> new NotFoundObjectException(ErrorMessageConstant.USER_NOT_FOUND));
+                .orElseThrow(() -> new NotFoundObjectException(ErrorMessageConstant.USER_NOT_FOUND));
         var updatedUser = userMapper.toUserWithinListEducations(user, request);
         for (var education : updatedUser.getEducations()) {
             if (education.getStudyEndTime().before(education.getStudyStartTime()))
@@ -260,8 +264,7 @@ public class UserServiceImpl implements UserService {
         constantService.checkConstantWithType(request.stream()
                 .map(e -> UUID.fromString(e.getExperienceType().getConstantId()))
                 .toList(),
-            ConstantTypePrefix.EXPERIENCE_TYPES
-        );
+                ConstantTypePrefix.EXPERIENCE_TYPES);
         for (var req : request) {
             if (req.getId() == null)
                 throw new BadRequestException(ErrorMessageConstant.EXPERIENCE_ID_IS_REQUIRED);
@@ -269,7 +272,7 @@ public class UserServiceImpl implements UserService {
                 throw new NotFoundObjectException(ErrorMessageConstant.EXPERIENCE_NOT_FOUND);
         }
         var user = repository.findById(account.getAccountId())
-            .orElseThrow(() -> new NotFoundObjectException(ErrorMessageConstant.USER_NOT_FOUND));
+                .orElseThrow(() -> new NotFoundObjectException(ErrorMessageConstant.USER_NOT_FOUND));
         var updatedUser = userMapper.toUserWithinListExperiences(user, request);
         for (var experience : updatedUser.getExperiences()) {
             if (experience.getExperienceEndTime().before(experience.getExperienceStartTime()))
@@ -285,7 +288,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserProfileResponse updateOtherDescriptions(Account account, List<OtherDescription> request) {
         var user = repository.findById(account.getAccountId())
-            .orElseThrow(() -> new NotFoundObjectException(ErrorMessageConstant.USER_NOT_FOUND));
+                .orElseThrow(() -> new NotFoundObjectException(ErrorMessageConstant.USER_NOT_FOUND));
         for (var req : request) {
             if (req.getId() == null)
                 throw new BadRequestException(ErrorMessageConstant.OTHER_DESCRIPTION_ID_IS_REQUIRED);
@@ -308,7 +311,7 @@ public class UserServiceImpl implements UserService {
                 throw new NotFoundObjectException(ErrorMessageConstant.AWARD_NOT_FOUND);
         }
         var user = repository.fetchAllDataEducationById(account.getAccountId())
-            .orElseThrow(() -> new NotFoundObjectException(ErrorMessageConstant.USER_NOT_FOUND));
+                .orElseThrow(() -> new NotFoundObjectException(ErrorMessageConstant.USER_NOT_FOUND));
         var updatedUser = userMapper.toUserWithinListAwards(user, request);
         for (var award : updatedUser.getAwards()) {
             award.setUser(user);
@@ -322,8 +325,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public String updateAvatar(Account account, MultipartFile file) {
         var url = CommonUtils.isEmptyOrNullString(account.getAvatar())
-            ? s3Service.uploadFile(file)
-            : s3Service.uploadFile(file, account.getAvatar());
+                ? s3Service.uploadFile(file)
+                : s3Service.uploadFile(file, account.getAvatar());
         account.setAvatar(url);
         accountRepository.save(account);
         // Save to redis
@@ -331,10 +334,9 @@ public class UserServiceImpl implements UserService {
         if (userProfile != null) {
             userProfile.setAvatar(url);
             redisRepository.save(
-                RedisCacheConstant.PROFILE,
-                RedisCacheConstant.USER_PROFILE_HASH(account.getAccountId().toString()),
-                userProfile
-            );
+                    RedisCacheConstant.PROFILE,
+                    RedisCacheConstant.USER_PROFILE_HASH(account.getAccountId().toString()),
+                    userProfile);
         }
         return url;
     }
@@ -344,8 +346,7 @@ public class UserServiceImpl implements UserService {
         var userProfile = getUserProfileFromRedis(account.getAccountId().toString());
         List<UserEducationResponse> educations = userProfile != null ? userProfile.getEducations() : List.of();
         var user = repository.fetchAllDataEducationById(account.getAccountId()).orElseThrow(
-            () -> new NotFoundObjectException(ErrorMessageConstant.USER_NOT_FOUND)
-        );
+                () -> new NotFoundObjectException(ErrorMessageConstant.USER_NOT_FOUND));
         if (checkDeleteIdsRequest(user.getEducations().stream().map(UserEducation::getId).toList(), ids)) {
             ids.forEach(id -> {
                 educationRepository.deleteById(UUID.fromString(id));
@@ -357,10 +358,9 @@ public class UserServiceImpl implements UserService {
         if (userProfile != null) {
             userProfile.setEducations(educations);
             redisRepository.save(
-                RedisCacheConstant.PROFILE,
-                RedisCacheConstant.USER_PROFILE_HASH(account.getAccountId().toString()),
-                userProfile
-            );
+                    RedisCacheConstant.PROFILE,
+                    RedisCacheConstant.USER_PROFILE_HASH(account.getAccountId().toString()),
+                    userProfile);
         }
     }
 
@@ -369,8 +369,7 @@ public class UserServiceImpl implements UserService {
         var userProfile = getUserProfileFromRedis(account.getAccountId().toString());
         List<UserAwardResponse> awards = userProfile != null ? userProfile.getAwards() : List.of();
         var user = repository.fetchAllDataAwardById(account.getAccountId()).orElseThrow(
-            () -> new NotFoundObjectException(ErrorMessageConstant.USER_NOT_FOUND)
-        );
+                () -> new NotFoundObjectException(ErrorMessageConstant.USER_NOT_FOUND));
         if (checkDeleteIdsRequest(user.getAwards().stream().map(UserAward::getId).toList(), ids)) {
             ids.forEach(id -> {
                 awardRepository.deleteById(UUID.fromString(id));
@@ -381,10 +380,9 @@ public class UserServiceImpl implements UserService {
         if (userProfile != null) {
             userProfile.setAwards(awards);
             redisRepository.save(
-                RedisCacheConstant.PROFILE,
-                RedisCacheConstant.USER_PROFILE_HASH(account.getAccountId().toString()),
-                userProfile
-            );
+                    RedisCacheConstant.PROFILE,
+                    RedisCacheConstant.USER_PROFILE_HASH(account.getAccountId().toString()),
+                    userProfile);
         }
     }
 
@@ -393,8 +391,7 @@ public class UserServiceImpl implements UserService {
         var userProfile = getUserProfileFromRedis(account.getAccountId().toString());
         List<UserExperienceResponse> experiences = userProfile != null ? userProfile.getExperiences() : List.of();
         var user = repository.fetchAllDataExperienceById(account.getAccountId()).orElseThrow(
-            () -> new NotFoundObjectException(ErrorMessageConstant.USER_NOT_FOUND)
-        );
+                () -> new NotFoundObjectException(ErrorMessageConstant.USER_NOT_FOUND));
         if (checkDeleteIdsRequest(user.getExperiences().stream().map(UserExperience::getId).toList(), ids)) {
             ids.forEach(id -> {
                 experienceRepository.deleteById(UUID.fromString(id));
@@ -405,10 +402,9 @@ public class UserServiceImpl implements UserService {
         if (userProfile != null) {
             userProfile.setExperiences(experiences);
             redisRepository.save(
-                RedisCacheConstant.PROFILE,
-                RedisCacheConstant.USER_PROFILE_HASH(account.getAccountId().toString()),
-                userProfile
-            );
+                    RedisCacheConstant.PROFILE,
+                    RedisCacheConstant.USER_PROFILE_HASH(account.getAccountId().toString()),
+                    userProfile);
         }
     }
 
@@ -416,20 +412,19 @@ public class UserServiceImpl implements UserService {
     public void deleteOtherDescriptions(Account account, List<String> ids) {
         var userProfile = getUserProfileFromRedis(account.getAccountId().toString());
         var user = repository.findById(account.getAccountId()).orElseThrow(
-            () -> new NotFoundObjectException(ErrorMessageConstant.USER_NOT_FOUND)
-        );
+                () -> new NotFoundObjectException(ErrorMessageConstant.USER_NOT_FOUND));
         if (checkDeleteIdsRequest(user.getOthers().stream().map(OtherDescription::getId).toList(), ids)) {
-            var result = otherDescriptionRepository.deleteAllById(user.getOthers(), ids.stream().map(UUID::fromString).toList());
+            var result = otherDescriptionRepository.deleteAllById(user.getOthers(),
+                    ids.stream().map(UUID::fromString).toList());
             user.setOthers(result);
             repository.save(user);
             // Save to redis
             if (userProfile != null) {
                 userProfile.setOthers(result);
                 redisRepository.save(
-                    RedisCacheConstant.PROFILE,
-                    RedisCacheConstant.USER_PROFILE_HASH(account.getAccountId().toString()),
-                    userProfile
-                );
+                        RedisCacheConstant.PROFILE,
+                        RedisCacheConstant.USER_PROFILE_HASH(account.getAccountId().toString()),
+                        userProfile);
             }
         }
 
@@ -439,15 +434,15 @@ public class UserServiceImpl implements UserService {
     public User getAllDataByAccountId(UUID accountId) {
         // Educations
         User user = repository.fetchAllDataEducationById(accountId)
-            .orElseThrow(() -> new NotFoundObjectException(ErrorMessageConstant.USER_NOT_FOUND));
+                .orElseThrow(() -> new NotFoundObjectException(ErrorMessageConstant.USER_NOT_FOUND));
         // Experiences
         user.setExperiences(repository.fetchAllDataExperienceById(accountId)
-            .orElseThrow(() -> new NotFoundObjectException(ErrorMessageConstant.USER_NOT_FOUND))
-            .getExperiences());
+                .orElseThrow(() -> new NotFoundObjectException(ErrorMessageConstant.USER_NOT_FOUND))
+                .getExperiences());
         // Awards
         user.setAwards(repository.fetchAllDataAwardById(accountId)
-            .orElseThrow(() -> new NotFoundObjectException(ErrorMessageConstant.USER_NOT_FOUND))
-            .getAwards());
+                .orElseThrow(() -> new NotFoundObjectException(ErrorMessageConstant.USER_NOT_FOUND))
+                .getAwards());
         // Account with application positions
         var account = user.getAccount();
         account = applicationPositionService.getAccountWithAllApplicationPositions(user.getAccountId());
@@ -456,10 +451,9 @@ public class UserServiceImpl implements UserService {
         user.setAccount(account);
         // Save to redis
         redisRepository.save(
-            RedisCacheConstant.PROFILE,
-            RedisCacheConstant.USER_PROFILE_HASH(accountId.toString()),
-            userMapper.toUserProfileResponse(user)
-        );
+                RedisCacheConstant.PROFILE,
+                RedisCacheConstant.USER_PROFILE_HASH(accountId.toString()),
+                userMapper.toUserProfileResponse(user));
         return user;
     }
 
@@ -467,16 +461,16 @@ public class UserServiceImpl implements UserService {
     public User getAllDataByAccountId(User user, UUID accountId) {
         // Educations
         user.setEducations(repository.fetchAllDataEducationById(accountId)
-            .orElseThrow(() -> new NotFoundObjectException(ErrorMessageConstant.USER_NOT_FOUND))
-            .getEducations());
+                .orElseThrow(() -> new NotFoundObjectException(ErrorMessageConstant.USER_NOT_FOUND))
+                .getEducations());
         // Experiences
         user.setExperiences(repository.fetchAllDataExperienceById(accountId)
-            .orElseThrow(() -> new NotFoundObjectException(ErrorMessageConstant.USER_NOT_FOUND))
-            .getExperiences());
+                .orElseThrow(() -> new NotFoundObjectException(ErrorMessageConstant.USER_NOT_FOUND))
+                .getExperiences());
         // Awards
         user.setAwards(repository.fetchAllDataAwardById(accountId)
-            .orElseThrow(() -> new NotFoundObjectException(ErrorMessageConstant.USER_NOT_FOUND))
-            .getAwards());
+                .orElseThrow(() -> new NotFoundObjectException(ErrorMessageConstant.USER_NOT_FOUND))
+                .getAwards());
         // Account with application positions
         var account = user.getAccount();
         account = applicationPositionService.getAccountWithAllApplicationPositions(user.getAccountId());
@@ -485,10 +479,9 @@ public class UserServiceImpl implements UserService {
         user.setAccount(account);
         // Save to redis
         redisRepository.save(
-            RedisCacheConstant.PROFILE,
-            RedisCacheConstant.USER_PROFILE_HASH(accountId.toString()),
-            userMapper.toUserProfileResponse(user)
-        );
+                RedisCacheConstant.PROFILE,
+                RedisCacheConstant.USER_PROFILE_HASH(accountId.toString()),
+                userMapper.toUserProfileResponse(user));
         return user;
     }
 
@@ -500,7 +493,7 @@ public class UserServiceImpl implements UserService {
                 .stream()
                 .map(userMapper::toUserProfileResponseWithBasicInfoOnly)
                 .toList(),
-            PageUtils.makePageInfo(page));
+                PageUtils.makePageInfo(page));
     }
 
     private boolean checkDeleteIdsRequest(List<UUID> data, List<String> ids) {
@@ -513,9 +506,10 @@ public class UserServiceImpl implements UserService {
 
     private UserProfileResponse getUserProfileFromRedis(String accountId) {
         var profile = redisRepository.findByHashKey(
-            RedisCacheConstant.PROFILE,
-            RedisCacheConstant.USER_PROFILE_HASH(accountId));
-        if (profile == null) return null;
+                RedisCacheConstant.PROFILE,
+                RedisCacheConstant.USER_PROFILE_HASH(accountId));
+        if (profile == null)
+            return null;
         return CommonUtils.decodeJson(profile.toString(), UserProfileResponse.class);
     }
 }

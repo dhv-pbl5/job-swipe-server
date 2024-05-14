@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+// git commit -m "PBL-536 user profile"
+
 @RestController
 @RequestMapping("/v1/account/languages")
 @RequiredArgsConstructor
@@ -25,9 +27,8 @@ public class LanguageController {
     @PreAuthorizeSystemRoleWithoutAdmin
     @PostMapping("")
     public ResponseEntity<ApiDataResponse> insertLanguages(
-        @RequestBody List<LanguageRequest> requests,
-        @CurrentAccount Account account
-    ) {
+            @RequestBody List<LanguageRequest> requests,
+            @CurrentAccount Account account) {
         listValidator.validate(requests);
         return ResponseEntity.ok(ApiDataResponse.successWithoutMeta(service.insertLanguage(account, requests)));
     }
@@ -35,9 +36,8 @@ public class LanguageController {
     @PreAuthorizeSystemRoleWithoutAdmin
     @PatchMapping("")
     public ResponseEntity<ApiDataResponse> updateLanguage(
-        @Valid @RequestBody List<LanguageRequest> requests,
-        @CurrentAccount Account account
-    ) {
+            @Valid @RequestBody List<LanguageRequest> requests,
+            @CurrentAccount Account account) {
         listValidator.validate(requests);
         return ResponseEntity.ok(ApiDataResponse.successWithoutMeta(service.updateLanguage(account, requests)));
     }
@@ -45,23 +45,23 @@ public class LanguageController {
     @PreAuthorizeSystemRoleWithoutAdmin
     @GetMapping("")
     public ResponseEntity<ApiDataResponse> getLanguages(
-        @Nullable @RequestParam("account_id") String accountId,
-        @Nullable @RequestParam("language_id") String languageId,
-        @CurrentAccount Account account
-    ) {
+            @Nullable @RequestParam("account_id") String accountId,
+            @Nullable @RequestParam("language_id") String languageId,
+            @CurrentAccount Account account) {
         if (accountId != null && languageId != null)
-            return ResponseEntity.ok(ApiDataResponse.successWithoutMeta(service.getLanguageById(accountId, languageId)));
+            return ResponseEntity
+                    .ok(ApiDataResponse.successWithoutMeta(service.getLanguageById(accountId, languageId)));
         if (accountId != null)
             return ResponseEntity.ok(ApiDataResponse.successWithoutMeta(service.getLanguages(accountId)));
-        return ResponseEntity.ok(ApiDataResponse.successWithoutMeta(service.getLanguages(account.getAccountId().toString())));
+        return ResponseEntity
+                .ok(ApiDataResponse.successWithoutMeta(service.getLanguages(account.getAccountId().toString())));
     }
 
     @PreAuthorizeSystemRoleWithoutAdmin
     @DeleteMapping("")
     public ResponseEntity<ApiDataResponse> deleteLanguages(
-        @RequestBody List<String> ids,
-        @CurrentAccount Account account
-    ) {
+            @RequestBody List<String> ids,
+            @CurrentAccount Account account) {
         service.deleteLanguages(account, ids);
         return ResponseEntity.ok(ApiDataResponse.successWithoutMetaAndData());
     }

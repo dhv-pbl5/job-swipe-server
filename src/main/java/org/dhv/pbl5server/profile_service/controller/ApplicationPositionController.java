@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+// git commit -m "PBL-536 user profile"
+
 @RestController
 @RequestMapping("/v1/account/application-positions")
 @RequiredArgsConstructor
@@ -26,56 +28,55 @@ public class ApplicationPositionController {
     @PreAuthorizeSystemRoleWithoutAdmin
     @PostMapping("")
     public ResponseEntity<ApiDataResponse> insertApplicationPositions(
-        @RequestBody List<ApplicationPositionRequest> requests,
-        @CurrentAccount Account account
-    ) {
+            @RequestBody List<ApplicationPositionRequest> requests,
+            @CurrentAccount Account account) {
         listValidator.validate(requests);
-        return ResponseEntity.ok(ApiDataResponse.successWithoutMeta(service.insertApplicationPositions(account, requests)));
+        return ResponseEntity
+                .ok(ApiDataResponse.successWithoutMeta(service.insertApplicationPositions(account, requests)));
     }
 
     @PreAuthorizeSystemRoleWithoutAdmin
     @PatchMapping("")
     public ResponseEntity<ApiDataResponse> updateApplicationPosition(
-        @Valid @RequestBody List<ApplicationPositionRequest> requests,
-        @CurrentAccount Account account
-    ) {
+            @Valid @RequestBody List<ApplicationPositionRequest> requests,
+            @CurrentAccount Account account) {
         listValidator.validate(requests);
-        return ResponseEntity.ok(ApiDataResponse.successWithoutMeta(service.updateApplicationPosition(account, requests)));
+        return ResponseEntity
+                .ok(ApiDataResponse.successWithoutMeta(service.updateApplicationPosition(account, requests)));
     }
 
     @PreAuthorizeSystemRoleWithoutAdmin
     @PatchMapping("/{application_position_id}")
     public ResponseEntity<ApiDataResponse> updateApplicationSkill(
-        @PathVariable("application_position_id") String applicationPositionId,
-        @RequestBody List<ApplicationSkillRequest> request,
-        @CurrentAccount Account account
-    ) {
+            @PathVariable("application_position_id") String applicationPositionId,
+            @RequestBody List<ApplicationSkillRequest> request,
+            @CurrentAccount Account account) {
         listValidator.validate(request);
-        return ResponseEntity.ok(ApiDataResponse.successWithoutMeta(service.insertOrUpdateApplicationSkills(account, applicationPositionId, request)));
+        return ResponseEntity.ok(ApiDataResponse
+                .successWithoutMeta(service.insertOrUpdateApplicationSkills(account, applicationPositionId, request)));
     }
-
 
     @PreAuthorizeSystemRoleWithoutAdmin
     @GetMapping("")
     public ResponseEntity<ApiDataResponse> getApplicationPositions(
-        @Nullable @RequestParam("account_id") String accountId,
-        @Nullable @RequestParam("application_position_id") String applicationPositionId,
-        @CurrentAccount Account account
-    ) {
+            @Nullable @RequestParam("account_id") String accountId,
+            @Nullable @RequestParam("application_position_id") String applicationPositionId,
+            @CurrentAccount Account account) {
         if (accountId != null && applicationPositionId != null)
-            return ResponseEntity.ok(ApiDataResponse.successWithoutMeta(service.getApplicationPositionById(accountId, applicationPositionId)));
+            return ResponseEntity.ok(ApiDataResponse
+                    .successWithoutMeta(service.getApplicationPositionById(accountId, applicationPositionId)));
         if (accountId != null)
             return ResponseEntity.ok(ApiDataResponse.successWithoutMeta(service.getApplicationPositions(accountId)));
-        return ResponseEntity.ok(ApiDataResponse.successWithoutMeta(service.getApplicationPositions(account.getAccountId().toString())));
+        return ResponseEntity.ok(
+                ApiDataResponse.successWithoutMeta(service.getApplicationPositions(account.getAccountId().toString())));
     }
 
     @PreAuthorizeSystemRoleWithoutAdmin
     @DeleteMapping("")
     public ResponseEntity<ApiDataResponse> deleteApplicationPositions(
-        @Nullable @RequestParam("application_position_id") String applicationPositionId,
-        @RequestBody List<String> ids,
-        @CurrentAccount Account account
-    ) {
+            @Nullable @RequestParam("application_position_id") String applicationPositionId,
+            @RequestBody List<String> ids,
+            @CurrentAccount Account account) {
         if (applicationPositionId != null)
             service.deleteApplicationSkills(account, applicationPositionId, ids);
         else

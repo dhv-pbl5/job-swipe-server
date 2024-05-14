@@ -11,6 +11,7 @@ import org.dhv.pbl5server.common_service.model.DbJsonArrayModel;
 import java.util.UUID;
 
 // git commit -m "PBL-513 register for company"
+// git commit -m "PBL-536 user profile"
 
 @Getter
 @Setter

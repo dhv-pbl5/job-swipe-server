@@ -9,7 +9,9 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
 
-@Mapper(config = SpringMapStructConfig.class, uses = {ConstantMapper.class})
+// git commit -m "PBL-536 user profile"
+
+@Mapper(config = SpringMapStructConfig.class, uses = { ConstantMapper.class })
 public interface LanguageMapper {
     public static final String NAMED_ToLanguageResponse = "toLanguageResponse";
 

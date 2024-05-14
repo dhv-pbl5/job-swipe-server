@@ -10,6 +10,8 @@ import org.dhv.pbl5server.common_service.annotation.NotBlankStringValidation;
 import java.sql.Timestamp;
 import java.util.List;
 
+// git commit -m "PBL-536 user profile"
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

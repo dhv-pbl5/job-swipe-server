@@ -8,6 +8,8 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.util.UUID;
 
+// git commit -m "PBL-536 user profile"
+
 public interface UserAwardRepository extends JpaRepository<UserAward, UUID> {
     @Query("SELECT ua FROM UserAward ua WHERE ua.user.accountId = :userId")
     Page<UserAward> findAllByUserId(UUID userId, Pageable pageable);

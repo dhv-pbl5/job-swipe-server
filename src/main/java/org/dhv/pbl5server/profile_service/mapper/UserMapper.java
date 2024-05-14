@@ -15,9 +15,9 @@ import org.mapstruct.Named;
 
 import java.util.List;
 
-@Mapper(
-    config = SpringMapStructConfig.class,
-    uses = {
+// git commit -m "PBL-536 user profile"
+
+@Mapper(config = SpringMapStructConfig.class, uses = {
         ConstantMapper.class,
         EducationMapper.class,
         AwardMapper.class,
@@ -25,8 +25,7 @@ import java.util.List;
         ApplicationPositionMapper.class,
         ApplicationSkillMapper.class,
         LanguageMapper.class
-    }
-)
+})
 public interface UserMapper {
     public static final String NAMED_ToUserProfileResponseWithBasicInfoOnly = "toUserProfileResponseWithBasicInfoOnly";
 
@@ -96,7 +95,6 @@ public interface UserMapper {
     @Mapping(source = "requests", target = "experiences")
     @Mapping(source = "user.account", target = "account")
     User toUserWithinListExperiences(User user, List<UserExperienceRequest> requests);
-
 
     @Mapping(source = "request.accountStatus", target = "accountStatus")
     @Mapping(source = "request.address", target = "address")

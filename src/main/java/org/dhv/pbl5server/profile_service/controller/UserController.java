@@ -32,6 +32,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
+// git commit -m "PBL-536 user profile"
+
 @RestController
 @RequestMapping("/v1/profile/user")
 @RequiredArgsConstructor
@@ -42,11 +44,10 @@ public class UserController {
     @PreAuthorizeSystemRoleWithoutAdmin
     @GetMapping("")
     public ResponseEntity<ApiDataResponse> getUserProfileComponentById(
-        @Nullable @RequestParam("user_id") String userId,
-        @Nullable @RequestParam("componentId") String componentId,
-        @Nullable @RequestParam String type,
-        @CurrentAccount Account currentAccount
-    ) {
+            @Nullable @RequestParam("user_id") String userId,
+            @Nullable @RequestParam("componentId") String componentId,
+            @Nullable @RequestParam String type,
+            @CurrentAccount Account currentAccount) {
         // Default --> [BASIC_INFO] type when type is null or type is "basic_info"
         if (type == null || type.equalsIgnoreCase(UserProfileRequestType.BASIC_INFO.getValue())) {
             if (userId == null) // Get BASIC_INFO by account_token
@@ -55,13 +56,14 @@ public class UserController {
                 return ResponseEntity.ok(ApiDataResponse.successWithoutMeta(service.getUserProfileById(userId)));
         }
         /*
-            Get other component by type
+         * Get other component by type
          */
         var typeEnum = AbstractEnum.fromString(UserProfileRequestType.values(), type);
         // Throw exception: when type is "other_description" but userId is null
         if (typeEnum == UserProfileRequestType.OTHER_DESCRIPTION && CommonUtils.isEmptyOrNullString(userId))
             throw new BadRequestException(ErrorMessageConstant.OTHER_DESCRIPTION_USER_ID_IS_REQUIRED);
-        // Throw exception: when getting other component info by id but componentId is null
+        // Throw exception: when getting other component info by id but componentId is
+        // null
         if (typeEnum != UserProfileRequestType.BASIC_INFO && CommonUtils.isEmptyOrNullString(componentId))
             throw new BadRequestException(ErrorMessageConstant.COMPONENT_ID_IS_REQUIRED);
         return switch (typeEnum) {
@@ -71,7 +73,8 @@ public class UserController {
             case EDUCATION ->
                 ResponseEntity.ok(ApiDataResponse.successWithoutMeta(service.getUserEducationById(componentId)));
             case OTHER_DESCRIPTION ->
-                ResponseEntity.ok(ApiDataResponse.successWithoutMeta(service.getUserOtherDescriptionById(userId, componentId)));
+                ResponseEntity.ok(
+                        ApiDataResponse.successWithoutMeta(service.getUserOtherDescriptionById(userId, componentId)));
             default -> ResponseEntity.ok(ApiDataResponse.successWithoutMetaAndData());
         };
     }
@@ -79,13 +82,12 @@ public class UserController {
     @PreAuthorizeSystemRoleWithoutAdmin
     @GetMapping("/{user_id}")
     public ResponseEntity<ApiDataResponse> getAllByUserId(
-        @PathVariable("user_id") String userId,
-        @RequestParam String type,
-        @Nullable @RequestParam("page") Integer page,
-        @Nullable @RequestParam("paging") Integer paging,
-        @Nullable @RequestParam("sort_by") String sortBy,
-        @Nullable @RequestParam("order") String order
-    ) {
+            @PathVariable("user_id") String userId,
+            @RequestParam String type,
+            @Nullable @RequestParam("page") Integer page,
+            @Nullable @RequestParam("paging") Integer paging,
+            @Nullable @RequestParam("sort_by") String sortBy,
+            @Nullable @RequestParam("order") String order) {
         var pageRequest = PageUtils.makePageRequest(sortBy, order, page, paging);
         var typeEnum = AbstractEnum.fromString(UserProfileRequestType.values(), type);
         return switch (typeEnum) {
@@ -101,10 +103,9 @@ public class UserController {
     @PostMapping("")
     @SuppressWarnings("unchecked")
     public ResponseEntity<ApiDataResponse> insertProfileComponent(
-        @RequestParam("type") String type,
-        @RequestBody Object body,
-        @CurrentAccount Account currentAccount
-    ) {
+            @RequestParam("type") String type,
+            @RequestBody Object body,
+            @CurrentAccount Account currentAccount) {
         Set<ConstraintViolation<Object>> violations = null;
         Object object = null;
         var typeEnum = AbstractEnum.fromString(UserProfileRequestType.values(), type);
@@ -115,30 +116,35 @@ public class UserController {
                     violations = validator.validate(Objects.requireNonNull(obj));
                     ErrorUtils.checkConstraintViolation(violations);
                 }
-                return ResponseEntity.ok(ApiDataResponse.successWithoutMeta(service.insertAwards(currentAccount, (List<UserAwardRequest>) object)));
+                return ResponseEntity.ok(ApiDataResponse
+                        .successWithoutMeta(service.insertAwards(currentAccount, (List<UserAwardRequest>) object)));
             case EDUCATION:
                 object = getObjectFromUpdateApi(body, typeEnum);
                 for (var obj : (List<UserEducationRequest>) Objects.requireNonNull(object)) {
                     violations = validator.validate(Objects.requireNonNull(obj));
                     ErrorUtils.checkConstraintViolation(violations);
                 }
-                return ResponseEntity.ok(ApiDataResponse.successWithoutMeta(service.insertEducations(currentAccount, (List<UserEducationRequest>) object)));
+                return ResponseEntity.ok(ApiDataResponse.successWithoutMeta(
+                        service.insertEducations(currentAccount, (List<UserEducationRequest>) object)));
             case EXPERIENCE:
                 object = getObjectFromUpdateApi(body, typeEnum);
                 for (var obj : (List<UserExperienceRequest>) Objects.requireNonNull(object)) {
                     violations = validator.validate(Objects.requireNonNull(obj));
                     ErrorUtils.checkConstraintViolation(violations);
                 }
-                return ResponseEntity.ok(ApiDataResponse.successWithoutMeta(service.insertExperiences(currentAccount, (List<UserExperienceRequest>) object)));
+                return ResponseEntity.ok(ApiDataResponse.successWithoutMeta(
+                        service.insertExperiences(currentAccount, (List<UserExperienceRequest>) object)));
             case OTHER_DESCRIPTION:
                 object = getObjectFromUpdateApi(body, typeEnum);
                 for (var obj : (List<OtherDescription>) Objects.requireNonNull(object)) {
                     violations = validator.validate(Objects.requireNonNull(obj));
                     ErrorUtils.checkConstraintViolation(violations);
                 }
-                return ResponseEntity.ok(ApiDataResponse.successWithoutMeta(service.insertOtherDescriptions(currentAccount, (List<OtherDescription>) object)));
+                return ResponseEntity.ok(ApiDataResponse.successWithoutMeta(
+                        service.insertOtherDescriptions(currentAccount, (List<OtherDescription>) object)));
             default:
-                return ResponseEntity.badRequest().body(ApiDataResponse.builder().status(CommonConstant.FAILURE).build());
+                return ResponseEntity.badRequest()
+                        .body(ApiDataResponse.builder().status(CommonConstant.FAILURE).build());
         }
     }
 
@@ -146,10 +152,9 @@ public class UserController {
     @PatchMapping("")
     @SuppressWarnings("unchecked")
     public ResponseEntity<ApiDataResponse> updateUserInfo(
-        @RequestParam("type") String type,
-        @RequestBody Object body,
-        @CurrentAccount Account currentAccount
-    ) {
+            @RequestParam("type") String type,
+            @RequestBody Object body,
+            @CurrentAccount Account currentAccount) {
         Set<ConstraintViolation<Object>> violations = null;
         Object object = null;
         var typeEnum = AbstractEnum.fromString(UserProfileRequestType.values(), type);
@@ -158,35 +163,40 @@ public class UserController {
                 object = getObjectFromUpdateApi(body, typeEnum);
                 violations = validator.validate(Objects.requireNonNull(object));
                 ErrorUtils.checkConstraintViolation(violations);
-                return ResponseEntity.ok(ApiDataResponse.successWithoutMeta(service.updateBasicInfo(currentAccount, (UserBasicInfoRequest) object)));
+                return ResponseEntity.ok(ApiDataResponse
+                        .successWithoutMeta(service.updateBasicInfo(currentAccount, (UserBasicInfoRequest) object)));
             case AWARD:
                 object = getObjectFromUpdateApi(body, typeEnum);
                 for (var obj : (List<UserAwardRequest>) Objects.requireNonNull(object)) {
                     violations = validator.validate(Objects.requireNonNull(obj));
                     ErrorUtils.checkConstraintViolation(violations);
                 }
-                return ResponseEntity.ok(ApiDataResponse.successWithoutMeta(service.updateAwards(currentAccount, (List<UserAwardRequest>) object)));
+                return ResponseEntity.ok(ApiDataResponse
+                        .successWithoutMeta(service.updateAwards(currentAccount, (List<UserAwardRequest>) object)));
             case EDUCATION:
                 object = getObjectFromUpdateApi(body, typeEnum);
                 for (var obj : (List<UserEducationRequest>) Objects.requireNonNull(object)) {
                     violations = validator.validate(Objects.requireNonNull(obj));
                     ErrorUtils.checkConstraintViolation(violations);
                 }
-                return ResponseEntity.ok(ApiDataResponse.successWithoutMeta(service.updateEducations(currentAccount, (List<UserEducationRequest>) object)));
+                return ResponseEntity.ok(ApiDataResponse.successWithoutMeta(
+                        service.updateEducations(currentAccount, (List<UserEducationRequest>) object)));
             case EXPERIENCE:
                 object = getObjectFromUpdateApi(body, typeEnum);
                 for (var obj : (List<UserExperienceRequest>) Objects.requireNonNull(object)) {
                     violations = validator.validate(Objects.requireNonNull(obj));
                     ErrorUtils.checkConstraintViolation(violations);
                 }
-                return ResponseEntity.ok(ApiDataResponse.successWithoutMeta(service.updateExperiences(currentAccount, (List<UserExperienceRequest>) object)));
+                return ResponseEntity.ok(ApiDataResponse.successWithoutMeta(
+                        service.updateExperiences(currentAccount, (List<UserExperienceRequest>) object)));
             case OTHER_DESCRIPTION:
                 object = getObjectFromUpdateApi(body, typeEnum);
                 for (var obj : (List<OtherDescription>) Objects.requireNonNull(object)) {
                     violations = validator.validate(Objects.requireNonNull(obj));
                     ErrorUtils.checkConstraintViolation(violations);
                 }
-                return ResponseEntity.ok(ApiDataResponse.successWithoutMeta(service.updateOtherDescriptions(currentAccount, (List<OtherDescription>) object)));
+                return ResponseEntity.ok(ApiDataResponse.successWithoutMeta(
+                        service.updateOtherDescriptions(currentAccount, (List<OtherDescription>) object)));
 
         }
         return ResponseEntity.badRequest().body(ApiDataResponse.builder().status(CommonConstant.FAILURE).build());
@@ -201,10 +211,9 @@ public class UserController {
     @PreAuthorizeUser
     @DeleteMapping("")
     public ResponseEntity<ApiDataResponse> deleteEducations(
-        @RequestParam("type") String type,
-        @RequestBody List<String> ids,
-        @CurrentAccount Account currentAccount
-    ) {
+            @RequestParam("type") String type,
+            @RequestBody List<String> ids,
+            @CurrentAccount Account currentAccount) {
         var typeEnum = AbstractEnum.fromString(UserProfileRequestType.values(), type);
         switch (typeEnum) {
             case EDUCATION:
@@ -222,7 +231,6 @@ public class UserController {
         }
         return ResponseEntity.ok(ApiDataResponse.successWithoutMetaAndData());
     }
-
 
     @SuppressWarnings("unchecked")
     private Object getObjectFromUpdateApi(Object body, UserProfileRequestType type) {

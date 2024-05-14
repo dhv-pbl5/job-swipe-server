@@ -18,6 +18,8 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 import java.util.UUID;
 
+// git commit -m "PBL-536 user profile"
+
 public interface UserService {
     UserProfileResponse getUserProfile(Account account);
 

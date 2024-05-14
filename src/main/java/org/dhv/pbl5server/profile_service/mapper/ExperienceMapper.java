@@ -7,7 +7,9 @@ import org.dhv.pbl5server.profile_service.payload.request.UserExperienceRequest;
 import org.dhv.pbl5server.profile_service.payload.response.UserExperienceResponse;
 import org.mapstruct.Mapper;
 
-@Mapper(config = SpringMapStructConfig.class, uses = {ConstantMapper.class})
+// git commit -m "PBL-536 user profile"
+
+@Mapper(config = SpringMapStructConfig.class, uses = { ConstantMapper.class })
 public interface ExperienceMapper {
     UserExperience toUserExperience(UserExperienceRequest request);
 
