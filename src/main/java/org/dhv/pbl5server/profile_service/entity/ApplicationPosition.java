@@ -15,6 +15,7 @@ import java.util.UUID;
 // git commit -m "PBL-526 position and skill"
 // git commit -m "PBL-536 user profile"
 // git commit -m "PBL-534 application position"
+// git commit -m "PBL-528 delete application position"
 
 @Getter
 @Setter
