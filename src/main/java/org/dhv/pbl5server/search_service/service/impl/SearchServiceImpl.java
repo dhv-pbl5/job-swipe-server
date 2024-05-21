@@ -29,8 +29,7 @@ public class SearchServiceImpl implements SearchService {
     @Override
     public ApiDataResponse searchUsers(String query, SearchType type, Pageable request) {
         Page<User> page = switch (type) {
-            case NAME -> userRepository.searchByName(query, request);
-            case EMAIL -> userRepository.searchByEmail(query, request);
+            case NAME -> userRepository.search(query.toLowerCase(), request);
         };
         return ApiDataResponse.success(page
                 .getContent()
@@ -44,8 +43,7 @@ public class SearchServiceImpl implements SearchService {
     @Override
     public ApiDataResponse searchCompanies(String query, SearchType type, Pageable request) {
         Page<Company> page = switch (type) {
-            case NAME -> companyRepository.searchByName(query, request);
-            case EMAIL -> companyRepository.searchByEmail(query, request);
+            case NAME -> companyRepository.search(query.toLowerCase(), request);
         };
         return ApiDataResponse.success(page
                 .getContent()

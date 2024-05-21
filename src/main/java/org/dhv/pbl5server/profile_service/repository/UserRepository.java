@@ -23,9 +23,6 @@ public interface UserRepository extends JpaRepository<User, UUID> {
     /*
      * Search user
      */
-    @Query("SELECT u FROM User u WHERE CONCAT(u.lastName, ' ', u.firstName) LIKE %:name%")
-    Page<User> searchByName(String name, Pageable pageable);
-
-    @Query("SELECT u FROM User u WHERE u.account.email LIKE %:email%")
-    Page<User> searchByEmail(String email, Pageable pageable);
+    @Query("SELECT u FROM User u WHERE LOWER(CONCAT(u.lastName, ' ', u.firstName)) LIKE %:query% OR LOWER(u.account.email) LIKE %:query%")
+    Page<User> search(String query, Pageable pageable);
 }
