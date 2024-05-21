@@ -9,9 +9,6 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.UUID;
 
 public interface CompanyRepository extends JpaRepository<Company, UUID> {
-    @Query("SELECT c FROM Company c WHERE c.companyName LIKE %:name%")
-    Page<Company> searchByName(String name, Pageable pageable);
-
-    @Query("SELECT c FROM Company c WHERE c.account.email LIKE %:email%")
-    Page<Company> searchByEmail(String email, Pageable pageable);
+    @Query("SELECT c FROM Company c WHERE LOWER(c.companyName) LIKE %:query% OR LOWER(c.account.email) LIKE %:query%")
+    Page<Company> search(String query, Pageable pageable);
 }
