@@ -7,6 +7,6 @@ RUN mvn package -DskipTests
 
 FROM openjdk:17.0.1-jdk-slim
 COPY --from=build /root/.aws/credentials /root/.aws/credentials
-COPY --from=build /target/pbl5-server-0.0.1-SNAPSHOT.jar pbl5-server.jar
+COPY --from=build /target/job-swipe-0.0.1-SNAPSHOT.jar job-swipe.jar
 EXPOSE 8080 8888
-ENTRYPOINT ["java", "-Dspring.profiles.active=prod", "-jar", "pbl5-server.jar"]
+ENTRYPOINT ["java", "-Dspring.profiles.active=prod", "-jar", "job-swipe.jar"]
