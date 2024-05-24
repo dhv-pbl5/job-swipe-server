@@ -53,6 +53,7 @@ application:
     access-token-expiration-ms: 7200000
     refresh-token-secret-key: lEhcgErgeknNv9/cp1Sh5RXTaB4RTVCCdAnPPewpSMM=
     refresh-token-expiration-ms: 2592000000
+  reset-password-code-expiration-ms: 3600000
   s3:
     bucket-name: pbl5-bucket
   server.socket:
