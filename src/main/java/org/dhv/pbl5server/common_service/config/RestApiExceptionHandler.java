@@ -1,9 +1,7 @@
 package org.dhv.pbl5server.common_service.config;
 
-
 import jakarta.annotation.Nonnull;
 import jakarta.servlet.http.HttpServletRequest;
-import lombok.extern.slf4j.Slf4j;
 import org.dhv.pbl5server.common_service.constant.ErrorMessageConstant;
 import org.dhv.pbl5server.common_service.exception.*;
 import org.dhv.pbl5server.common_service.model.ApiDataResponse;
@@ -37,7 +35,6 @@ import java.rmi.ServerError;
 import java.util.List;
 import java.util.Objects;
 
-@Slf4j
 @RestControllerAdvice
 public class RestApiExceptionHandler extends ResponseEntityExceptionHandler {
 
@@ -59,8 +56,7 @@ public class RestApiExceptionHandler extends ResponseEntityExceptionHandler {
     @SuppressWarnings("unused")
     @ExceptionHandler(NotFoundObjectException.class)
     public ResponseEntity<ApiDataResponse> handleNotFoundObjectException(
-        NotFoundObjectException ex, HttpServletRequest request
-    ) {
+            NotFoundObjectException ex, HttpServletRequest request) {
         ErrorResponse error = ErrorUtils.getExceptionError(ex.getMessage());
         ApiDataResponse response = ApiDataResponse.error(error);
         return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
@@ -69,8 +65,7 @@ public class RestApiExceptionHandler extends ResponseEntityExceptionHandler {
     @SuppressWarnings("unused")
     @ExceptionHandler(BadRequestException.class)
     public ResponseEntity<ApiDataResponse> handleBadRequestException(
-        BadRequestException ex, HttpServletRequest request
-    ) {
+            BadRequestException ex, HttpServletRequest request) {
         ErrorResponse error = ErrorUtils.getExceptionError(ex.getMessage());
         ApiDataResponse response = ApiDataResponse.error(error);
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
@@ -79,8 +74,7 @@ public class RestApiExceptionHandler extends ResponseEntityExceptionHandler {
     @SuppressWarnings("unused")
     @ExceptionHandler(InternalServerException.class)
     public ResponseEntity<ApiDataResponse> handleInternalServerException(
-        InternalServerException ex, HttpServletRequest request
-    ) {
+            InternalServerException ex, HttpServletRequest request) {
         ErrorResponse error = new ErrorResponse(ErrorMessageConstant.INTERNAL_SERVER_ERROR_CODE, ex.getMessage());
         ApiDataResponse response = ApiDataResponse.error(error);
         return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -89,8 +83,7 @@ public class RestApiExceptionHandler extends ResponseEntityExceptionHandler {
     @SuppressWarnings("unused")
     @ExceptionHandler(ForbiddenException.class)
     public ResponseEntity<ApiDataResponse> handleForbiddenException(
-        ForbiddenException ex, HttpServletRequest request
-    ) {
+            ForbiddenException ex, HttpServletRequest request) {
         ErrorResponse error = ErrorUtils.getExceptionError(ex.getMessage());
         ApiDataResponse response = ApiDataResponse.error(error);
         return new ResponseEntity<>(response, HttpStatus.FORBIDDEN);
@@ -99,8 +92,7 @@ public class RestApiExceptionHandler extends ResponseEntityExceptionHandler {
     @SuppressWarnings("unused")
     @ExceptionHandler(UnauthorizedException.class)
     public ResponseEntity<ApiDataResponse> handleUnauthorizedException(
-        UnauthorizedException ex, HttpServletRequest request
-    ) {
+            UnauthorizedException ex, HttpServletRequest request) {
         ErrorResponse error = ErrorUtils.getExceptionError(ex.getMessage());
         ApiDataResponse response = ApiDataResponse.error(error);
         return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
@@ -109,8 +101,7 @@ public class RestApiExceptionHandler extends ResponseEntityExceptionHandler {
     @SuppressWarnings("unused")
     @ExceptionHandler(ServerError.class)
     public ResponseEntity<ApiDataResponse> handleServerErrorException(
-        ServerError ex, HttpServletRequest request
-    ) {
+            ServerError ex, HttpServletRequest request) {
         ErrorResponse error = ErrorUtils.getExceptionError(ex.getMessage());
         ApiDataResponse response = ApiDataResponse.error(error);
         return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -119,8 +110,7 @@ public class RestApiExceptionHandler extends ResponseEntityExceptionHandler {
     @SuppressWarnings("unused")
     @ExceptionHandler(AccessDeniedException.class)
     public ResponseEntity<ApiDataResponse> handleAccessDeniedException(
-        AccessDeniedException ex, HttpServletRequest request
-    ) {
+            AccessDeniedException ex, HttpServletRequest request) {
         ErrorResponse error = ErrorUtils.getExceptionError(ErrorMessageConstant.FORBIDDEN);
         ApiDataResponse response = ApiDataResponse.error(error);
         return new ResponseEntity<>(response, HttpStatus.FORBIDDEN);
@@ -129,9 +119,9 @@ public class RestApiExceptionHandler extends ResponseEntityExceptionHandler {
     @SuppressWarnings("unused")
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     public ResponseEntity<ApiDataResponse> handleMethodArgumentTypeMismatchException(
-        MethodArgumentTypeMismatchException ex, HttpServletRequest request) {
-        String msg =
-            "%s should be of type %s".formatted(ex.getName(), Objects.requireNonNull(ex.getRequiredType()).getName());
+            MethodArgumentTypeMismatchException ex, HttpServletRequest request) {
+        String msg = "%s should be of type %s".formatted(ex.getName(),
+                Objects.requireNonNull(ex.getRequiredType()).getName());
         ErrorResponse error = new ErrorResponse(ErrorMessageConstant.BAD_REQUEST_ERROR_CODE, msg);
         ApiDataResponse response = ApiDataResponse.error(error);
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
@@ -140,8 +130,7 @@ public class RestApiExceptionHandler extends ResponseEntityExceptionHandler {
     @SuppressWarnings("unused")
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiDataResponse> handleGlobalException(
-        Exception ex, HttpServletRequest request
-    ) {
+            Exception ex, HttpServletRequest request) {
         ex.printStackTrace();
         ErrorResponse error = new ErrorResponse(ErrorMessageConstant.INTERNAL_SERVER_ERROR_CODE, ex.getMessage());
         ApiDataResponse response = ApiDataResponse.error(error);
@@ -151,8 +140,7 @@ public class RestApiExceptionHandler extends ResponseEntityExceptionHandler {
     @SuppressWarnings("unused")
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<ApiDataResponse> handleRuntimeException(
-        RuntimeException ex, HttpServletRequest request
-    ) {
+            RuntimeException ex, HttpServletRequest request) {
         ex.printStackTrace();
         ErrorResponse error = new ErrorResponse(ErrorMessageConstant.INTERNAL_SERVER_ERROR_CODE, ex.getMessage());
         ApiDataResponse response = ApiDataResponse.error(error);
@@ -162,8 +150,7 @@ public class RestApiExceptionHandler extends ResponseEntityExceptionHandler {
     @SuppressWarnings("unused")
     @ExceptionHandler(AuthenticationCredentialsNotFoundException.class)
     public ResponseEntity<ApiDataResponse> handleAuthenticationCredentialsNotFoundException(
-        AuthenticationCredentialsNotFoundException ex, HttpServletRequest request
-    ) {
+            AuthenticationCredentialsNotFoundException ex, HttpServletRequest request) {
         ErrorResponse error = ErrorUtils.getExceptionError(ErrorMessageConstant.UNAUTHORIZED);
         ApiDataResponse response = ApiDataResponse.error(error);
         return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
@@ -172,8 +159,7 @@ public class RestApiExceptionHandler extends ResponseEntityExceptionHandler {
     @SuppressWarnings("unused")
     @ExceptionHandler(InvalidDataException.class)
     public ResponseEntity<ApiDataResponse> handleInvalidDataException(
-        InvalidDataException ex, HttpServletRequest request
-    ) {
+            InvalidDataException ex, HttpServletRequest request) {
         ErrorResponse error = ErrorUtils.getValidationError(ex.resource, ex.fieldName, ex.getMessage());
         ApiDataResponse response = ApiDataResponse.error(error);
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
@@ -182,8 +168,7 @@ public class RestApiExceptionHandler extends ResponseEntityExceptionHandler {
     @SuppressWarnings("unused")
     @ExceptionHandler(InvalidDataAccessApiUsageException.class)
     public ResponseEntity<ApiDataResponse> handleInvalidDataAccessApiUsageException(
-        InvalidDataAccessApiUsageException ex, HttpServletRequest request
-    ) {
+            InvalidDataAccessApiUsageException ex, HttpServletRequest request) {
         ErrorResponse error = new ErrorResponse(ErrorMessageConstant.BAD_REQUEST_ERROR_CODE, ex.getMessage());
         ApiDataResponse response = ApiDataResponse.error(error);
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
@@ -202,11 +187,10 @@ public class RestApiExceptionHandler extends ResponseEntityExceptionHandler {
      */
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(
-        MethodArgumentNotValidException ex,
-        @Nonnull HttpHeaders headers,
-        @Nonnull HttpStatusCode status,
-        @Nonnull WebRequest request
-    ) {
+            MethodArgumentNotValidException ex,
+            @Nonnull HttpHeaders headers,
+            @Nonnull HttpStatusCode status,
+            @Nonnull WebRequest request) {
         List<ObjectError> listError = ex.getBindingResult().getAllErrors();
         ObjectError objectError = listError.get(listError.size() - 1);
         String error = CommonUtils.convertToSnakeCase(Objects.requireNonNull(objectError.getCode()));
@@ -220,11 +204,10 @@ public class RestApiExceptionHandler extends ResponseEntityExceptionHandler {
 
     @Override
     protected ResponseEntity<Object> handleNoHandlerFoundException(
-        @Nonnull NoHandlerFoundException ex,
-        @Nonnull HttpHeaders headers,
-        @Nonnull HttpStatusCode status,
-        @Nonnull WebRequest request
-    ) {
+            @Nonnull NoHandlerFoundException ex,
+            @Nonnull HttpHeaders headers,
+            @Nonnull HttpStatusCode status,
+            @Nonnull WebRequest request) {
         ErrorResponse error = ErrorUtils.getExceptionError(ErrorMessageConstant.PAGE_NOT_FOUND);
         ApiDataResponse response = ApiDataResponse.error(error);
         return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
@@ -232,11 +215,10 @@ public class RestApiExceptionHandler extends ResponseEntityExceptionHandler {
 
     @Override
     protected ResponseEntity<Object> handleMissingServletRequestParameter(
-        MissingServletRequestParameterException ex,
-        @Nonnull HttpHeaders headers,
-        @Nonnull HttpStatusCode status,
-        @Nonnull WebRequest request
-    ) {
+            MissingServletRequestParameterException ex,
+            @Nonnull HttpHeaders headers,
+            @Nonnull HttpStatusCode status,
+            @Nonnull WebRequest request) {
         ErrorResponse error = new ErrorResponse(ErrorMessageConstant.BAD_REQUEST_ERROR_CODE, ex.getMessage());
         ApiDataResponse response = ApiDataResponse.error(error);
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
@@ -244,16 +226,15 @@ public class RestApiExceptionHandler extends ResponseEntityExceptionHandler {
 
     @Override
     protected ResponseEntity<Object> handleHttpRequestMethodNotSupported(
-        HttpRequestMethodNotSupportedException ex,
-        @Nonnull HttpHeaders headers,
-        @Nonnull HttpStatusCode status,
-        @Nonnull WebRequest request
-    ) {
+            HttpRequestMethodNotSupportedException ex,
+            @Nonnull HttpHeaders headers,
+            @Nonnull HttpStatusCode status,
+            @Nonnull WebRequest request) {
         StringBuilder builder = new StringBuilder();
         builder.append(ex.getMethod());
         builder.append(" method is not supported for this request. Supported methods are ");
         Objects.requireNonNull(ex.getSupportedHttpMethods())
-            .forEach(t -> builder.append(t).append(" "));
+                .forEach(t -> builder.append(t).append(" "));
 
         ErrorResponse error = new ErrorResponse(ErrorMessageConstant.BAD_REQUEST_ERROR_CODE, builder.toString());
         ApiDataResponse response = ApiDataResponse.error(error);
@@ -262,11 +243,10 @@ public class RestApiExceptionHandler extends ResponseEntityExceptionHandler {
 
     @Override
     protected ResponseEntity<Object> handleHttpMediaTypeNotSupported(
-        HttpMediaTypeNotSupportedException ex,
-        @Nonnull HttpHeaders headers,
-        @Nonnull HttpStatusCode status,
-        @Nonnull WebRequest request
-    ) {
+            HttpMediaTypeNotSupportedException ex,
+            @Nonnull HttpHeaders headers,
+            @Nonnull HttpStatusCode status,
+            @Nonnull WebRequest request) {
         StringBuilder builder = new StringBuilder();
         builder.append(ex.getContentType());
         builder.append(" media type is not supported. Supported media types are ");
@@ -279,11 +259,10 @@ public class RestApiExceptionHandler extends ResponseEntityExceptionHandler {
 
     @Override
     protected ResponseEntity<Object> handleNoResourceFoundException(
-        @Nonnull NoResourceFoundException ex,
-        @Nonnull HttpHeaders headers,
-        @Nonnull HttpStatusCode status,
-        @Nonnull WebRequest request
-    ) {
+            @Nonnull NoResourceFoundException ex,
+            @Nonnull HttpHeaders headers,
+            @Nonnull HttpStatusCode status,
+            @Nonnull WebRequest request) {
         ErrorResponse error = ErrorUtils.getExceptionError(ErrorMessageConstant.PAGE_NOT_FOUND);
         ApiDataResponse response = ApiDataResponse.error(error);
         return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
@@ -291,23 +270,23 @@ public class RestApiExceptionHandler extends ResponseEntityExceptionHandler {
 
     @Override
     protected ResponseEntity<Object> handleHttpMessageNotReadable(
-        @Nonnull HttpMessageNotReadableException ex,
-        @Nonnull HttpHeaders headers,
-        @Nonnull HttpStatusCode status,
-        @Nonnull WebRequest request
-    ) {
-        ApiDataResponse response = ApiDataResponse.error(new ErrorResponse(ErrorMessageConstant.BAD_REQUEST_ERROR_CODE, ex.getMessage()));
+            @Nonnull HttpMessageNotReadableException ex,
+            @Nonnull HttpHeaders headers,
+            @Nonnull HttpStatusCode status,
+            @Nonnull WebRequest request) {
+        ApiDataResponse response = ApiDataResponse
+                .error(new ErrorResponse(ErrorMessageConstant.BAD_REQUEST_ERROR_CODE, ex.getMessage()));
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
     @Override
     protected ResponseEntity<Object> handleHttpMessageNotWritable(
-        @Nonnull HttpMessageNotWritableException ex,
-        @Nonnull HttpHeaders headers,
-        @Nonnull HttpStatusCode status,
-        @Nonnull WebRequest request
-    ) {
-        ApiDataResponse response = ApiDataResponse.error(new ErrorResponse(ErrorMessageConstant.BAD_REQUEST_ERROR_CODE, ex.getMessage()));
+            @Nonnull HttpMessageNotWritableException ex,
+            @Nonnull HttpHeaders headers,
+            @Nonnull HttpStatusCode status,
+            @Nonnull WebRequest request) {
+        ApiDataResponse response = ApiDataResponse
+                .error(new ErrorResponse(ErrorMessageConstant.BAD_REQUEST_ERROR_CODE, ex.getMessage()));
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 }

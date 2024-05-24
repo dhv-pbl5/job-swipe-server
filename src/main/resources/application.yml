@@ -33,6 +33,10 @@ spring:
     redis:
       host: ${SPRING_REDIS_HOST}
       port: ${SPRING_REDIS_PORT}
+      username: ${SPRING_REDIS_USERNAME}
+      password: ${SPRING_REDIS_PASSWORD}
+      ssl:
+        enabled: ${SPRING_REDIS_SSL_ENABLED}
       jedis:
         pool:
           enabled: true
@@ -49,18 +53,18 @@ logging:
 
 application:
   jwt:
-    access-token-secret-key: 6hSmRTTEvThV9PGxjCTKRJI3OPsrP45iU9eZOkCmUZE=
-    access-token-expiration-ms: 7200000
-    refresh-token-secret-key: lEhcgErgeknNv9/cp1Sh5RXTaB4RTVCCdAnPPewpSMM=
-    refresh-token-expiration-ms: 2592000000
-  reset-password-code-expiration-ms: 3600000
+    access-token-secret-key: ${JWT_ACCESS_TOKEN_SECRET_KEY}
+    access-token-expiration-ms: ${JWT_ACCESS_TOKEN_EXPIRATION_MS}
+    refresh-token-secret-key: ${JWT_REFRESH_TOKEN_SECRET_KEY}
+    refresh-token-expiration-ms: ${JWT_REFRESH_TOKEN_EXPIRATION_MS}
+  reset-password-code-expiration-ms: ${RESET_PASSWORD_CODE_EXPIRATION_MS}
   s3:
-    bucket-name: pbl5-bucket
+    bucket-name: ${S3_BUCKET_NAME}
   server.socket:
     port: 8888
   mail-trap:
-    url: https://send.api.mailtrap.io/api/send
-    api-key: b0af10cf775e3af21e7c8200312db25f
-    from-email: mailtrap@demomailtrap.com
-    from-email-name: Job Swipe
-    forgot-password-email-template-id: 58cc4e51-3dcd-44d9-b0f3-8d87551fc735
+    url: ${MAIL_TRAP_URL}
+    api-key: ${MAIL_TRAP_API_KEY}
+    from-email: ${MAIL_TRAP_FROM_EMAIL}
+    from-email-name: ${MAIL_TRAP_FROM_EMAIL_NAME}
+    forgot-password-email-template-id: ${MAIL_TRAP_FORGOT_PASSWORD_EMAIL_TEMPLATE_ID}

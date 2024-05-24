@@ -31,13 +31,23 @@ public class RedisConfig {
     private int minConnectionIdle;
     @Value("${spring.data.redis.jedis.pool.max-wait}")
     private int maxConnectionWait;
+    @Value("${spring.data.redis.username}")
+    private String redisUsername;
+    @Value("${spring.data.redis.password}")
+    private String redisPassword;
+    @Value("${spring.data.redis.ssl.enabled}")
+    private Boolean sslEnabled;
 
     @Bean
     public JedisConnectionFactory jedisConnectionFactory() {
         RedisStandaloneConfiguration configuration = new RedisStandaloneConfiguration();
         configuration.setHostName(redisHost);
         configuration.setPort(redisPort);
-        return new JedisConnectionFactory(configuration, getJedisClientConfiguration(false));
+        configuration.setUsername(redisUsername);
+        configuration.setPassword(redisPassword);
+        return new JedisConnectionFactory(
+                configuration,
+                getJedisClientConfiguration(sslEnabled));
     }
 
     @Bean
