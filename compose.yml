@@ -1,6 +1,27 @@
 services:
+  application:
+    image: docker-spring-boot-postgres:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: main-server
+    ports:
+      - "8080:8080"
+      - "8888:8888"
+    depends_on:
+      - postgres
+      - redis
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/job_swipe
+      - SPRING_DATASOURCE_USERNAME=qh47Qsmu19JJRuMq
+      - SPRING_DATASOURCE_PASSWORD=TwwlZL9j10wyziG3
+      - SPRING_REDIS_HOST=redis
+      - SPRING_REDIS_PORT=6379
+    networks:
+      - job-swipe-network
   postgres:
     image: postgres:15
+    container_name: db-postgres
     restart: always
     environment:
       - POSTGRES_DB=job_swipe
@@ -10,15 +31,25 @@ services:
       - "6002:5432"
     volumes:
       - postgres:/var/lib/postgresql/data
+      - ./db/initial_db.sql:/docker-entrypoint-initdb.d/initial_db.sql
+    networks:
+      - job-swipe-network
   redis:
     image: redis:latest
+    container_name: db-redis
     ports:
       - "6003:6379"
     volumes:
       - redis:/data
+    networks:
+      - job-swipe-network
 
 volumes:
   postgres:
     driver: local
   redis:
     driver: local
+
+networks:
+  job-swipe-network:
+    driver: bridge
