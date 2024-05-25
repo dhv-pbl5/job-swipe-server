@@ -38,6 +38,7 @@ build/
 # Env
 **/src/main/resources/*.yml
 !**/src/main/resources/application.yml
+.env
 
 # Secret
 secret/
