@@ -34,3 +34,10 @@ build/
 
 ### LOG ###
 /log
+
+# Env
+**/src/main/resources/*.yml
+!**/src/main/resources/application.yml
+
+# Secret
+secret/
