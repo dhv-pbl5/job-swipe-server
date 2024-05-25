@@ -1,4 +1,4 @@
-# Job Swipe Server
+## Job Swipe Server
 
 This repository contains the backend server for the Job Swipe application. It is built using Spring Boot and utilizes several technologies to provide a comprehensive platform for job seekers and companies.
 
@@ -46,6 +46,16 @@ This repository contains the backend server for the Job Swipe application. It is
 
 ## How to run the application:
 
+### Prerequisites
+
+-   Docker (for Docker Compose)
+-   Java Development Kit (JDK) 17 (for Maven)
+-   Maven 3.6.1 or higher (for Maven build)
+-   PostgreSQL database (can be run with Docker)
+-   Redis (can be run with Docker)
+-   AWS S3 account (or use a local alternative like MinIO for development)
+-   Mailtrap account
+
 ### 1. Clone the repository:
 
 ```bash
@@ -58,16 +68,30 @@ git clone https://github.com/dhv-pbl5/job-swipe-server.git
 cd job-swipe-server
 ```
 
-### 3. Run the Docker containers:
+### 3. Run using Docker Compose (recommended for development):
 
-```bash
-docker-compose up -d
-```
+-   Configure .env:
+    -   Create a `.env` file in the root directory of the project.
+    -   Add the environment variables from docker-compose.yml file to the `.env` file
+-   Run the application:
+    ```bash
+    docker-compose up -d
+    ```
 
-### 4. Access the API:
+### 4. Run using Maven:
 
-    - Once the containers are running, the API is available at `http://localhost:8080/api`.
-    - The real-time socket server is available at `http://localhost:8888`.
+-   Configure application-dev.yml:
+    -   Copy `application.yml` to `application-dev.yml`
+    -   Fill in the missing values in `application-dev.yml`
+-   Run the application:
+    ```bash
+    mvn spring-boot:run -Dspring-boot.run.profiles=dev
+    ```
+
+### 5. Access the API:
+
+-   Once the application is running, the API is available at `http://localhost:8080/api`.
+-   The real-time socket server is available at `http://localhost:8888`.
 
 ## Contributing:
 

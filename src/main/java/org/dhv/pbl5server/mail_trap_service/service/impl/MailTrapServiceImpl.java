@@ -19,9 +19,8 @@ public class MailTrapServiceImpl implements MailTrapService {
 
     @Override
     public void sendForgotPasswordEmail(String to, String resetPassCode) {
-        try {
-            var request = mailTrapConfig.getForgotPasswordRequest(to, resetPassCode);
-            Response response = client.newCall(request).execute();
+        var request = mailTrapConfig.getForgotPasswordRequest(to, resetPassCode);
+        try (Response response = client.newCall(request).execute()) {
             if (response.body() != null) {
                 LogUtils.info("MAIL SERVICE", response.body().string());
             }
