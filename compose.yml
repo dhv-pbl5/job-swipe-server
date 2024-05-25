@@ -1,6 +1,5 @@
 services:
   application:
-    image: docker-spring-boot-postgres:latest
     build:
       context: .
       dockerfile: Dockerfile
@@ -66,4 +65,5 @@ volumes:
 
 networks:
   job-swipe-network:
+    name: job-swipe-network
     driver: bridge
