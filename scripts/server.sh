@@ -1,4 +1,3 @@
-# Run database with docker-compose
 cd ../
 docker-compose up -d
 
