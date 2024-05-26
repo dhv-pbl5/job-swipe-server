@@ -2,6 +2,7 @@ package org.dhv.pbl5server.common_service.config;
 
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
+import org.dhv.pbl5server.common_service.constant.CommonConstant;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
@@ -37,14 +38,18 @@ public class RedisConfig {
     private String redisPassword;
     @Value("${spring.data.redis.ssl.enabled}")
     private Boolean sslEnabled;
+    @Value("${application.profile}")
+    private String profile;
 
     @Bean
     public JedisConnectionFactory jedisConnectionFactory() {
         RedisStandaloneConfiguration configuration = new RedisStandaloneConfiguration();
         configuration.setHostName(redisHost);
         configuration.setPort(redisPort);
-        configuration.setUsername(redisUsername);
-        configuration.setPassword(redisPassword);
+        if (profile.equals(CommonConstant.PROD_PROFILE)) {
+            configuration.setUsername(redisUsername);
+            configuration.setPassword(redisPassword);
+        }
         return new JedisConnectionFactory(
                 configuration,
                 getJedisClientConfiguration(sslEnabled));

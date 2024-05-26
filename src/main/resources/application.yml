@@ -58,6 +58,7 @@ application:
     refresh-token-secret-key: ${JWT_REFRESH_TOKEN_SECRET_KEY}
     refresh-token-expiration-ms: ${JWT_REFRESH_TOKEN_EXPIRATION_MS}
   reset-password-code-expiration-ms: ${RESET_PASSWORD_CODE_EXPIRATION_MS}
+  profile: ${SPRING_PROFILE}
   s3:
     bucket-name: ${S3_BUCKET_NAME}
   server.socket:
