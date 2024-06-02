@@ -1,11 +1,11 @@
-package org.dhv.pbl5server.mail_trap_service.service.impl;
+package org.dhv.pbl5server.mail_service.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import okhttp3.OkHttpClient;
 import okhttp3.Response;
 import org.dhv.pbl5server.common_service.utils.LogUtils;
-import org.dhv.pbl5server.mail_trap_service.config.MailTrapConfig;
-import org.dhv.pbl5server.mail_trap_service.service.MailTrapService;
+import org.dhv.pbl5server.mail_service.config.MailTrapConfig;
+import org.dhv.pbl5server.mail_service.service.MailService;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -13,7 +13,7 @@ import java.io.IOException;
 
 @Service
 @RequiredArgsConstructor
-public class MailTrapServiceImpl implements MailTrapService {
+public class MailServiceImpl implements MailService {
     private final MailTrapConfig mailTrapConfig;
     private final OkHttpClient client;
 

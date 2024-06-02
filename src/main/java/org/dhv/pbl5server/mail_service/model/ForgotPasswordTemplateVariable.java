@@ -1,4 +1,4 @@
-package org.dhv.pbl5server.mail_trap_service.model;
+package org.dhv.pbl5server.mail_service.model;
 
 import lombok.Builder;
 import lombok.Getter;

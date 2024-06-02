@@ -1,4 +1,4 @@
-package org.dhv.pbl5server.mail_trap_service.config;
+package org.dhv.pbl5server.mail_service.config;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -8,8 +8,8 @@ import okhttp3.RequestBody;
 import org.dhv.pbl5server.common_service.config.HttpClientConfig;
 import org.dhv.pbl5server.common_service.enums.HttpMethod;
 import org.dhv.pbl5server.common_service.utils.CommonUtils;
-import org.dhv.pbl5server.mail_trap_service.model.ForgotPasswordTemplateVariable;
-import org.dhv.pbl5server.mail_trap_service.model.MailTrapTemplateRequestBody;
+import org.dhv.pbl5server.mail_service.model.ForgotPasswordTemplateVariable;
+import org.dhv.pbl5server.mail_service.model.MailTrapTemplateRequestBody;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 
