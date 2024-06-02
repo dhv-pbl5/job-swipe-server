@@ -10,7 +10,6 @@ import org.dhv.pbl5server.common_service.enums.HttpMethod;
 import org.dhv.pbl5server.common_service.utils.CommonUtils;
 import org.dhv.pbl5server.mail_service.model.ForgotPasswordTemplateVariable;
 import org.dhv.pbl5server.mail_service.model.MailTrapTemplateRequestBody;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 
 import java.util.Objects;
@@ -19,15 +18,15 @@ import java.util.Objects;
 @Getter
 @RequiredArgsConstructor
 public class MailTrapConfig {
-    @Value("${application.mail-trap.url}")
+    //    @Value("${application.mail-trap.url}")
     private String apiUrl;
-    @Value("${application.mail-trap.api-key}")
+    //    @Value("${application.mail-trap.api-key}")
     private String apiKey;
-    @Value("${application.mail-trap.from-email}")
+    //    @Value("${application.mail-trap.from-email}")
     private String fromEmail;
-    @Value("${application.mail-trap.from-email-name}")
+    //    @Value("${application.mail-trap.from-email-name}")
     private String fromEmailName;
-    @Value("${application.mail-trap.forgot-password-email-template-id}")
+    //    @Value("${application.mail-trap.forgot-password-email-template-id}")
     private String forgotPasswordTemplateUuid;
     private final HttpClientConfig httpClientConfig;
 

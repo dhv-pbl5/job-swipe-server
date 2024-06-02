@@ -1,4 +1,4 @@
-package org.dhv.pbl5server.mail_service.service;
+package org.dhv.pbl5server.common_service.service;
 
 import java.util.Map;
 

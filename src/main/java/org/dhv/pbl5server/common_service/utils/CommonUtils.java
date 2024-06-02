@@ -170,6 +170,14 @@ public class CommonUtils {
     /*
      * List util
      */
+    public static boolean isEmptyOrNullList(Object[] list) {
+        return list == null || list.length == 0;
+    }
+
+    public static boolean isNotEmptyOrNullList(Object[] list) {
+        return list != null && list.length > 0;
+    }
+
     public static boolean isEmptyOrNullList(List<?> list) {
         return list == null || list.isEmpty();
     }

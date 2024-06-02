@@ -1,7 +1,7 @@
-package org.dhv.pbl5server.mail_service.service.impl;
+package org.dhv.pbl5server.common_service.service.impl;
 
 import lombok.RequiredArgsConstructor;
-import org.dhv.pbl5server.mail_service.service.ThymeleafService;
+import org.dhv.pbl5server.common_service.service.ThymeleafService;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
