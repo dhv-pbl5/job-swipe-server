@@ -10,7 +10,7 @@ This repository contains the backend server for the Job Swipe application. It is
 -   **JWT (JSON Web Token)**: Facilitates secure authentication and authorization through tokens.
 -   **Redis**: Provides caching and session management for enhanced performance.
 -   **Amazon S3**: Securely stores uploaded files (e.g., user avatars, company logos).
--   **Mailtrap**: Provides a reliable and secure email testing service.
+-   **Java Mail**: Provides a reliable and secure email testing service.
 -   **TCP-Socket**: Enables real-time communication between the server and clients for features like instant messaging and notifications.
 
 ## Features:
@@ -54,7 +54,7 @@ This repository contains the backend server for the Job Swipe application. It is
 -   PostgreSQL database (can be run with Docker)
 -   Redis (can be run with Docker)
 -   AWS S3 account (or use a local alternative like MinIO for development)
--   Mailtrap account
+-   Google app password (for email)
 
 ### 1. Clone the repository:
 

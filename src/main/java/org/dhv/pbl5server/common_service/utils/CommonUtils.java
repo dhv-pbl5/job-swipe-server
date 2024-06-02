@@ -170,6 +170,14 @@ public class CommonUtils {
     /*
      * List util
      */
+    public static boolean isEmptyOrNullList(Object[] list) {
+        return list == null || list.length == 0;
+    }
+
+    public static boolean isNotEmptyOrNullList(Object[] list) {
+        return list != null && list.length > 0;
+    }
+
     public static boolean isEmptyOrNullList(List<?> list) {
         return list == null || list.isEmpty();
     }
@@ -212,6 +220,10 @@ public class CommonUtils {
     public static Timestamp getCurrentTimestamp() {
         Date date = new Date();
         return new Timestamp(date.getTime());
+    }
+
+    public static String convertTimestampToString(Timestamp timestamp, String format) {
+        return new SimpleDateFormat(format).format(timestamp);
     }
 
     /*

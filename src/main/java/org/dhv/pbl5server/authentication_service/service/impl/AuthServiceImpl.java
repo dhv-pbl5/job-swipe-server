@@ -22,7 +22,7 @@ import org.dhv.pbl5server.constant_service.entity.Constant;
 import org.dhv.pbl5server.constant_service.enums.ConstantTypePrefix;
 import org.dhv.pbl5server.constant_service.enums.SystemRoleName;
 import org.dhv.pbl5server.constant_service.repository.ConstantRepository;
-import org.dhv.pbl5server.mail_trap_service.service.MailTrapService;
+import org.dhv.pbl5server.mail_service.service.MailService;
 import org.dhv.pbl5server.profile_service.entity.Company;
 import org.dhv.pbl5server.profile_service.entity.User;
 import org.dhv.pbl5server.profile_service.repository.CompanyRepository;
@@ -52,7 +52,7 @@ public class AuthServiceImpl implements AuthService {
     private final AccountMapper mapper;
     private final ConstantRepository constantRepository;
     private final PasswordEncoder passwordEncoder;
-    private final MailTrapService mailTrapService;
+    private final MailService mailTrapService;
 
     public CredentialResponse login(LoginRequest loginRequest, boolean isAdmin) {
         try {
