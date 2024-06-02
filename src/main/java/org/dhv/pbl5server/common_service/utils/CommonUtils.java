@@ -222,6 +222,10 @@ public class CommonUtils {
         return new Timestamp(date.getTime());
     }
 
+    public static String convertTimestampToString(Timestamp timestamp, String format) {
+        return new SimpleDateFormat(format).format(timestamp);
+    }
+
     /*
      * Generate OTP
      */
