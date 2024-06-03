@@ -19,6 +19,9 @@ import java.util.List;
 import java.util.UUID;
 
 public interface UserService {
+    /*
+     * Get method
+     */
     UserProfileResponse getUserProfile(Account account);
 
     UserProfileResponse getUserProfileById(String id);
@@ -39,6 +42,9 @@ public interface UserService {
 
     ApiDataResponse getListOtherDescriptionByUserId(String userId);
 
+    /*
+     * Insert method
+     */
     UserProfileResponse insertEducations(Account account, List<UserEducationRequest> request);
 
     UserProfileResponse insertExperiences(Account account, List<UserExperienceRequest> request);
@@ -47,6 +53,9 @@ public interface UserService {
 
     UserProfileResponse insertAwards(Account account, List<UserAwardRequest> request);
 
+    /*
+     * Update method
+     */
     UserProfileResponse updateBasicInfo(Account account, UserBasicInfoRequest request);
 
     UserProfileResponse updateEducations(Account account, List<UserEducationRequest> request);
@@ -59,6 +68,9 @@ public interface UserService {
 
     String updateAvatar(Account account, MultipartFile file);
 
+    /*
+     * Delete method
+     */
     void deleteEducations(Account account, List<String> ids);
 
     void deleteAwards(Account account, List<String> ids);
@@ -67,6 +79,9 @@ public interface UserService {
 
     void deleteOtherDescriptions(Account account, List<String> ids);
 
+    /*
+     * Get all method
+     */
     User getAllDataByAccountId(UUID accountId);
 
     User getAllDataByAccountId(User user, UUID accountId);

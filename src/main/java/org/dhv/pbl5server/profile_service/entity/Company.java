@@ -29,6 +29,8 @@ public class Company extends AbstractEntity {
     private Timestamp establishedDate;
     @Type(JsonBinaryType.class)
     private List<OtherDescription> others;
+    @Type(JsonBinaryType.class)
+    private List<Object> normalize;
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @PrimaryKeyJoinColumn(name = "account_id", referencedColumnName = "account_id")
     private Account account;

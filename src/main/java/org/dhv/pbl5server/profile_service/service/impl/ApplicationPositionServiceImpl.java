@@ -27,6 +27,7 @@ import org.dhv.pbl5server.profile_service.payload.response.UserProfileResponse;
 import org.dhv.pbl5server.profile_service.repository.ApplicationPositionRepository;
 import org.dhv.pbl5server.profile_service.repository.ApplicationSkillRepository;
 import org.dhv.pbl5server.profile_service.service.ApplicationPositionService;
+import org.dhv.pbl5server.profile_service.service.NormalizeDataService;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -44,6 +45,7 @@ public class ApplicationPositionServiceImpl implements ApplicationPositionServic
     private final RedisRepository redisRepository;
     private final ApplicationPositionMapper mapper;
     private final ConstantService constantService;
+    private final NormalizeDataService normalizeDataService;
 
 
     @Override
@@ -75,6 +77,8 @@ public class ApplicationPositionServiceImpl implements ApplicationPositionServic
                 }
                 break;
         }
+        // Normalize data in recommendation server
+        normalizeDataService.normalizeData(account.getAccountId().toString(), role);
         return responses;
     }
 
@@ -129,6 +133,8 @@ public class ApplicationPositionServiceImpl implements ApplicationPositionServic
                 }
                 break;
         }
+        // Normalize data in recommendation server
+        normalizeDataService.normalizeData(account.getAccountId().toString(), role);
         return responses;
     }
 
@@ -175,6 +181,8 @@ public class ApplicationPositionServiceImpl implements ApplicationPositionServic
                 }
                 break;
         }
+        // Normalize data in recommendation server
+        normalizeDataService.normalizeData(account.getAccountId().toString(), role);
         return response;
     }
 
@@ -249,6 +257,8 @@ public class ApplicationPositionServiceImpl implements ApplicationPositionServic
                 }
                 break;
         }
+        // Normalize data in recommendation server
+        normalizeDataService.normalizeData(account.getAccountId().toString(), role);
     }
 
     @Override
@@ -317,6 +327,8 @@ public class ApplicationPositionServiceImpl implements ApplicationPositionServic
                 }
                 break;
         }
+        // Normalize data in recommendation server
+        normalizeDataService.normalizeData(account.getAccountId().toString(), role);
     }
 
     @Override

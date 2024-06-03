@@ -21,6 +21,7 @@ import org.dhv.pbl5server.profile_service.repository.CompanyRepository;
 import org.dhv.pbl5server.profile_service.repository.LanguageRepository;
 import org.dhv.pbl5server.profile_service.service.ApplicationPositionService;
 import org.dhv.pbl5server.profile_service.service.CompanyService;
+import org.dhv.pbl5server.profile_service.service.NormalizeDataService;
 import org.dhv.pbl5server.s3_service.service.S3Service;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -41,6 +42,7 @@ public class CompanyServiceImpl implements CompanyService {
     private final ApplicationPositionService applicationPositionService;
     private final CompanyMapper mapper;
     private final S3Service s3Service;
+    private final NormalizeDataService normalizeDataService;
 
     @Override
     public CompanyProfileResponse getCompanyProfile(Account account) {
@@ -71,6 +73,8 @@ public class CompanyServiceImpl implements CompanyService {
         company = repository.save(company);
         // Save to redis
         company = getAllDataByAccountId(company, account.getAccountId());
+        // Normalize data in recommendation server
+        normalizeDataService.normalizeCompanyData(company.getAccountId().toString());
         return mapper.toCompanyResponse(company);
     }
 

@@ -34,6 +34,8 @@ public class User extends AbstractEntity {
     private List<String> socialMediaLink;
     @Type(JsonBinaryType.class)
     private List<OtherDescription> others;
+    @Type(JsonBinaryType.class)
+    private List<Object> normalize;
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.ALL)
     private List<UserEducation> educations;
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.ALL)

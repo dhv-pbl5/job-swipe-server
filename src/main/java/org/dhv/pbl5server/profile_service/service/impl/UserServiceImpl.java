@@ -33,6 +33,7 @@ import org.dhv.pbl5server.profile_service.payload.response.UserExperienceRespons
 import org.dhv.pbl5server.profile_service.payload.response.UserProfileResponse;
 import org.dhv.pbl5server.profile_service.repository.*;
 import org.dhv.pbl5server.profile_service.service.ApplicationPositionService;
+import org.dhv.pbl5server.profile_service.service.NormalizeDataService;
 import org.dhv.pbl5server.profile_service.service.UserService;
 import org.dhv.pbl5server.s3_service.service.S3Service;
 import org.springframework.data.domain.Page;
@@ -61,6 +62,7 @@ public class UserServiceImpl implements UserService {
     private final S3Service s3Service;
     private final ConstantService constantService;
     private final ApplicationPositionService applicationPositionService;
+    private final NormalizeDataService normalizeDataService;
 
     @Override
     public UserProfileResponse getUserProfile(Account account) {
@@ -163,6 +165,8 @@ public class UserServiceImpl implements UserService {
         user = repository.save(updatedUser);
         // Save to redis
         user = getAllDataByAccountId(user, account.getAccountId());
+        // Normalize data in recommendation server
+        normalizeDataService.normalizeUserData(user.getAccountId().toString());
         return userMapper.toUserProfileResponse(user);
     }
 
@@ -187,6 +191,8 @@ public class UserServiceImpl implements UserService {
         user = repository.save(updatedUser);
         // Save to redis
         user = getAllDataByAccountId(user, account.getAccountId());
+        // Normalize data in recommendation server
+        normalizeDataService.normalizeUserData(user.getAccountId().toString());
         return userMapper.toUserProfileResponse(user);
     }
 
@@ -216,6 +222,8 @@ public class UserServiceImpl implements UserService {
         user = repository.save(updatedUser);
         // Save to redis
         user = getAllDataByAccountId(user, account.getAccountId());
+        // Normalize data in recommendation server
+        normalizeDataService.normalizeUserData(user.getAccountId().toString());
         return userMapper.toUserProfileResponse(user);
     }
 
@@ -229,6 +237,8 @@ public class UserServiceImpl implements UserService {
         user = repository.save(updatedUser);
         // Save to redis
         user = getAllDataByAccountId(user, account.getAccountId());
+        // Normalize data in recommendation server
+        normalizeDataService.normalizeUserData(user.getAccountId().toString());
         return userMapper.toUserProfileResponse(user);
     }
 
@@ -251,6 +261,8 @@ public class UserServiceImpl implements UserService {
         user = repository.save(updatedUser);
         // Save to redis
         user = getAllDataByAccountId(user, account.getAccountId());
+        // Normalize data in recommendation server
+        normalizeDataService.normalizeUserData(user.getAccountId().toString());
         return userMapper.toUserProfileResponse(user);
     }
 
@@ -279,6 +291,8 @@ public class UserServiceImpl implements UserService {
         user = repository.save(updatedUser);
         // Save to redis
         user = getAllDataByAccountId(user, account.getAccountId());
+        // Normalize data in recommendation server
+        normalizeDataService.normalizeUserData(user.getAccountId().toString());
         return userMapper.toUserProfileResponse(user);
     }
 
@@ -316,6 +330,8 @@ public class UserServiceImpl implements UserService {
         user = repository.save(updatedUser);
         // Save to redis
         user = getAllDataByAccountId(user, account.getAccountId());
+        // Normalize data in recommendation server
+        normalizeDataService.normalizeUserData(user.getAccountId().toString());
         return userMapper.toUserProfileResponse(user);
     }
 
@@ -362,6 +378,8 @@ public class UserServiceImpl implements UserService {
                 userProfile
             );
         }
+        // Normalize data in recommendation server
+        normalizeDataService.normalizeUserData(user.getAccountId().toString());
     }
 
     @Override
@@ -386,6 +404,8 @@ public class UserServiceImpl implements UserService {
                 userProfile
             );
         }
+        // Normalize data in recommendation server
+        normalizeDataService.normalizeUserData(user.getAccountId().toString());
     }
 
     @Override
@@ -410,6 +430,8 @@ public class UserServiceImpl implements UserService {
                 userProfile
             );
         }
+        // Normalize data in recommendation server
+        normalizeDataService.normalizeUserData(user.getAccountId().toString());
     }
 
     @Override

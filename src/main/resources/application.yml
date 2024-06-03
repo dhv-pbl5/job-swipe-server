@@ -75,7 +75,6 @@ application:
     refresh-token-expiration-ms: ${JWT_REFRESH_TOKEN_EXPIRATION_MS}
   reset-password-code-expiration-ms: ${RESET_PASSWORD_CODE_EXPIRATION_MS}
   profile: ${SPRING_PROFILE}
-  s3:
-    bucket-name: ${S3_BUCKET_NAME}
-  server.socket:
-    port: 8888
+  s3.bucket-name: ${S3_BUCKET_NAME}
+  server.socket.port: 8888
+  recommendation-server-url: ${RECOMMENDATION_SERVER_URL}

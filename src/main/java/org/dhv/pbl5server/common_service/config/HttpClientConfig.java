@@ -18,9 +18,9 @@ public class HttpClientConfig {
     public OkHttpClient client() {
         return new OkHttpClient
             .Builder()
-            .connectTimeout(30, TimeUnit.SECONDS)
-            .readTimeout(30, TimeUnit.SECONDS)
-            .writeTimeout(30, TimeUnit.SECONDS)
+            .connectTimeout(30, TimeUnit.MINUTES)
+            .readTimeout(30, TimeUnit.MINUTES)
+            .writeTimeout(30, TimeUnit.MINUTES)
             .build();
     }
 
@@ -37,7 +37,7 @@ public class HttpClientConfig {
             case PATCH:
                 request = new Request.Builder()
                     .url(url)
-                    .method(method.getValue(), body)
+                    .method(method.getValue(), body != null ? body : RequestBody.create("", null))
                     .addHeader("Content-Type", "application/json");
         }
         if (request != null) {
@@ -61,7 +61,7 @@ public class HttpClientConfig {
             case PATCH:
                 request = new Request.Builder()
                     .url(url)
-                    .method(method.getValue(), body)
+                    .method(method.getValue(), body != null ? body : RequestBody.create("", null))
                     .addHeader("Content-Type", "multipart/form-data");
         }
         if (request != null) {
