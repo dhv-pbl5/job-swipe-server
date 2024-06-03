@@ -1,7 +1,6 @@
 package org.dhv.pbl5server.search_service.service.impl;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.dhv.pbl5server.common_service.model.ApiDataResponse;
 import org.dhv.pbl5server.common_service.utils.PageUtils;
 import org.dhv.pbl5server.profile_service.entity.Company;
@@ -18,13 +17,11 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-@Slf4j
 public class SearchServiceImpl implements SearchService {
     private final CompanyRepository companyRepository;
     private final UserRepository userRepository;
     private final CompanyMapper companyMapper;
     private final UserMapper userMapper;
-
 
     @Override
     public ApiDataResponse searchUsers(String query, SearchType type, Pageable request) {
@@ -36,8 +33,7 @@ public class SearchServiceImpl implements SearchService {
                 .stream()
                 .map(userMapper::toUserProfileResponseWithBasicInfoOnly)
                 .toList(),
-            PageUtils.makePageInfo(page)
-        );
+                PageUtils.makePageInfo(page));
     }
 
     @Override
@@ -50,7 +46,6 @@ public class SearchServiceImpl implements SearchService {
                 .stream()
                 .map(companyMapper::toCompanyResponseWithBasicInfoOnly)
                 .toList(),
-            PageUtils.makePageInfo(page)
-        );
+                PageUtils.makePageInfo(page));
     }
 }

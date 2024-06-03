@@ -1,7 +1,6 @@
 package org.dhv.pbl5server.s3_service.service.impl;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.dhv.pbl5server.common_service.constant.ErrorMessageConstant;
 import org.dhv.pbl5server.common_service.exception.BadRequestException;
 import org.dhv.pbl5server.common_service.utils.CommonUtils;
@@ -18,7 +17,6 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-@Slf4j
 public class S3ServiceImpl implements S3Service {
     private final S3ApplicationProperty s3Config;
     private final S3Client s3;
@@ -100,8 +98,8 @@ public class S3ServiceImpl implements S3Service {
 
     private String generateFileName(MultipartFile file) {
         var fileName = "%s-%s"
-            .formatted(CommonUtils.getCurrentTimestamp().toString(), file.getOriginalFilename())
-            .replaceAll(" ", "_");
+                .formatted(CommonUtils.getCurrentTimestamp().toString(), file.getOriginalFilename())
+                .replaceAll(" ", "_");
         LogUtils.info(S3_DEBUG_PREFIX, "Generated file name:", fileName);
         return fileName;
     }
