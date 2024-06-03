@@ -176,6 +176,10 @@ public final class ErrorMessageConstant {
     public static final String MATCH_ALREADY_REQUESTED = "match_already_requested";
     public static final String MATCH_ALREADY_REJECTED = "match_already_rejected";
     public static final String MATCH_ALREADY_CANCELLED = "match_already_cancelled";
+    public static final String MATCH_NOT_ACCEPTED = "match_not_accepted";
+    public static final String INTERVIEW_TIME_INVALID = "interview_time_invalid";
+    public static final String SENT_INTERVIEW_INVITATION_MAIL_EXCEED = "sent_interview_invitation_mail_exceed";
+    public static final String DONT_HAVE_ANY_MATCH_BETWEEN_2_ACCOUNTS = "dont_have_any_match_between_two_accounts";
 
     /*
        Language

@@ -7,6 +7,7 @@ public class CommonConstant {
     public static final String PROD_PROFILE = "production";
     public static final String DEV_PROFILE = "development";
     public static final String JWT_TYPE = "Bearer";
+    public static final long DAY_IN_MILLIS = 86400000L;
 
     /*
      * Regex pattern

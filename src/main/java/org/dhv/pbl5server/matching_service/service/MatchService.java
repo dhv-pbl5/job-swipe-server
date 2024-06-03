@@ -5,6 +5,8 @@ import org.dhv.pbl5server.common_service.model.ApiDataResponse;
 import org.dhv.pbl5server.matching_service.payload.MatchResponse;
 import org.springframework.data.domain.Pageable;
 
+import java.sql.Timestamp;
+
 public interface MatchService {
     ApiDataResponse getMatches(String accountId, Pageable pageRequest);
 
@@ -16,6 +18,8 @@ public interface MatchService {
 
     ApiDataResponse getRequestedMatches(Account account, Pageable pageRequest);
 
+    MatchResponse getMatchByAccountId(Account account, String accountId);
+
     MatchResponse getMatchById(Account account, String matchingId);
 
     MatchResponse requestMatch(Account account, String requestedAccountId);
@@ -25,4 +29,6 @@ public interface MatchService {
     MatchResponse rejectMatch(Account account, String matchId);
 
     MatchResponse cancelMatch(Account account, String matchId);
+
+    void sendInterviewInvitation(Account account, String matchingId, Timestamp interviewTime);
 }

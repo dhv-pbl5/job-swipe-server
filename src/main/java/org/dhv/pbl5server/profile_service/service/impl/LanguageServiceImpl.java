@@ -46,9 +46,9 @@ public class LanguageServiceImpl implements LanguageService {
         languages = checkConstantType(account, languages, true);
         languageRepository.saveAll(languages);
         var responses = languageRepository.findAllByAccountId(account.getAccountId())
-                .stream()
-                .map(languageMapper::toLanguageResponse)
-                .toList();
+            .stream()
+            .map(languageMapper::toLanguageResponse)
+            .toList();
         // Save to redis
         var role = AbstractEnum.fromString(SystemRoleName.values(), account.getSystemRole().getConstantName());
         switch (role) {
@@ -79,7 +79,7 @@ public class LanguageServiceImpl implements LanguageService {
             if (request.getId() == null)
                 throw new BadRequestException(ErrorMessageConstant.LANGUAGE_ID_REQUIRED);
             var language = languageRepository.findByIdAndAccountId(request.getId(), account.getAccountId())
-                    .orElseThrow(() -> new BadRequestException(ErrorMessageConstant.LANGUAGE_NOT_FOUND));
+                .orElseThrow(() -> new BadRequestException(ErrorMessageConstant.LANGUAGE_NOT_FOUND));
             language = languageMapper.toLanguage(language, request);
             languages.add(language);
         }
@@ -131,9 +131,9 @@ public class LanguageServiceImpl implements LanguageService {
     @Override
     public List<LanguageResponse> getLanguages(String accountId) {
         return languageRepository.findAllByAccountId(UUID.fromString(accountId))
-                .stream()
-                .map(languageMapper::toLanguageResponse)
-                .toList();
+            .stream()
+            .map(languageMapper::toLanguageResponse)
+            .toList();
     }
 
     @Override
@@ -144,13 +144,13 @@ public class LanguageServiceImpl implements LanguageService {
                 .stream()
                 .map(languageMapper::toLanguageResponse)
                 .toList(),
-                PageUtils.makePageInfo(page));
+            PageUtils.makePageInfo(page));
     }
 
     @Override
     public LanguageResponse getLanguageById(String accountId, String languageId) {
         var language = languageRepository.findByIdAndAccountId(UUID.fromString(languageId), UUID.fromString(accountId))
-                .orElseThrow(() -> new BadRequestException(ErrorMessageConstant.LANGUAGE_NOT_FOUND));
+            .orElseThrow(() -> new BadRequestException(ErrorMessageConstant.LANGUAGE_NOT_FOUND));
         return languageMapper.toLanguageResponse(language);
     }
 
@@ -165,7 +165,7 @@ public class LanguageServiceImpl implements LanguageService {
                     languages = userProfile.getLanguages();
                 for (var id : ids) {
                     var language = languageRepository.findByIdAndAccountId(UUID.fromString(id), account.getAccountId())
-                            .orElseThrow(() -> new BadRequestException(ErrorMessageConstant.LANGUAGE_NOT_FOUND));
+                        .orElseThrow(() -> new BadRequestException(ErrorMessageConstant.LANGUAGE_NOT_FOUND));
                     languageRepository.delete(language);
                     if (!languages.isEmpty())
                         languages.removeIf(e -> e.getId().compareTo(UUID.fromString(id)) == 0);
@@ -181,7 +181,7 @@ public class LanguageServiceImpl implements LanguageService {
                     languages = companyProfile.getLanguages();
                 for (var id : ids) {
                     var language = languageRepository.findByIdAndAccountId(UUID.fromString(id), account.getAccountId())
-                            .orElseThrow(() -> new BadRequestException(ErrorMessageConstant.LANGUAGE_NOT_FOUND));
+                        .orElseThrow(() -> new BadRequestException(ErrorMessageConstant.LANGUAGE_NOT_FOUND));
                     languageRepository.delete(language);
                     if (!languages.isEmpty())
                         languages.removeIf(e -> e.getId().compareTo(UUID.fromString(id)) == 0);
@@ -199,7 +199,7 @@ public class LanguageServiceImpl implements LanguageService {
     private List<Language> checkConstantType(Account account, List<Language> languages, boolean isInsert) {
         // Check all language constant type
         constantService.checkConstantWithType(languages.stream().map(e -> e.getLanguage().getConstantId()).toList(),
-                ConstantTypePrefix.LANGUAGES);
+            ConstantTypePrefix.LANGUAGES);
         return languages.stream().peek(language -> {
             if (isInsert)
                 language.setId(null);
@@ -208,11 +208,11 @@ public class LanguageServiceImpl implements LanguageService {
             if (!checkValidScore(constant.getNote(), language.getLanguageScore()))
                 throw new BadRequestException(ErrorMessageConstant.LANGUAGE_SCORE_INVALID);
             language.setLanguage(Constant.builder()
-                    .constantId(constant.getConstantId())
-                    .constantName(constant.getConstantName())
-                    .constantType(constant.getConstantType())
-                    .note(constant.getNote())
-                    .build());
+                .constantId(constant.getConstantId())
+                .constantName(constant.getConstantName())
+                .constantType(constant.getConstantType())
+                .note(constant.getNote())
+                .build());
         }).toList();
     }
 
@@ -228,7 +228,7 @@ public class LanguageServiceImpl implements LanguageService {
                 return true;
             // If not required points, return true
             if (note == null
-                    || (note.getValidate().getRequiredPoints() != null && !note.getValidate().getRequiredPoints()))
+                || (note.getValidate().getRequiredPoints() != null && !note.getValidate().getRequiredPoints()))
                 return true;
             // If required points, check score
             var validator = note.getValidate();
@@ -248,8 +248,8 @@ public class LanguageServiceImpl implements LanguageService {
 
     private UserProfileResponse getUserProfileFromRedis(String accountId) {
         var profile = redisRepository.findByHashKey(
-                RedisCacheConstant.PROFILE,
-                RedisCacheConstant.USER_PROFILE_HASH(accountId));
+            RedisCacheConstant.PROFILE_KEY,
+            RedisCacheConstant.USER_PROFILE_HASH(accountId));
         if (profile == null)
             return null;
         return CommonUtils.decodeJson(profile.toString(), UserProfileResponse.class);
@@ -257,15 +257,15 @@ public class LanguageServiceImpl implements LanguageService {
 
     private void saveUserProfileToRedis(UserProfileResponse profile) {
         redisRepository.save(
-                RedisCacheConstant.PROFILE,
-                RedisCacheConstant.USER_PROFILE_HASH(profile.getAccountId().toString()),
-                profile);
+            RedisCacheConstant.PROFILE_KEY,
+            RedisCacheConstant.USER_PROFILE_HASH(profile.getAccountId().toString()),
+            profile);
     }
 
     private CompanyProfileResponse getCompanyProfileFromRedis(String accountId) {
         var profile = redisRepository.findByHashKey(
-                RedisCacheConstant.PROFILE,
-                RedisCacheConstant.COMPANY_PROFILE_HASH(accountId));
+            RedisCacheConstant.PROFILE_KEY,
+            RedisCacheConstant.COMPANY_PROFILE_HASH(accountId));
         if (profile == null)
             return null;
         return CommonUtils.decodeJson(profile.toString(), CompanyProfileResponse.class);
@@ -273,8 +273,8 @@ public class LanguageServiceImpl implements LanguageService {
 
     private void saveCompanyProfileToRedis(CompanyProfileResponse profile) {
         redisRepository.save(
-                RedisCacheConstant.PROFILE,
-                RedisCacheConstant.COMPANY_PROFILE_HASH(profile.getAccountId().toString()),
-                profile);
+            RedisCacheConstant.PROFILE_KEY,
+            RedisCacheConstant.COMPANY_PROFILE_HASH(profile.getAccountId().toString()),
+            profile);
     }
 }

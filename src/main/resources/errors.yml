@@ -319,6 +319,18 @@ match_already_rejected:
 match_already_cancelled:
   code: ERR_MAT0113
   message: You have already cancelled the match with this account!
+match_not_accepted:
+  code: ERR_MAT0114
+  message: Match is not accepted!
+interview_time_invalid:
+  code: ERR_MAT0115
+  message: Interview time must be greater than current time!
+sent_interview_invitation_mail_exceed:
+  code: ERR_MAT0116
+  message: You have exceeded the number of sent interview invitation emails!
+dont_have_any_match_between_two_accounts:
+  code: ERR_MAT0117
+  message: Don't have any match between two accounts!
 
 # Language
 language_not_found:

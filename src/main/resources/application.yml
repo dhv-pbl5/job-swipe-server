@@ -79,3 +79,4 @@ application:
     bucket-name: ${S3_BUCKET_NAME}
   server.socket:
     port: 8888
+  max-sent-interview-invitation-mail-per-day-and-user: ${MAX_SENT_INTERVIEW_INVITATION_MAIL_PER_DAY_AND_USER}

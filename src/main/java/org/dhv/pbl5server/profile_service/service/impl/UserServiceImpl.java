@@ -331,7 +331,7 @@ public class UserServiceImpl implements UserService {
         if (userProfile != null) {
             userProfile.setAvatar(url);
             redisRepository.save(
-                RedisCacheConstant.PROFILE,
+                RedisCacheConstant.PROFILE_KEY,
                 RedisCacheConstant.USER_PROFILE_HASH(account.getAccountId().toString()),
                 userProfile
             );
@@ -357,7 +357,7 @@ public class UserServiceImpl implements UserService {
         if (userProfile != null) {
             userProfile.setEducations(educations);
             redisRepository.save(
-                RedisCacheConstant.PROFILE,
+                RedisCacheConstant.PROFILE_KEY,
                 RedisCacheConstant.USER_PROFILE_HASH(account.getAccountId().toString()),
                 userProfile
             );
@@ -381,7 +381,7 @@ public class UserServiceImpl implements UserService {
         if (userProfile != null) {
             userProfile.setAwards(awards);
             redisRepository.save(
-                RedisCacheConstant.PROFILE,
+                RedisCacheConstant.PROFILE_KEY,
                 RedisCacheConstant.USER_PROFILE_HASH(account.getAccountId().toString()),
                 userProfile
             );
@@ -405,7 +405,7 @@ public class UserServiceImpl implements UserService {
         if (userProfile != null) {
             userProfile.setExperiences(experiences);
             redisRepository.save(
-                RedisCacheConstant.PROFILE,
+                RedisCacheConstant.PROFILE_KEY,
                 RedisCacheConstant.USER_PROFILE_HASH(account.getAccountId().toString()),
                 userProfile
             );
@@ -426,7 +426,7 @@ public class UserServiceImpl implements UserService {
             if (userProfile != null) {
                 userProfile.setOthers(result);
                 redisRepository.save(
-                    RedisCacheConstant.PROFILE,
+                    RedisCacheConstant.PROFILE_KEY,
                     RedisCacheConstant.USER_PROFILE_HASH(account.getAccountId().toString()),
                     userProfile
                 );
@@ -456,7 +456,7 @@ public class UserServiceImpl implements UserService {
         user.setAccount(account);
         // Save to redis
         redisRepository.save(
-            RedisCacheConstant.PROFILE,
+            RedisCacheConstant.PROFILE_KEY,
             RedisCacheConstant.USER_PROFILE_HASH(accountId.toString()),
             userMapper.toUserProfileResponse(user)
         );
@@ -485,7 +485,7 @@ public class UserServiceImpl implements UserService {
         user.setAccount(account);
         // Save to redis
         redisRepository.save(
-            RedisCacheConstant.PROFILE,
+            RedisCacheConstant.PROFILE_KEY,
             RedisCacheConstant.USER_PROFILE_HASH(accountId.toString()),
             userMapper.toUserProfileResponse(user)
         );
@@ -513,7 +513,7 @@ public class UserServiceImpl implements UserService {
 
     private UserProfileResponse getUserProfileFromRedis(String accountId) {
         var profile = redisRepository.findByHashKey(
-            RedisCacheConstant.PROFILE,
+            RedisCacheConstant.PROFILE_KEY,
             RedisCacheConstant.USER_PROFILE_HASH(accountId));
         if (profile == null) return null;
         return CommonUtils.decodeJson(profile.toString(), UserProfileResponse.class);
