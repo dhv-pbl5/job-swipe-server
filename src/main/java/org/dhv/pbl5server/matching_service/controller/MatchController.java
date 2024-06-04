@@ -97,7 +97,7 @@ public class MatchController {
         @Valid @RequestBody InterviewInvitationRequest request,
         @CurrentAccount Account account
     ) {
-        service.sendInterviewInvitation(account, request.getMatchingId(), request.getInterviewTime());
+        service.sendInterviewInvitation(account, request);
         return ResponseEntity.ok(ApiDataResponse.successWithoutMetaAndData());
     }
 }

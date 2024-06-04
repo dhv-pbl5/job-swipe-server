@@ -16,10 +16,13 @@ import org.dhv.pbl5server.common_service.model.ApiDataResponse;
 import org.dhv.pbl5server.common_service.repository.RedisRepository;
 import org.dhv.pbl5server.common_service.utils.CommonUtils;
 import org.dhv.pbl5server.common_service.utils.PageUtils;
+import org.dhv.pbl5server.constant_service.enums.ConstantTypePrefix;
 import org.dhv.pbl5server.constant_service.enums.SystemRoleName;
+import org.dhv.pbl5server.constant_service.service.ConstantService;
 import org.dhv.pbl5server.mail_service.service.MailService;
 import org.dhv.pbl5server.matching_service.entity.Match;
 import org.dhv.pbl5server.matching_service.mapper.MatchMapper;
+import org.dhv.pbl5server.matching_service.payload.InterviewInvitationRequest;
 import org.dhv.pbl5server.matching_service.payload.MatchResponse;
 import org.dhv.pbl5server.matching_service.repository.MatchRepository;
 import org.dhv.pbl5server.matching_service.service.MatchService;
@@ -32,7 +35,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.sql.Timestamp;
 import java.util.Map;
 import java.util.UUID;
 
@@ -49,6 +51,7 @@ public class MatchServiceImpl implements MatchService {
     private final MatchMapper matchMapper;
     private final MailService mailService;
     private final RedisRepository redisRepository;
+    private final ConstantService constantService;
 
     @Override
     public ApiDataResponse getMatches(String accountId, Pageable pageRequest) {
@@ -257,18 +260,21 @@ public class MatchServiceImpl implements MatchService {
     }
 
     @Override
-    public void sendInterviewInvitation(Account account, String matchingId, Timestamp interviewTime) {
-        var match = repository.findById(UUID.fromString(matchingId))
+    public void sendInterviewInvitation(Account account, InterviewInvitationRequest request) {
+        var match = repository.findById(UUID.fromString(request.getMatchingId()))
             .orElseThrow(() -> new NotFoundObjectException(ErrorMessageConstant.MATCH_NOT_FOUND));
         var user = match.getUser();
         var company = match.getCompany();
-        // Check if match is accepted
+        // Check interview position must be application position
+        constantService.checkConstantWithType(UUID.fromString(request.getInterviewPositionId()), ConstantTypePrefix.APPLY_POSITIONS);
+        var interviewPosition = constantService.getConstantById(UUID.fromString(request.getInterviewPositionId()));
+        // Check if match is not accepted
         if (!match.isCompleted())
             throw new BadRequestException(ErrorMessageConstant.MATCH_NOT_ACCEPTED);
-        // Check if interview time is valid
-        if (interviewTime == null || interviewTime.before(CommonUtils.getCurrentTimestamp()))
+        // Check if interview time is invalid
+        if (request.getInterviewTime().before(CommonUtils.getCurrentTimestamp()))
             throw new BadRequestException(ErrorMessageConstant.INTERVIEW_TIME_INVALID);
-        // Check email count in redis
+        // Check email count exceed per day
         int count = 0;
         var dataInRedis = redisRepository.findByHashKey(
             RedisCacheConstant.MAIL_KEY,
@@ -293,7 +299,7 @@ public class MatchServiceImpl implements MatchService {
             )
         );
         // Send email
-        mailService.sendInterviewInvitationEmail(user, company, interviewTime, "Interview Invitation");
+        mailService.sendInterviewInvitationEmail(user, company, request.getInterviewTime(), interviewPosition.getConstantName());
     }
 
 

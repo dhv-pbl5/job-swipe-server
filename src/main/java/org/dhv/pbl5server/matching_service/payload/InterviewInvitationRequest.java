@@ -16,6 +16,8 @@ import java.sql.Timestamp;
 public class InterviewInvitationRequest {
     @UuidValidation
     private String matchingId;
+    @UuidValidation
+    private String interviewPositionId;
     @NotNull
     private Timestamp interviewTime;
 }
