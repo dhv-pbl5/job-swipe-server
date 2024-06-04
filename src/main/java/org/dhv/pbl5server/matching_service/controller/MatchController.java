@@ -1,8 +1,11 @@
 package org.dhv.pbl5server.matching_service.controller;
 
 import jakarta.annotation.Nullable;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.dhv.pbl5server.authentication_service.annotation.CurrentAccount;
+import org.dhv.pbl5server.authentication_service.annotation.PreAuthorizeCompany;
 import org.dhv.pbl5server.authentication_service.annotation.PreAuthorizeSystemRoleWithoutAdmin;
 import org.dhv.pbl5server.authentication_service.entity.Account;
 import org.dhv.pbl5server.common_service.constant.ErrorMessageConstant;
@@ -12,6 +15,7 @@ import org.dhv.pbl5server.common_service.model.ApiDataResponse;
 import org.dhv.pbl5server.common_service.utils.CommonUtils;
 import org.dhv.pbl5server.common_service.utils.PageUtils;
 import org.dhv.pbl5server.matching_service.enums.GetMatchType;
+import org.dhv.pbl5server.matching_service.payload.InterviewInvitationRequest;
 import org.dhv.pbl5server.matching_service.service.MatchService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -46,6 +50,15 @@ public class MatchController {
     }
 
     @PreAuthorizeSystemRoleWithoutAdmin
+    @GetMapping("/by-account")
+    public ResponseEntity<ApiDataResponse> getMatchByUserId(
+        @NotNull @RequestParam("account_id") String accountId,
+        @CurrentAccount Account account
+    ) {
+        return ResponseEntity.ok(ApiDataResponse.successWithoutMeta(service.getMatchByAccountId(account, accountId)));
+    }
+
+    @PreAuthorizeSystemRoleWithoutAdmin
     @PostMapping("/request")
     public ResponseEntity<ApiDataResponse> requestMatch(
         @RequestParam("requested_account_id") String requestedAccountId,
@@ -76,5 +89,15 @@ public class MatchController {
         if (!CommonUtils.isValidUuid(matchingId))
             throw new BadRequestException(ErrorMessageConstant.MATCH_ID_INVALID);
         return ResponseEntity.ok(ApiDataResponse.successWithoutMeta(service.rejectMatch(account, matchingId)));
+    }
+
+    @PreAuthorizeCompany
+    @PostMapping("/interview-invitation")
+    public ResponseEntity<ApiDataResponse> sendInterviewInvitationMail(
+        @Valid @RequestBody InterviewInvitationRequest request,
+        @CurrentAccount Account account
+    ) {
+        service.sendInterviewInvitation(account, request);
+        return ResponseEntity.ok(ApiDataResponse.successWithoutMetaAndData());
     }
 }

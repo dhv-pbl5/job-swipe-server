@@ -117,7 +117,7 @@ public class CompanyServiceImpl implements CompanyService {
             if (companyProfile != null) {
                 companyProfile.setOthers(result);
                 redisRepository.save(
-                    RedisCacheConstant.PROFILE,
+                    RedisCacheConstant.PROFILE_KEY,
                     RedisCacheConstant.COMPANY_PROFILE_HASH(account.getAccountId().toString()),
                     companyProfile
                 );
@@ -145,7 +145,7 @@ public class CompanyServiceImpl implements CompanyService {
         if (companyProfile != null) {
             companyProfile.setAvatar(url);
             redisRepository.save(
-                RedisCacheConstant.PROFILE,
+                RedisCacheConstant.PROFILE_KEY,
                 RedisCacheConstant.COMPANY_PROFILE_HASH(account.getAccountId().toString()),
                 companyProfile
             );
@@ -162,7 +162,7 @@ public class CompanyServiceImpl implements CompanyService {
         company.setAccount(account);
         // Save to redis
         redisRepository.save(
-            RedisCacheConstant.PROFILE,
+            RedisCacheConstant.PROFILE_KEY,
             RedisCacheConstant.COMPANY_PROFILE_HASH(company.getAccountId().toString()),
             mapper.toCompanyResponse(company)
         );
@@ -177,7 +177,7 @@ public class CompanyServiceImpl implements CompanyService {
         company.setAccount(account);
         // Save to redis
         redisRepository.save(
-            RedisCacheConstant.PROFILE,
+            RedisCacheConstant.PROFILE_KEY,
             RedisCacheConstant.COMPANY_PROFILE_HASH(company.getAccountId().toString()),
             mapper.toCompanyResponse(company)
         );
@@ -205,7 +205,7 @@ public class CompanyServiceImpl implements CompanyService {
 
     private CompanyProfileResponse getCompanyProfileFromRedis(String accountId) {
         var profile = redisRepository.findByHashKey(
-            RedisCacheConstant.PROFILE,
+            RedisCacheConstant.PROFILE_KEY,
             RedisCacheConstant.COMPANY_PROFILE_HASH(accountId));
         if (profile == null) return null;
         return CommonUtils.decodeJson(profile.toString(), CompanyProfileResponse.class);

@@ -30,9 +30,8 @@ public class ConstantServiceImpl implements ConstantService {
     @Override
     public void checkConstantWithType(UUID id, ConstantTypePrefix type) {
         var constant = repository.findById(id).orElseThrow(
-            () -> new NotFoundObjectException(ErrorMessageConstant.CONSTANT_NOT_FOUND)
-        );
-        if (constant.getConstantType().equals(type.getValue())) return;
+            () -> new NotFoundObjectException(ErrorMessageConstant.CONSTANT_NOT_FOUND));
+        if (constant.getConstantType().startsWith(type.getValue())) return;
         throwErrorWithConstantType(type);
     }
 
@@ -49,8 +48,7 @@ public class ConstantServiceImpl implements ConstantService {
     @Override
     public ConstantResponse getConstantById(UUID id) {
         var constant = repository.findById(id).orElseThrow(
-            () -> new NotFoundObjectException(ErrorMessageConstant.CONSTANT_NOT_FOUND)
-        );
+            () -> new NotFoundObjectException(ErrorMessageConstant.CONSTANT_NOT_FOUND));
         return mapper.toConstantResponse(constant);
     }
 
@@ -106,8 +104,7 @@ public class ConstantServiceImpl implements ConstantService {
     public void deleteConstant(List<String> ids) {
         for (var id : ids) {
             var constant = repository.findById(UUID.fromString(id)).orElseThrow(
-                () -> new NotFoundObjectException(ErrorMessageConstant.CONSTANT_NOT_FOUND)
-            );
+                () -> new NotFoundObjectException(ErrorMessageConstant.CONSTANT_NOT_FOUND));
             repository.delete(constant);
         }
     }

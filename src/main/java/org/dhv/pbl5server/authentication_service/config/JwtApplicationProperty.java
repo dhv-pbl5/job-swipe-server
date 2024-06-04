@@ -7,12 +7,14 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties(prefix = "application")
 @Getter
 public class JwtApplicationProperty {
-    @Value("${application.jwt.access-token-secret-key}")
+    @Value("${application.auth.access-token-secret-key}")
     private String accessTokenSecret;
-    @Value("${application.jwt.access-token-expiration-ms}")
+    @Value("${application.auth.access-token-expiration-ms}")
     private Long accessTokenExpirationMs;
-    @Value("${application.jwt.refresh-token-secret-key}")
+    @Value("${application.auth.refresh-token-secret-key}")
     private String refreshTokenSecret;
-    @Value("${application.jwt.refresh-token-expiration-ms}")
+    @Value("${application.auth.refresh-token-expiration-ms}")
     private Long refreshTokenExpirationMs;
+    @Value("${application.auth.reset-password-code-expiration-ms}")
+    private Long resetPasswordCodeExpirationMs;
 }

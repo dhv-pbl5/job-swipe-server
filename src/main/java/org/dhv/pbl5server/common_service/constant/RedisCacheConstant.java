@@ -9,7 +9,8 @@ public class RedisCacheConstant {
      */
     public static final String AUTH_KEY = "Authentication";
     public static final String OTP_KEY = "OTP";
-    public static final String PROFILE = "Profile";
+    public static final String PROFILE_KEY = "Profile";
+    public static final String MAIL_KEY = "Mail";
 
     /*
      * Hash key storing in Redis
@@ -36,6 +37,10 @@ public class RedisCacheConstant {
 
     public static String COMPANY_PROFILE_HASH(String uuid) {
         return "company_profile:%s".formatted(uuid);
+    }
+
+    public static String INTERVIEW_INVITATION_MAIL_HASH(String companyId, String userId) {
+        return "interview_invitation_mail:%s:%s".formatted(companyId, userId);
     }
 
     private static String getCurrentTimestamp() {

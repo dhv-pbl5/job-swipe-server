@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.NoArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.dhv.pbl5server.common_service.constant.CommonConstant;
 import org.yaml.snakeyaml.Yaml;
 
@@ -15,7 +14,6 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.regex.Pattern;
 
-@Slf4j
 @NoArgsConstructor
 public class CommonUtils {
     /*
@@ -211,7 +209,7 @@ public class CommonUtils {
      */
     public static void logError(String method, String uri, String error) {
         String content = "%s/%s - Error: %s".formatted(method, uri, error);
-        log.error(content);
+        LogUtils.error("LOG", content);
     }
 
     /*
