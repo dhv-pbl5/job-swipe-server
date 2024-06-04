@@ -4,6 +4,8 @@ import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
+import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.*;
@@ -15,6 +17,10 @@ import java.util.List;
 public class S3ApplicationProperty {
     @Value("${application.s3.bucket-name}")
     private String awsBucketName;
+    @Value("${application.s3.access-key}")
+    private String awsAccessKey;
+    @Value("${application.s3.secret-key}")
+    private String awsSecretKey;
 
     public GetObjectRequest getObjectRequest(String keyName) {
         return GetObjectRequest.builder()
@@ -57,6 +63,7 @@ public class S3ApplicationProperty {
     public S3Client s3Client() {
         return S3Client.builder()
             .region(Region.AP_SOUTHEAST_1)
+            .credentialsProvider(StaticCredentialsProvider.create(AwsBasicCredentials.create(awsAccessKey, awsSecretKey)))
             .build();
     }
 }

@@ -1,6 +1,7 @@
 package org.dhv.pbl5server.authentication_service.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.dhv.pbl5server.authentication_service.config.JwtApplicationProperty;
 import org.dhv.pbl5server.authentication_service.entity.Account;
 import org.dhv.pbl5server.authentication_service.mapper.AccountMapper;
 import org.dhv.pbl5server.authentication_service.payload.request.*;
@@ -27,7 +28,6 @@ import org.dhv.pbl5server.profile_service.entity.Company;
 import org.dhv.pbl5server.profile_service.entity.User;
 import org.dhv.pbl5server.profile_service.repository.CompanyRepository;
 import org.dhv.pbl5server.profile_service.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.*;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -40,8 +40,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 @Service
 public class AuthServiceImpl implements AuthService {
-    @Value("${application.reset-password-code-expiration-ms}")
-    private Long resetPasswordTokenExpirationTime;
+    private final JwtApplicationProperty jwtApplicationProperty;
     private final RedisRepository redisRepository;
     private final AccountRepository repository;
     private final UserRepository userRepository;
@@ -167,7 +166,7 @@ public class AuthServiceImpl implements AuthService {
         String resetPasswordCode = CommonUtils.generate6DigitsOTP();
         Map<String, Object> resetPasswordCodeMap = Map.of(
             "reset_password_code", resetPasswordCode,
-            "expiration_time", System.currentTimeMillis() + resetPasswordTokenExpirationTime
+            "expiration_time", System.currentTimeMillis() + jwtApplicationProperty.getResetPasswordCodeExpirationMs()
         );
         // Save reset password code to redis
         redisRepository.save(

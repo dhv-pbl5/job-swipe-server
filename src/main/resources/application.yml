@@ -68,15 +68,17 @@ logging:
     name: log/dev.log
 
 application:
-  jwt:
+  profile: ${SPRING_PROFILE}
+  auth:
     access-token-secret-key: ${JWT_ACCESS_TOKEN_SECRET_KEY}
     access-token-expiration-ms: ${JWT_ACCESS_TOKEN_EXPIRATION_MS}
     refresh-token-secret-key: ${JWT_REFRESH_TOKEN_SECRET_KEY}
     refresh-token-expiration-ms: ${JWT_REFRESH_TOKEN_EXPIRATION_MS}
-  reset-password-code-expiration-ms: ${RESET_PASSWORD_CODE_EXPIRATION_MS}
-  profile: ${SPRING_PROFILE}
-  s3:
-    bucket-name: ${S3_BUCKET_NAME}
+    reset-password-code-expiration-ms: ${RESET_PASSWORD_CODE_EXPIRATION_MS}
   server.socket:
     port: 8888
+  s3:
+    bucket-name: ${S3_BUCKET_NAME}
+    access-key: ${S3_ACCESS_KEY}
+    secret-key: ${S3_SECRET_KEY}
   max-sent-interview-invitation-mail-per-day-and-user: ${MAX_SENT_INTERVIEW_INVITATION_MAIL_PER_DAY_AND_USER}
