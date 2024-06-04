@@ -16,12 +16,11 @@ import java.util.concurrent.TimeUnit;
 public class HttpClientConfig {
     @Bean
     public OkHttpClient client() {
-        return new OkHttpClient
-            .Builder()
-            .connectTimeout(30, TimeUnit.MINUTES)
-            .readTimeout(30, TimeUnit.MINUTES)
-            .writeTimeout(30, TimeUnit.MINUTES)
-            .build();
+        return new OkHttpClient.Builder()
+                .connectTimeout(30, TimeUnit.MINUTES)
+                .readTimeout(30, TimeUnit.MINUTES)
+                .writeTimeout(30, TimeUnit.MINUTES)
+                .build();
     }
 
     public Request getRequest(String url, HttpMethod method, RequestBody body, String token) {
@@ -29,16 +28,18 @@ public class HttpClientConfig {
         switch (method) {
             case GET:
                 request = new Request.Builder()
-                    .url(url)
-                    .get();
+                        .url(url)
+                        .get();
             case POST:
             case PUT:
             case DELETE:
             case PATCH:
                 request = new Request.Builder()
-                    .url(url)
-                    .method(method.getValue(), body != null ? body : RequestBody.create("", null))
-                    .addHeader("Content-Type", "application/json");
+                        .url(url)
+                        .method(method.getValue(), body != null ? body : RequestBody.create("", null))
+                        .addHeader("Content-Type", "application/json");
+            default:
+                break;
         }
         if (request != null) {
             if (CommonUtils.isNotEmptyOrNullString(token))
@@ -53,16 +54,18 @@ public class HttpClientConfig {
         switch (method) {
             case GET:
                 request = new Request.Builder()
-                    .url(url)
-                    .get();
+                        .url(url)
+                        .get();
             case POST:
             case PUT:
             case DELETE:
             case PATCH:
                 request = new Request.Builder()
-                    .url(url)
-                    .method(method.getValue(), body != null ? body : RequestBody.create("", null))
-                    .addHeader("Content-Type", "multipart/form-data");
+                        .url(url)
+                        .method(method.getValue(), body != null ? body : RequestBody.create("", null))
+                        .addHeader("Content-Type", "multipart/form-data");
+            default:
+                break;
         }
         if (request != null) {
             if (CommonUtils.isNotEmptyOrNullString(token))

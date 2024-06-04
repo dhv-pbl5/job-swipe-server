@@ -41,7 +41,6 @@ public class LanguageServiceImpl implements LanguageService {
     private final ConstantService constantService;
     private final NormalizeDataService normalizeDataService;
 
-
     @Override
     public List<LanguageResponse> insertLanguage(Account account, List<LanguageRequest> requests) {
         var languages = requests.stream().map(languageMapper::toLanguage).toList();
@@ -68,6 +67,8 @@ public class LanguageServiceImpl implements LanguageService {
                     companyProfile.setLanguages(responses);
                     saveCompanyProfileToRedis(companyProfile);
                 }
+                break;
+            default:
                 break;
         }
         // Normalize data in recommendation server
@@ -125,6 +126,8 @@ public class LanguageServiceImpl implements LanguageService {
                     saveCompanyProfileToRedis(companyProfile);
                 }
                 break;
+            default:
+                break;
         }
         // Normalize data in recommendation server
         normalizeDataService.normalizeData(account.getAccountId().toString(), role);
@@ -147,8 +150,7 @@ public class LanguageServiceImpl implements LanguageService {
                 .stream()
                 .map(languageMapper::toLanguageResponse)
                 .toList(),
-            PageUtils.makePageInfo(page)
-        );
+            PageUtils.makePageInfo(page));
     }
 
     @Override
@@ -165,7 +167,8 @@ public class LanguageServiceImpl implements LanguageService {
         switch (role) {
             case USER:
                 var userProfile = getUserProfileFromRedis(account.getAccountId().toString());
-                if (userProfile != null) languages = userProfile.getLanguages();
+                if (userProfile != null)
+                    languages = userProfile.getLanguages();
                 for (var id : ids) {
                     var language = languageRepository.findByIdAndAccountId(UUID.fromString(id), account.getAccountId())
                         .orElseThrow(() -> new BadRequestException(ErrorMessageConstant.LANGUAGE_NOT_FOUND));
@@ -180,7 +183,8 @@ public class LanguageServiceImpl implements LanguageService {
                 break;
             case COMPANY:
                 var companyProfile = getCompanyProfileFromRedis(account.getAccountId().toString());
-                if (companyProfile != null) languages = companyProfile.getLanguages();
+                if (companyProfile != null)
+                    languages = companyProfile.getLanguages();
                 for (var id : ids) {
                     var language = languageRepository.findByIdAndAccountId(UUID.fromString(id), account.getAccountId())
                         .orElseThrow(() -> new BadRequestException(ErrorMessageConstant.LANGUAGE_NOT_FOUND));
@@ -193,6 +197,8 @@ public class LanguageServiceImpl implements LanguageService {
                     saveCompanyProfileToRedis(companyProfile);
                 }
                 break;
+            default:
+                break;
         }
         // Normalize data in recommendation server
         normalizeDataService.normalizeData(account.getAccountId().toString(), role);
@@ -200,9 +206,11 @@ public class LanguageServiceImpl implements LanguageService {
 
     private List<Language> checkConstantType(Account account, List<Language> languages, boolean isInsert) {
         // Check all language constant type
-        constantService.checkConstantWithType(languages.stream().map(e -> e.getLanguage().getConstantId()).toList(), ConstantTypePrefix.LANGUAGES);
+        constantService.checkConstantWithType(languages.stream().map(e -> e.getLanguage().getConstantId()).toList(),
+            ConstantTypePrefix.LANGUAGES);
         return languages.stream().peek(language -> {
-            if (isInsert) language.setId(null);
+            if (isInsert)
+                language.setId(null);
             language.setAccount(account);
             var constant = constantService.getConstantById(language.getLanguage().getConstantId());
             if (!checkValidScore(constant.getNote(), language.getLanguageScore()))
@@ -218,7 +226,8 @@ public class LanguageServiceImpl implements LanguageService {
 
     private boolean checkValidScore(Object validateObj, String scoreStr) {
         try {
-            if (validateObj == null) return true;
+            if (validateObj == null)
+                return true;
             var note = CommonUtils.decodeJson(CommonUtils.convertToJson(validateObj), LanguageConstantNote.class);
             // If values not null
             if (note != null && note.getValues() != null && !note.getValues().contains(scoreStr))
@@ -226,7 +235,8 @@ public class LanguageServiceImpl implements LanguageService {
             else if (note != null && note.getValues() != null && note.getValues().contains(scoreStr))
                 return true;
             // If not required points, return true
-            if (note == null || (note.getValidate().getRequiredPoints() != null && !note.getValidate().getRequiredPoints()))
+            if (note == null
+                || (note.getValidate().getRequiredPoints() != null && !note.getValidate().getRequiredPoints()))
                 return true;
             // If required points, check score
             var validator = note.getValidate();
@@ -246,33 +256,33 @@ public class LanguageServiceImpl implements LanguageService {
 
     private UserProfileResponse getUserProfileFromRedis(String accountId) {
         var profile = redisRepository.findByHashKey(
-            RedisCacheConstant.PROFILE,
+            RedisCacheConstant.PROFILE_KEY,
             RedisCacheConstant.USER_PROFILE_HASH(accountId));
-        if (profile == null) return null;
+        if (profile == null)
+            return null;
         return CommonUtils.decodeJson(profile.toString(), UserProfileResponse.class);
     }
 
     private void saveUserProfileToRedis(UserProfileResponse profile) {
         redisRepository.save(
-            RedisCacheConstant.PROFILE,
+            RedisCacheConstant.PROFILE_KEY,
             RedisCacheConstant.USER_PROFILE_HASH(profile.getAccountId().toString()),
-            profile
-        );
+            profile);
     }
 
     private CompanyProfileResponse getCompanyProfileFromRedis(String accountId) {
         var profile = redisRepository.findByHashKey(
-            RedisCacheConstant.PROFILE,
+            RedisCacheConstant.PROFILE_KEY,
             RedisCacheConstant.COMPANY_PROFILE_HASH(accountId));
-        if (profile == null) return null;
+        if (profile == null)
+            return null;
         return CommonUtils.decodeJson(profile.toString(), CompanyProfileResponse.class);
     }
 
     private void saveCompanyProfileToRedis(CompanyProfileResponse profile) {
         redisRepository.save(
-            RedisCacheConstant.PROFILE,
+            RedisCacheConstant.PROFILE_KEY,
             RedisCacheConstant.COMPANY_PROFILE_HASH(profile.getAccountId().toString()),
-            profile
-        );
+            profile);
     }
 }

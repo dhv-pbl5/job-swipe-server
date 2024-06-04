@@ -367,3 +367,18 @@ language_request:
     not_blank_string_validation:
       code: VAL_LAN0103
       message: Score cannot be null
+
+# InterviewInvitationRequest
+interview_invitation_request:
+  matching_id:
+    uuid_validation:
+      code: VAL_INT0101
+      message: Match ID must be a valid UUID
+  interview_time:
+    not_null:
+      code: VAL_INT0102
+      message: Interview time cannot be null
+  interview_position_id:
+    uuid_validation:
+      code: VAL_INT0103
+      message: Interview position ID must be a valid UUID

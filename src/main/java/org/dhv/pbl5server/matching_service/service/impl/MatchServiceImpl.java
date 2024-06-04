@@ -4,18 +4,25 @@ import lombok.RequiredArgsConstructor;
 import org.dhv.pbl5server.authentication_service.entity.Account;
 import org.dhv.pbl5server.authentication_service.repository.AccountRepository;
 import org.dhv.pbl5server.chat_service.service.ChatService;
+import org.dhv.pbl5server.common_service.constant.CommonConstant;
 import org.dhv.pbl5server.common_service.constant.ErrorMessageConstant;
+import org.dhv.pbl5server.common_service.constant.RedisCacheConstant;
 import org.dhv.pbl5server.common_service.enums.AbstractEnum;
 import org.dhv.pbl5server.common_service.exception.BadRequestException;
 import org.dhv.pbl5server.common_service.exception.ForbiddenException;
 import org.dhv.pbl5server.common_service.exception.InternalServerException;
 import org.dhv.pbl5server.common_service.exception.NotFoundObjectException;
 import org.dhv.pbl5server.common_service.model.ApiDataResponse;
+import org.dhv.pbl5server.common_service.repository.RedisRepository;
 import org.dhv.pbl5server.common_service.utils.CommonUtils;
 import org.dhv.pbl5server.common_service.utils.PageUtils;
+import org.dhv.pbl5server.constant_service.enums.ConstantTypePrefix;
 import org.dhv.pbl5server.constant_service.enums.SystemRoleName;
+import org.dhv.pbl5server.constant_service.service.ConstantService;
+import org.dhv.pbl5server.mail_service.service.MailService;
 import org.dhv.pbl5server.matching_service.entity.Match;
 import org.dhv.pbl5server.matching_service.mapper.MatchMapper;
+import org.dhv.pbl5server.matching_service.payload.InterviewInvitationRequest;
 import org.dhv.pbl5server.matching_service.payload.MatchResponse;
 import org.dhv.pbl5server.matching_service.repository.MatchRepository;
 import org.dhv.pbl5server.matching_service.service.MatchService;
@@ -24,20 +31,27 @@ import org.dhv.pbl5server.notification_service.service.NotificationService;
 import org.dhv.pbl5server.profile_service.entity.Company;
 import org.dhv.pbl5server.profile_service.entity.User;
 import org.dhv.pbl5server.realtime_service.service.RealtimeService;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.Map;
 import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
 public class MatchServiceImpl implements MatchService {
+    @Value("${application.max-sent-interview-invitation-mail-per-day-and-user}")
+    private Integer maxMailCount;
     private final MatchRepository repository;
     private final AccountRepository accountRepository;
     private final NotificationService notificationService;
     private final ChatService chatService;
     private final RealtimeService realtimeService;
     private final MatchMapper matchMapper;
+    private final MailService mailService;
+    private final RedisRepository redisRepository;
+    private final ConstantService constantService;
 
     @Override
     public ApiDataResponse getMatches(String accountId, Pageable pageRequest) {
@@ -105,6 +119,20 @@ public class MatchServiceImpl implements MatchService {
     }
 
     @Override
+    public MatchResponse getMatchByAccountId(Account account, String accountId) {
+        var role = AbstractEnum.fromString(SystemRoleName.values(), account.getSystemRole().getConstantName());
+        var match = switch (role) {
+            case USER -> repository.findByUserIdAndCompanyId(account.getAccountId(), UUID.fromString(accountId))
+                .orElseThrow(() -> new NotFoundObjectException(ErrorMessageConstant.MATCH_NOT_FOUND));
+            case COMPANY -> repository.findByUserIdAndCompanyId(UUID.fromString(accountId), account.getAccountId())
+                .orElseThrow(() -> new NotFoundObjectException(ErrorMessageConstant.MATCH_NOT_FOUND));
+            default -> null;
+        };
+        if (match == null) throw new NotFoundObjectException(ErrorMessageConstant.MATCH_NOT_FOUND);
+        return matchMapper.toMatchResponse(match);
+    }
+
+    @Override
     public MatchResponse getMatchById(Account account, String matchingId) {
         var match = repository.findByIdAndUserIdOrCompanyId(UUID.fromString(matchingId), account.getAccountId())
             .orElseThrow(
@@ -140,12 +168,11 @@ public class MatchServiceImpl implements MatchService {
             companyMatched = true;
         } else throw new BadRequestException(ErrorMessageConstant.MATCH_FEATURE_NOT_FOR_ADMIN);
         // Check if match already exist --> accept match
-        var existedMatches = repository.findByUserIdAndCompanyId(userId, companyId);
-        if (CommonUtils.isNotEmptyOrNullList(existedMatches)) {
-            for (var i : existedMatches) {
-                if (i.isCompanyMatchedNull() || i.isUserMatchedNull())
-                    return matchMapper.toMatchResponse(acceptMatch(account, i, true));
-            }
+        var existedMatch = repository.findByUserIdAndCompanyId(userId, companyId).orElse(null);
+        if (existedMatch != null) {
+            if (existedMatch.isCompleted())
+                throw new BadRequestException(ErrorMessageConstant.MATCH_ALREADY_ACCEPTED);
+            return matchMapper.toMatchResponse(acceptMatch(account, existedMatch, true));
         }
         // Create new match
         var match = repository.save(
@@ -231,6 +258,50 @@ public class MatchServiceImpl implements MatchService {
         );
         return response;
     }
+
+    @Override
+    public void sendInterviewInvitation(Account account, InterviewInvitationRequest request) {
+        var match = repository.findById(UUID.fromString(request.getMatchingId()))
+            .orElseThrow(() -> new NotFoundObjectException(ErrorMessageConstant.MATCH_NOT_FOUND));
+        var user = match.getUser();
+        var company = match.getCompany();
+        // Check interview position must be application position
+        constantService.checkConstantWithType(UUID.fromString(request.getInterviewPositionId()), ConstantTypePrefix.APPLY_POSITIONS);
+        var interviewPosition = constantService.getConstantById(UUID.fromString(request.getInterviewPositionId()));
+        // Check if match is not accepted
+        if (!match.isCompleted())
+            throw new BadRequestException(ErrorMessageConstant.MATCH_NOT_ACCEPTED);
+        // Check if interview time is invalid
+        if (request.getInterviewTime().before(CommonUtils.getCurrentTimestamp()))
+            throw new BadRequestException(ErrorMessageConstant.INTERVIEW_TIME_INVALID);
+        // Check email count exceed per day
+        int count = 0;
+        var dataInRedis = redisRepository.findByHashKey(
+            RedisCacheConstant.MAIL_KEY,
+            RedisCacheConstant.INTERVIEW_INVITATION_MAIL_HASH(company.getAccountId().toString(), user.getAccountId().toString()));
+        var object = dataInRedis != null ? CommonUtils.decodeJson(dataInRedis.toString(), Map.class) : null;
+        if (object != null) {
+            count = (Integer) object.get("count");
+            var time = (Long) object.get("time");
+            if (System.currentTimeMillis() - time >= CommonConstant.DAY_IN_MILLIS) {
+                count = 0;
+            } else if (count >= maxMailCount) {
+                throw new BadRequestException(ErrorMessageConstant.SENT_INTERVIEW_INVITATION_MAIL_EXCEED);
+            }
+        }
+        // Save count to redis
+        redisRepository.save(
+            RedisCacheConstant.MAIL_KEY,
+            RedisCacheConstant.INTERVIEW_INVITATION_MAIL_HASH(company.getAccountId().toString(), user.getAccountId().toString()),
+            Map.of(
+                "count", ++count,
+                "time", System.currentTimeMillis()
+            )
+        );
+        // Send email
+        mailService.sendInterviewInvitationEmail(user, company, request.getInterviewTime(), interviewPosition.getConstantName());
+    }
+
 
     private Match acceptMatch(Account currentAccount, Match match, boolean isRequest) {
         // Check if match is already accepted

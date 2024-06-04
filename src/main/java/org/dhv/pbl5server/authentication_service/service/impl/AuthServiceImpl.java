@@ -1,7 +1,7 @@
 package org.dhv.pbl5server.authentication_service.service.impl;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import org.dhv.pbl5server.authentication_service.config.JwtApplicationProperty;
 import org.dhv.pbl5server.authentication_service.entity.Account;
 import org.dhv.pbl5server.authentication_service.mapper.AccountMapper;
 import org.dhv.pbl5server.authentication_service.payload.request.*;
@@ -18,6 +18,7 @@ import org.dhv.pbl5server.common_service.exception.ForbiddenException;
 import org.dhv.pbl5server.common_service.exception.NotFoundObjectException;
 import org.dhv.pbl5server.common_service.repository.RedisRepository;
 import org.dhv.pbl5server.common_service.utils.CommonUtils;
+import org.dhv.pbl5server.common_service.utils.LogUtils;
 import org.dhv.pbl5server.constant_service.entity.Constant;
 import org.dhv.pbl5server.constant_service.enums.ConstantTypePrefix;
 import org.dhv.pbl5server.constant_service.enums.SystemRoleName;
@@ -27,7 +28,6 @@ import org.dhv.pbl5server.profile_service.entity.Company;
 import org.dhv.pbl5server.profile_service.entity.User;
 import org.dhv.pbl5server.profile_service.repository.CompanyRepository;
 import org.dhv.pbl5server.profile_service.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.*;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -39,10 +39,8 @@ import java.util.UUID;
 
 @RequiredArgsConstructor
 @Service
-@Slf4j
 public class AuthServiceImpl implements AuthService {
-    @Value("${application.reset-password-code-expiration-ms}")
-    private Long resetPasswordTokenExpirationTime;
+    private final JwtApplicationProperty jwtApplicationProperty;
     private final RedisRepository redisRepository;
     private final AccountRepository repository;
     private final UserRepository userRepository;
@@ -52,7 +50,7 @@ public class AuthServiceImpl implements AuthService {
     private final AccountMapper mapper;
     private final ConstantRepository constantRepository;
     private final PasswordEncoder passwordEncoder;
-    private final MailService mailTrapService;
+    private final MailService mailService;
 
     public CredentialResponse login(LoginRequest loginRequest, boolean isAdmin) {
         try {
@@ -76,7 +74,7 @@ public class AuthServiceImpl implements AuthService {
         } catch (DisabledException ex) {
             throw new ForbiddenException(ErrorMessageConstant.ACCOUNT_IS_DISABLED);
         } catch (Exception ex) {
-            log.error("Error when login", ex);
+            LogUtils.error("LOGIN", ex);
             throw ex;
         }
     }
@@ -86,7 +84,8 @@ public class AuthServiceImpl implements AuthService {
         try {
             return jwtService.refreshToken(refreshTokenRequest.getRefreshToken(), isAdmin);
         } catch (Exception ex) {
-            log.error("Error when refresh token", ex);
+            LogUtils.error("REFRESH TOKEN", ex);
+
             throw ex;
         }
     }
@@ -167,7 +166,7 @@ public class AuthServiceImpl implements AuthService {
         String resetPasswordCode = CommonUtils.generate6DigitsOTP();
         Map<String, Object> resetPasswordCodeMap = Map.of(
             "reset_password_code", resetPasswordCode,
-            "expiration_time", System.currentTimeMillis() + resetPasswordTokenExpirationTime
+            "expiration_time", System.currentTimeMillis() + jwtApplicationProperty.getResetPasswordCodeExpirationMs()
         );
         // Save reset password code to redis
         redisRepository.save(
@@ -176,7 +175,7 @@ public class AuthServiceImpl implements AuthService {
             resetPasswordCodeMap
         );
         // Send email to user
-        mailTrapService.sendForgotPasswordEmail(account.getEmail(), resetPasswordCode);
+        mailService.sendForgotPasswordEmail(account.getEmail(), resetPasswordCode);
     }
 
     @Override
@@ -189,10 +188,10 @@ public class AuthServiceImpl implements AuthService {
         if (role == SystemRoleName.ADMIN || !account.isEnabled())
             throw new ForbiddenException(ErrorMessageConstant.FORBIDDEN);
         // Check reset password code
-        var object = CommonUtils.decodeJson(redisRepository.findByHashKey(
+        var dataInRedis = redisRepository.findByHashKey(
             RedisCacheConstant.OTP_KEY,
-            RedisCacheConstant.FORGOT_PASSWORD_HASH(account.getAccountId().toString())
-        ).toString(), Map.class);
+            RedisCacheConstant.FORGOT_PASSWORD_HASH(account.getAccountId().toString()));
+        var object = dataInRedis != null ? CommonUtils.decodeJson(dataInRedis.toString(), Map.class) : null;
         if (object == null || !request.getResetPasswordCode().equals(object.get("reset_password_code")))
             throw new BadRequestException(ErrorMessageConstant.RESET_PASSWORD_CODE_INVALID);
         if (System.currentTimeMillis() > (long) object.get("expiration_time"))
