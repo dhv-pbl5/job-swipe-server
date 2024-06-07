@@ -10,11 +10,14 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.UUID;
 
 public interface ChatService {
     ApiDataResponse getConversations(Account account, Pageable pageRequest);
 
     ConversationResponse getConversationById(Account account, String conversationId);
+
+    boolean isConversationExist(UUID userId, UUID companyId);
 
     void createConversation(User user, Company company);
 

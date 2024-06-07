@@ -76,6 +76,13 @@ public class ChatServiceImpl implements ChatService {
     }
 
     @Override
+    public boolean isConversationExist(UUID userId, UUID companyId) {
+        var conversation = conversationRepository.findByUserIdAndCompanyId(userId, companyId)
+            .orElse(null);
+        return conversation != null;
+    }
+
+    @Override
     public void createConversation(User user, Company company) {
         if (user == null || company == null)
             throw new BadRequestException(ErrorMessageConstant.REQUIRED_USER_AND_COMPANY);
