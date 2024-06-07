@@ -336,8 +336,9 @@ public class MatchServiceImpl implements MatchService {
             receiverAccount,
             NotificationType.MATCHING
         );
-        // Create conversation
-        chatService.createConversation(match.getUser(), match.getCompany());
+        // Create conversation if not exist
+        if (!chatService.isConversationExist(match.getUser().getAccountId(), match.getCompany().getAccountId()))
+            chatService.createConversation(match.getUser(), match.getCompany());
         result.setUser(match.getUser());
         result.setCompany(match.getCompany());
         return result;
