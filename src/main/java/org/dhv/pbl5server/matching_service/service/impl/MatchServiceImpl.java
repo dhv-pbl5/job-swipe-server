@@ -226,7 +226,7 @@ public class MatchServiceImpl implements MatchService {
         );
 
         repository.save(match);
-        // Change conversation's active status
+        // Disable conversation
         chatService.changeConversationStatus(match.getUser(), match.getCompany(), false);
         return matchMapper.toMatchResponse(match);
     }
@@ -336,9 +336,10 @@ public class MatchServiceImpl implements MatchService {
             receiverAccount,
             NotificationType.MATCHING
         );
-        // Create conversation if not exist
+        // Create conversation if not exist else enable conversation
         if (!chatService.isConversationExist(match.getUser().getAccountId(), match.getCompany().getAccountId()))
             chatService.createConversation(match.getUser(), match.getCompany());
+        else chatService.changeConversationStatus(match.getUser(), match.getCompany(), true);
         result.setUser(match.getUser());
         result.setCompany(match.getCompany());
         return result;
